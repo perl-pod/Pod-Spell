@@ -1,0 +1,9 @@
+ChangeLog
+MANIFEST
+Makefile.PL
+README
+Spell.pm
+Wordlist.pm
+Wordlist.pod
+podspell
+test.pl
