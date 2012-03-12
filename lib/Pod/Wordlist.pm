@@ -4,7 +4,7 @@ use warnings;
 
 # VERSION
 
-my %Wordlist;
+our %Wordlist;
 while(<Pod::Wordlist::DATA>) { chomp($_); $Wordlist{$_} = 1 if m/\S/; }
 1;
 __DATA__
