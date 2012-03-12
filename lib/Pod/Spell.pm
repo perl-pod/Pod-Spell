@@ -329,7 +329,7 @@ My personal advice:
 =item *
 
 Write your documentation in Pod.  Pod is described in
-L<perlpod|perlpod>.  And L<perlmodstyle|perlmodstyle> has some
+L<perlpod>.  And L<perlmodstyle> has some
 advice on content.  This is the stage where you want to make sure
 you say everything you should, have good and working examples,
 and have coherent grammar.
