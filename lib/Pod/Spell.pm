@@ -1,11 +1,10 @@
-
-require 5;
-package Pod::Spell;    # Time-stamp: "2001-10-27 00:05:01 MDT"
+package Pod::Spell;
 use strict;
-use vars qw(@ISA $VERSION);
-$VERSION = '1.01';
-use Pod::Parser ();
-@ISA = ('Pod::Parser');
+use warnings;
+
+# VERSION
+
+use base 'Pod::Parser';
 
 use constant MAXWORDLENGTH => 50; # max length of a word
 
@@ -220,11 +219,8 @@ sub _treat_words {
 #--------------------------------------------------------------------------
 
 1;
-__END__
 
-=head1 NAME
-
-Pod::Spell -- a formatter for spellchecking Pod
+# ABSTRACT: a formatter for spellchecking Pod
 
 =head1 SYNOPSIS
 
@@ -379,24 +375,6 @@ Pod::Spell drops words that it thinks are Perl symbols, jargon, or
 stopwords, this means you'll have ungrammatical sentences, what with
 words being missing and all.  And you don't need a grammar checker
 to tell you that.
-
-
-
-=head1 COPYRIGHT AND DISCLAIMER
-
-Copyright (c) 2001 Sean M. Burke. All rights reserved.
-
-This library is free software; you can redistribute it and/or
-modify it under the same terms as Perl itself.
-
-The programs and documentation in this dist are distributed in
-the hope that they will be useful, but without any warranty; without
-even the implied warranty of merchantability or fitness for a
-particular purpose.
-
-=head1 AUTHOR
-
-Sean M. Burke C<sburke@cpan.org>
 
 =cut
 
