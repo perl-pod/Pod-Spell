@@ -1,6 +1,6 @@
-Revision history for Perl extension Pod::Spell / Pod::Wordlist
-                                        Time-stamp: "2001-10-27 00:07:17 MDT"
+Revision history {{$dist->name}}
 
-2001-10-27  Sean M. Burke  sburke@cpan.org
+{{$NEXT}}
 
-	* Release 1.01 -- first release version
+1.01	2001-10-27
+	- first release version ( SBURKE )
