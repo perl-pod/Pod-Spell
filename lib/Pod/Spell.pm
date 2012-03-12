@@ -6,14 +6,14 @@ use warnings;
 
 use base 'Pod::Parser';
 
-use constant MAXWORDLENGTH => 50; # max length of a word
+use constant MAXWORDLENGTH => 50; ## no critic ( ValuesAndExpressions::ProhibitConstantPragma )
 
 BEGIN { *DEBUG = sub () {0} unless defined &DEBUG }
 use Pod::Wordlist ();
 use Pod::Escapes ('e2char');
 use Text::Wrap ('wrap');
  # We don't need a very new version of Text::Wrap, altho they are nicer.
-$Text::Wrap::huge = 'overflow';
+$Text::Wrap::huge = 'overflow'; ## no critic ( Variables::ProhibitPackageVars )
 
 use integer;
 use locale;    # so our uc/lc works right
@@ -28,7 +28,7 @@ sub new {
   my $x = shift;
   my $new = $x->SUPER::new(@_);
   $new->{'spell_stopwords'} = { };
-  @{ $new->{'spell_stopwords'} }{ keys %Pod::Wordlist::Wordlist } = ();
+  @{ $new->{'spell_stopwords'} }{ keys %Pod::Wordlist::Wordlist } = (); ## no critic ( Variables::ProhibitPackageVars )
   $new->{'region'} = [];
   return $new;
 }
@@ -37,7 +37,7 @@ sub verbatim { return ''; } # totally ignore verbatim sections
 
 #----------------------------------------------------------------------
 
-sub _get_stopwords_from {
+sub _get_stopwords_from { ## no critic ( Subroutines::RequireArgUnpacking )
   my $stopwords = $_[0]{'spell_stopwords'};
 
   my $word;
@@ -60,7 +60,7 @@ sub _get_stopwords_from {
 sub textblock {
   my($self, $paragraph) = @_;
   if(@{ $self->{'region'} }) {
-    my $last = $self->{'region'}[-1];
+    my $last = $self->{'region'}[-1]; ## no critic ( NamingConventions::ProhibitAmbiguousNames )
     if($last eq 'stopwords') {
       $self->_get_stopwords_from( $paragraph );
       return;
@@ -79,12 +79,12 @@ sub textblock {
   return;
 }
 
-sub command {
+sub command { ## no critic ( Subroutines::RequireArgUnpacking )
   my $self = shift;
   my $command = shift;
   return if $command eq 'pod';
 
-  if($command eq 'begin') {
+  if($command eq 'begin') { ## no critic ( ControlStructures::ProhibitCascadingIfElse )
     my $region_name;
     #print "BEGIN <$_[0]>\n";
     if(shift(@_) =~ m/^\s*(\S+)/s) {
@@ -124,7 +124,7 @@ sub command {
 
 #--------------------------------------------------------------------------
 
-sub interior_sequence {
+sub interior_sequence { ## no critic ( Subroutines::RequireFinalReturn )
   my $self = shift;
   my $command = shift;
 
@@ -169,7 +169,7 @@ sub interior_sequence {
 #==========================================================================
 # The guts:
 
-sub _treat_words {
+sub _treat_words { ## no critic ( Subroutines::RequireArgUnpacking )
   my $p = shift;
   # Count the things in $_[0]
   DEBUG > 1 and print "Content: <", $_[0], ">\n";
