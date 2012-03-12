@@ -254,7 +254,7 @@ can probably just make do with the examples in the synopsis though.
 This class works by filtering out words that look like Perl or any
 form of computerese (like "C<$thing>" or "C<NE<gt>7>" or
 "C<@{$foo}{'bar','baz'}>", anything in CE<lt>...E<gt> or FE<lt>...E<gt>
-codes, anything in verbatim paragraphs (codeblocks), and anything
+codes, anything in verbatim paragraphs (code blocks), and anything
 in the stopword list.  The default stopword list for a document starts
 out from the stopword list defined by L<Pod::Wordlist|Pod::Wordlist>,
 and can be supplemented (on a per-document basis) by having
