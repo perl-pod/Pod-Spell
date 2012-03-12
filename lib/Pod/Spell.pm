@@ -278,9 +278,9 @@ I<deleted> from the stopword list -- so "!qux" deletes "qux" from the
 stopword list, if it was in there in the first place.  Note that if
 a stopword is all-lowercase, then it means that it's okay in I<any>
 case; but if the word has any capital letters, then it means that
-it's okay I<only> with I<that> case.  So a wordlist entry of "perl"
+it's okay I<only> with I<that> case.  So a Wordlist entry of "perl"
 would permit "perl", "Perl", and (less interestingly) "PERL", "pERL",
-"PerL", et cetera.  However, a wordlist entry of "Perl" catches
+"PerL", et cetera.  However, a Wordlist entry of "Perl" catches
 only "Perl", not "perl".  So if you wanted to make sure you said
 only "Perl", never "perl", you could add this to the top of your
 document:
