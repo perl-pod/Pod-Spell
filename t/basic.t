@@ -1,34 +1,15 @@
-# Before `make install' is performed this script should be runnable with
-# `make test'. After `make install' it should work as `perl test.pl'
-# Time-stamp: "2001-10-27 00:03:07 MDT"
-
 use strict;
-# Time-stamp: "1"
-use Test;
-
-my @them;
-BEGIN { plan('tests' => 22) };
-BEGIN { print "# Perl version $] under $^O\n" }
+use warnings;
+use Test::More 0.88;
 
 use Pod::Spell;
-ok 1;
 use Pod::Wordlist;
 
-print "# Pod::Spell version $Pod::Spell::VERSION\n";
-print "# Pod::Wordlist version $Pod::Wordlist::VERSION\n";
-if(0 + keys %Pod::Wordlist::Wordlist) {
-  ok 1;
-  print "#  I see ", scalar(keys %Pod::Wordlist::Wordlist),
-    " keys in %Pod::Wordlist::Wordlist\n";
-} else {
-  ok 0;
-  print "#  I see no keys in %Pod::Wordlist::Wordlist\n";
-}
+my @them;
 
-print "#\n#-----------------\n# Universe tests...\n";
-print "# I'm ", (chr(65) eq 'A') ? '' : 'not ', "in ASCII world.\n";
+cmp_ok(  0 + keys %Pod::Wordlist::Wordlist, '>', 0, 'many keys' );
 
-
+note "I'm ", (chr(65) eq 'A') ? '' : 'not ', "in ASCII world.";
 
 use vars qw($podfile $textfile);
 $podfile  ||= "psin.pod";
@@ -36,6 +17,7 @@ $textfile ||= "psout.txt";
 
 foreach my $quotie (qw( A \n \r \cm \cj \t \f \b \a \e )) {
   my $val = eval "\"$quotie\"";
+
   if($@) {
     ok 0;
     print "# Error in evalling quotie \"$quotie\"\n";
@@ -115,4 +97,4 @@ if(unlink($podfile)) {
   print "#   Couldn't unlink $podfile: $!\n";
 }
 
-
+done_testing;
