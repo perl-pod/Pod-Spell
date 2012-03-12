@@ -313,7 +313,7 @@ have to use ":stopwords", as here:
   virtE<ugrave>
 
 ...meaning that you're adding a stopword of "virtE<ugrave>".  If
-you left the ":" out, that'd mean you were adding a stopword of
+you left the ":" out, that would mean you were adding a stopword of
 "virtEE<lt>ugrave>" (with a literal E, a literal <, etc), which
 will have no effect, since  any occurrences of virtEE<lt>ugrave>
 don't look like a normal human-language word anyway, and so would
@@ -363,7 +363,7 @@ L<Pod::Parser|Pod::Parser>
 
 L<podchecker|podchecker> also known as L<Pod::Checker|Pod::Checker>
 
-L<perlpod|perlpod>, L<perlpodspec|perlpodspec>
+L<perlpod|perlpod>, L<perlpodspec>
 
 
 
