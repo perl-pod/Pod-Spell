@@ -232,7 +232,7 @@ sub _treat_words {
   % perl -MPod::Spell -e "Pod::Spell->new->parse_from_filehandle"
   ...which takes POD on STDIN and sends formatted text to STDOUT
 
-...or instead of piping to spell or ispell, use C<E<gt>temp.txt>, and open
+...or instead of piping to spell or C<ispell>, use C<E<gt>temp.txt>, and open
 F<temp.txt> in your word processor for spell-checking.
 
 
