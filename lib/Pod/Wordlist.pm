@@ -1,6 +1,10 @@
-require 5;
 package Pod::Wordlist;   # see Wordlist.pod for info
-$Pod::Wordlist::VERSION = '1.01'; # Time-stamp: "2001-10-27 00:02:11 MDT"
+use strict;
+use warnings;
+
+# VERSION
+
+my %Wordlist;
 while(<Pod::Wordlist::DATA>) { chomp($_); $Wordlist{$_} = 1 if m/\S/; }
 1;
 __DATA__
