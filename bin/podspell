@@ -1,6 +1,6 @@
 #!/usr/bin/perl
-require 5;            # Time-stamp: "2001-10-27 00:08:46 MDT"
 use strict;
+use warnings;
 use Pod::Spell;
 if(@ARGV) {  # iterate over files, sending to STDOUT
   foreach my $x (@ARGV) {
@@ -10,4 +10,5 @@ if(@ARGV) {  # iterate over files, sending to STDOUT
   Pod::Spell->new->parse_from_filehandle();
 }
 
-__END__
+# ABSTRACT: pod spell checking command line interface
+# PODNAME: podspell
