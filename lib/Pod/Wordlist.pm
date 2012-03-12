@@ -100,6 +100,7 @@ bsearch
 bugfix
 bugfixes
 bugfixing
+bugtracker
 buildable
 builtin
 builtins
@@ -119,6 +120,7 @@ catdir
 catfile
 ccflags
 cd
+cetera
 charset
 chdir
 checksumming
@@ -138,6 +140,7 @@ coderef
 coderefs
 commifies
 compilable
+computerese
 config
 configurability
 coprocess
@@ -221,6 +224,7 @@ enum
 eof
 eq
 errno
+et
 euid
 eval
 evalled
@@ -269,6 +273,7 @@ followups
 fopen
 foreach
 foregrounded
+formatter
 formfeed
 formline
 formlines
@@ -724,6 +729,9 @@ Schwartzian
 Schwern
 SelfLoading
 SourceForge
+STDIN
+STDOUT
+STDERR
 Sugalski
 Sugalski's
 Sussman
@@ -793,6 +801,7 @@ soundex
 spam
 specifier
 specifiers
+spellcheck
 spellchecking
 sprintf
 sqrt
@@ -803,6 +812,8 @@ statfs
 statics
 stdio
 stdios
+stopword
+stopwords
 strcat
 strchr
 strcmp
