@@ -94,7 +94,7 @@ sub command {
     }
     DEBUG and print "~~~~ Beginning region \"$region_name\" ~~~~\n";
     push @{ $self->{'region'} }, $region_name;
-    
+
   } elsif($command eq 'end') {
     pop @{ $self->{'region'} }; # doesn't bother to check
 
@@ -178,9 +178,9 @@ sub _treat_words {
   my $word;
   $_[0] =~ tr/\xA0\xAD/ /d;
     # i.e., normalize non-breaking spaces, and delete soft-hyphens
-  
+
   my $out = '';
-  
+
   my($leading, $trailing);
   while($_[0] =~ m<(\S+)>g) {
     # Trim normal English punctuation, if leading or trailing.
@@ -188,10 +188,10 @@ sub _treat_words {
     $word = $1;
     if( $word =~ s/^([\`\"\'\(\[])//s )
      { $leading = $1 } else { $leading = '' }
-    
+
     if( $word =~ s/([\)\]\'\"\.\:\;\,\?\!]+)$//s )
      { $trailing = $1 } else { $trailing = '' }
-    
+
     if($word =~ m/^[\&\%\$\@\:\<\*\\\_]/s
            # if it looks like it starts with a sigil, etc.
        or $word =~ m/[\%\^\&\#\$\@\_\<\>\(\)\[\]\{\}\\\*\:\+\/\=\|\`\~]/
@@ -242,7 +242,7 @@ Pod::Spell is a Pod formatter whose output is good for
 spellchecking.  Pod::Spell rather like L<Pod::Text|Pod::Text>, except that
 it doesn't put much effort into actual formatting, and it suppresses things
 that look like Perl symbols or Perl jargon (so that your spellchecking
-program won't complain about mystery words like "C<$thing>" 
+program won't complain about mystery words like "C<$thing>"
 or "C<Foo::Bar>" or "hashref").
 
 This class provides no new public methods.  All methods of interest are
@@ -257,7 +257,7 @@ form of computerese (like "C<$thing>" or "C<NE<gt>7>" or
 codes, anything in verbatim paragraphs (codeblocks), and anything
 in the stopword list.  The default stopword list for a document starts
 out from the stopword list defined by L<Pod::Wordlist|Pod::Wordlist>,
-and can be supplemented (on a per-document basis) by having 
+and can be supplemented (on a per-document basis) by having
 C<"=for stopwords"> / C<"=for :stopwords"> region(s) in a document.
 
 
@@ -267,7 +267,7 @@ You can add stopwords on a per-document basis with
 C<"=for stopwords"> / C<"=for :stopwords"> regions, like so:
 
   =for stopwords  plok Pringe zorch   snik !qux
-  foo bar baz quux quuux 
+  foo bar baz quux quuux
 
 This adds every word in that paragraph after "stopwords" to the
 stopword list, effective for the rest of the document.  In such a
@@ -289,7 +289,7 @@ document:
 
 Then all instances of the word "Perl" would be weeded out of the
 Pod::Spell-formatted version of your document, but any instances of
-the word "perl" would be left in (unless they were in a CE<lt>...> or 
+the word "perl" would be left in (unless they were in a CE<lt>...> or
 FE<lt>...> style).
 
 You can have several "=for stopwords" regions in your document.  You
@@ -302,7 +302,7 @@ can even express them like so:
   snik !qux
 
   foo bar
-  baz quux quuux 
+  baz quux quuux
 
   =end stopwords
 
