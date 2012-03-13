@@ -52,17 +52,16 @@ is -s $textfile, 26,  'textfile size';
 
 open($txt, '<', $textfile) || die "Can't read-open temp file '$textfile': $!";
 
-my $in = do { local $/ = undef, $txt };
+my $in = do { local $/ = undef, <$txt> };
 
 close($txt);
 
-is( length $in, 15, 'infile' );
+is( length $in, -s $textfile, 'infile' );
 
 {
   my $x = $in;
   $x =~ s/\s+/ /g;
-  ok 1;
-  print "#   Content:  $x\n";
+  note 'Content: ' . $x;
 
   my @words = $in =~ m/(\w+)/g;
   if(@words == 3 and $words[0] eq 'TEST' and
