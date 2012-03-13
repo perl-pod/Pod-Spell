@@ -16,21 +16,14 @@ $podfile  ||= "psin.pod";
 $textfile ||= "psout.txt";
 
 foreach my $quotie (qw( A \n \r \cm \cj \t \f \b \a \e )) {
-  my $val = eval "\"$quotie\"";
-
-  if($@) {
-    ok 0;
-    print "# Error in evalling quotie \"$quotie\"\n";
-  } elsif(!defined $val) {
-    ok 0;
-    print "# \"$quotie\" is undef!?\n";
-  } else {
-    ok 1;
-    print "#       \"$quotie\" is ", ord($val), "\n";
-  }
+	my $val = eval qq/"$quotie"/;
+	ok( ord( $val ),  $quotie . ' is '.  ord( $val ) );
 }
 
-print "# Universe tests complete.\n#------------------------\n# Real tests.\n#\n";
+note 'Universe tests complete.';
+note '-' x 30;
+note 'Real tests.';
+
 open(POD, ">$podfile") || die "Can't make temp file '$podfile': $!";
 print POD "\n=head1 TEST undef\n\n=for stopwords zpaph myormsp pleumgh\n\n=for :stopwords !myormsp\n\n Glakq\n\nPleumgh zpaph myormsp snickh.\n\n";
 close(POD);
