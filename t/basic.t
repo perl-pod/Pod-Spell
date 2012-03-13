@@ -47,13 +47,14 @@ is( length $in, -s $textfile, 'infile' );
 {
 	my $x = $in;
 	$x =~ s/\s+/ /g;
-	note 'Content: ' . $x;
 
 	my @words = $in =~ m/(\w+)/g;
 
 	is scalar @words, 3, 'word count';
 
-	cmp_deeply( [ @words ], bag( qw( TEST myormsp snickh ) ), 'words match' );
+	cmp_deeply( [ @words ], bag( qw( TEST myormsp snickh ) ), 'words match' )
+		or diag 'Content: ' . $x
+		;
 }
 
 done_testing;
