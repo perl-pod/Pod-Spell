@@ -1,7 +1,6 @@
 use strict;
 use warnings;
-use Test::More 0.88;
-use Test::Exception;
+use Test::Most;
 use File::Temp;
 
 use Pod::Spell;
@@ -65,17 +64,9 @@ is( length $in, -s $textfile, 'infile' );
 
 	my @words = $in =~ m/(\w+)/g;
 
+	is scalar @words, 3, 'word count';
 
-	if(@words == 3 and $words[0] eq 'TEST' and
-		 $words[1] eq 'myormsp'	and $words[2] eq 'snickh'
-	) {
-		ok 1;
-		print "#	 Converted content is indeed 'TEST myormsp snickh'.\n";
-	} else {
-		ok 0;
-		print "#	 Converted content is not as expected.\n";
-	}
-
+	cmp_deeply( [ @words ], bag( qw( TEST myormsp snickh ) ), 'words match' );
 }
 
 done_testing;
