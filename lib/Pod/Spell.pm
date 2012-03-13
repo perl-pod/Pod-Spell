@@ -354,6 +354,17 @@ Run it through podchecker again just for good measure.
 
 =back
 
+=method new
+
+=method command
+
+=method interior_sequence
+
+=method textblock
+
+=method verbatim
+
+=method DEBUG
 
 =head1 SEE ALSO
 
@@ -377,5 +388,3 @@ words being missing and all.  And you don't need a grammar checker
 to tell you that.
 
 =cut
-
-
