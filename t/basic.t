@@ -34,8 +34,6 @@ $p->parse_from_filehandle( $pod, $txt );
 close($pod);
 close($txt);
 
-undef $p;
-
 is -s $textfile, 26,	'textfile size';
 
 open($txt, '<', $textfile) || die "Can't read-open temp file '$textfile': $!";
