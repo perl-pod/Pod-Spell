@@ -7,6 +7,36 @@ use warnings;
 our %Wordlist; ## no critic ( Variables::ProhibitPackageVars )
 while(<Pod::Wordlist::DATA>) { chomp($_); $Wordlist{$_} = 1 if m/\S/; }
 1;
+
+# ABSTRACT: English words that come up in Perl documentation
+=pod
+
+=head1 DESCRIPTION
+
+Pod::Wordlist is used by L<Pod::Spell|Pod::Spell>, providing a set of words
+(as keys in the hash C<%Pod::Spell::Wordlist>) that are English jargon
+words that come up in Perl documentation, but which are not to be found
+in general English lexicons.  (For example: autovivify, backreference,
+chroot, stringify, wantarray.)
+
+You can also use this wordlist with your word processor by just
+pasting C<Pod/Wordlist.pm>'s content into your wordprocessor, deleting
+the leading Perl code so that only the wordlist remains, and then
+spellchecking this resulting list and adding every word in it to your
+private lexicon.
+
+
+=head1 CONTRIBUTING
+
+You are welcome to send me your wordlists too, for possible incorporation
+into this wordlist.  I can take them only in ASCII.
+
+Note that the scope of this file is only English, specifically American
+English.  (But you may find in useful to incorporate into your own
+lexicons, even if they are for other dialects/languages.)
+
+=cut
+
 __DATA__
 Aas
 Abelson
