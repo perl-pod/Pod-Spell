@@ -11,9 +11,8 @@ cmp_ok(  0 + keys %Pod::Wordlist::Wordlist, '>', 0, 'many keys' );
 
 note "I'm ", (chr(65) eq 'A') ? '' : 'not ', "in ASCII world.";
 
-use vars qw($podfile $textfile);
-$podfile  ||= "psin.pod";
-$textfile ||= "psout.txt";
+my $podfile  = "psin.pod";
+my $textfile = "psout.txt";
 
 foreach my $quotie (qw( A \n \r \cm \cj \t \f \b \a \e )) {
 	my $val = eval qq/"$quotie"/;
@@ -24,11 +23,11 @@ note 'Universe tests complete.';
 note '-' x 30;
 note 'Real tests.';
 
-open(POD, ">$podfile") || die "Can't make temp file '$podfile': $!";
-print POD "\n=head1 TEST undef\n\n=for stopwords zpaph myormsp pleumgh\n\n=for :stopwords !myormsp\n\n Glakq\n\nPleumgh zpaph myormsp snickh.\n\n";
-close(POD);
-ok 1;
-print "#   Wrote >$podfile (length ", -s $podfile, " bytes)\n";
+open(my $pod, '>' , $podfile ) || die "Can't make temp file '$podfile': $!";
+print $pod "\n=head1 TEST undef\n\n=for stopwords zpaph myormsp pleumgh\n\n=for :stopwords !myormsp\n\n Glakq\n\nPleumgh zpaph myormsp snickh.\n\n";
+close($pod);
+
+is -s $podfile, 123,  $podfile . ' size';
 
 open(POD, "<$podfile") || die "Can't read-open temp file '$podfile': $!";
 open(TXT, ">$textfile") || die "Can't write-open temp file '$textfile': $!";
