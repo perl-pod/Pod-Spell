@@ -18,7 +18,7 @@ my $textfile = File::Temp->new;
 
 foreach my $quotie (qw( A \n \r \cm \cj \t \f \b \a \e )) {
 	my $val = eval qq/"$quotie"/;
-	ok( ord( $val ),	$quotie . ' is '.	ord( $val ) );
+	ok( ord( $val ), $quotie . ' is '. ord( $val ) );
 }
 
 note 'Universe tests complete.';
@@ -31,7 +31,7 @@ close($pod);
 
 is -s $podfile, 123,	'podfile size';
 
-open($pod, '<', $podfile		) || die "Can't read-open temp file '$podfile': $!";
+open($pod, '<', $podfile    ) || die "Can't read-open temp file '$podfile': $!";
 open(my $txt, '>', $textfile) || die "Can't write-open temp file '$textfile': $!";
 
 my $p;
