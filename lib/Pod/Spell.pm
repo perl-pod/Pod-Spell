@@ -131,7 +131,7 @@ sub command {
 
 	}
 	elsif ( $cmd eq 'for' ) {
-		if ( $text =~ s/^\s*(\:?)stopwords\s*(.*)//s ) {
+		if ( $pod_para =~ s/^\s*(\:?)stopwords\s*(.*)//s ) {
 			my $para = $2;
 			$para = $self->interpolate($para) if $1;
 			DEBUG > 1 and print "Stopword para: <$2>\n";
