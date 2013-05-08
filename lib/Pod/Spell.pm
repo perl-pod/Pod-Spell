@@ -49,10 +49,9 @@ sub _get_stopwords_from {
 	my ( $self, $arg ) = @_;
 	my $stopwords = $self->{'spell_stopwords'};
 
-	my $word;
 	while ( $arg =~ m<(\S+)>g ) {
-		$word = $1;
-		if ( $word =~ m/^!(.+)/s ) {    # "!word" deletes from the stopword list
+		my $word = $1;
+		if ( $word =~ m/^!(.+)/s ) { # "!word" deletes from the stopword list
 			delete $stopwords->{$1};
 			DEBUG and print "Unlearning stopword $1\n";
 		}
