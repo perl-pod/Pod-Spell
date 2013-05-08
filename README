@@ -8,17 +8,11 @@ SYNOPSIS
             use Pod::Spell;
             Pod::Spell->new->parse_from_file( 'File.pm' );
 
-            Pod::Spell->new->parse_from_filehandle( $fh );
+            Pod::Spell->new->parse_from_filehandle( $infile, $outfile );
 
     Also look at podspell
 
             % perl -MPod::Spell -e "Pod::Spell->new->parse_from_file(shift)" Thing.pm |spell |fmt
-
-    or:
-
-            % perl -MPod::Spell -e "Pod::Spell->new->parse_from_filehandle"
-
-    ...which takes POD on STDIN and sends formatted text to STDOUT
 
     ...or instead of piping to spell or "ispell", use ">temp.txt", and open
     temp.txt in your word processor for spell-checking.

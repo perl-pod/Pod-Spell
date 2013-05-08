@@ -150,31 +150,28 @@ sub command {    ## no critic ( Subroutines::RequireArgUnpacking )
 
 #--------------------------------------------------------------------------
 
-sub interior_sequence {    ## no critic ( Subroutines::RequireFinalReturn )
-	my $self    = shift;
-	my $command = shift;
+sub interior_sequence { ## no critic ( Subroutines::RequireFinalReturn )
+	my ( $self, $command, $seq_arg, $pod_seq ) = @_;
 
 	return '' if $command eq 'X' or $command eq 'Z';
 
-	local $_ = shift;
-
 	# Expand escapes into the actual character now, carping if invalid.
 	if ( $command eq 'E' ) {
-		my $it = e2char($_);
+		my $it = e2char( $seq_arg );
 		if ( defined $it ) {
 			return $it;
 		}
 		else {
-			carp "Unknown escape: E<$_>";
-			return "E<$_>";
+			carp "Unknown escape: E<$seq_arg>";
+			return "E<$seq_arg>";
 		}
 	}
 
 	# For all the other sequences, empty content produces no output.
-	return if $_ eq '';
+	return if $seq_arg eq '';
 
 	if ( $command eq 'B' or $command eq 'I' or $command eq 'S' ) {
-		$_;
+		$seq_arg;
 	}
 	elsif ( $command eq 'C' or $command eq 'F' ) {
 
@@ -183,7 +180,7 @@ sub interior_sequence {    ## no critic ( Subroutines::RequireFinalReturn )
 		$out .= ' ' if s/^\s+//s;
 		my $append;
 		$append = 1 if s/\s+$//s;
-		$out .= '_' if length $_;
+		$out .= '_' if length $seq_arg;
 
 		# which, if joined to another word, will set off the Perl-token alarm
 		$out .= ' ' if $append;
@@ -194,7 +191,7 @@ sub interior_sequence {    ## no critic ( Subroutines::RequireFinalReturn )
 		'';
 	}
 	else {
-		carp "Unknown sequence $command<$_>";
+		carp "Unknown sequence $command<$seq_arg>";
 	}
 }
 
@@ -281,17 +278,11 @@ version 1.03
 	use Pod::Spell;
 	Pod::Spell->new->parse_from_file( 'File.pm' );
 
-	Pod::Spell->new->parse_from_filehandle( $fh );
+	Pod::Spell->new->parse_from_filehandle( $infile, $outfile );
 
 Also look at L<podspell>
 
 	% perl -MPod::Spell -e "Pod::Spell->new->parse_from_file(shift)" Thing.pm |spell |fmt
-
-or:
-
-	% perl -MPod::Spell -e "Pod::Spell->new->parse_from_filehandle"
-
-...which takes POD on STDIN and sends formatted text to STDOUT
 
 ...or instead of piping to spell or C<ispell>, use C<E<gt>temp.txt>, and open
 F<temp.txt> in your word processor for spell-checking.
