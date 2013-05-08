@@ -56,10 +56,10 @@ sub _is_debug {
 }
 
 sub _get_stopwords_from {
-	my ( $self, $arg ) = @_;
+	my ( $self, $text ) = @_;
 	my $stopwords = $self->{'spell_stopwords'};
 
-	while ( $arg =~ m<(\S+)>g ) {
+	while ( $text =~ m<(\S+)>g ) {
 		my $word = $1;
 		if ( $word =~ m/^!(.+)/s ) { # "!word" deletes from the stopword list
 			delete $stopwords->{$1};
