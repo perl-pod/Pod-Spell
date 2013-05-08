@@ -1,6 +1,7 @@
 use strict;
 use warnings;
-use Test::Most;
+use Test::More;
+use Test::Deep;
 use File::Temp;
 
 use Pod::Spell;
@@ -22,12 +23,7 @@ is -s $podfile, 123,	'podfile size';
 open($pod, '<', $podfile    ) || die "Can't read-open temp file '$podfile': $!";
 open(my $txt, '>', $textfile) || die "Can't write-open temp file '$textfile': $!";
 
-my $p;
-lives_ok {
-	$p = Pod::Spell->new;
-} 'created parser object';
-
-isa_ok( $p, 'Pod::Spell' );
+my $p = new_ok 'Pod::Spell';
 
 $p->parse_from_filehandle( $pod, $txt );
 
