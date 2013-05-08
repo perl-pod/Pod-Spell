@@ -9,11 +9,6 @@ use base 'Pod::Parser';
 
 use constant MAXWORDLENGTH => 50; ## no critic ( ProhibitConstantPragma )
 
-BEGIN {
-	*DEBUG = sub () { 0 }
-	  unless defined &DEBUG;
-}
-
 use Pod::Wordlist;
 use Pod::Escapes ('e2char');
 use Text::Wrap   ('wrap');
@@ -139,7 +134,7 @@ sub command { ## no critic ( ArgUnpacking)
 		if ( $text =~ s/^\s*(\:?)stopwords\s*(.*)//s ) {
 			my $para = $2;
 			$para = $self->interpolate($para) if $1;
-			DEBUG > 1 and print "Stopword para: <$2>\n";
+			print "Stopword para: <$2>\n" if $self->_is_debug;
 			$self->_get_stopwords_from($para);
 		}
 	}
@@ -215,7 +210,7 @@ sub _treat_words {    ## no critic ( Subroutines::RequireArgUnpacking )
 	my $self = shift;
 
 	# Count the things in $_[0]
-	DEBUG > 1 and print "Content: <", $_[0], ">\n";
+	print "Content: <", $_[0], ">\n" if $self->_is_debug;
 
 	my $stopwords = $self->{'spell_stopwords'};
 	my $word;
@@ -246,13 +241,14 @@ sub _treat_words {    ## no critic ( Subroutines::RequireArgUnpacking )
 			# or contains anything strange
 		  )
 		{
-			DEBUG and print "rejecting {$word}\n" unless $word eq '_';
+			print "rejecting {$word}\n" if $self->_is_debug && $word ne '_';
 			next;
 		}
 		else {
 			if ( exists $stopwords->{$word} or exists $stopwords->{ lc $word } )
 			{
-				DEBUG and print " [Rejecting \"$word\" as a stopword]\n";
+				print " [Rejecting \"$word\" as a stopword]\n"
+					if $self->_is_debug;
 			}
 			else {
 				$out .= "$leading$word$trailing ";
