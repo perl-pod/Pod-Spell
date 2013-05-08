@@ -2,7 +2,6 @@ use strict;
 use warnings;
 use Test::More;
 use Test::Deep;
-use File::Temp;
 
 use Pod::Spell;
 use Pod::Wordlist;

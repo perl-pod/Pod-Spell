@@ -81,6 +81,8 @@ sub _get_stopwords_from {
 
 sub textblock {
 	my ( $self, $paragraph ) = @_;
+		use DDP;
+		p $self->{region};
 	if ( @{ $self->{'region'} } ) {
 
 		my $last ## no critic ( ProhibitAmbiguousNames )

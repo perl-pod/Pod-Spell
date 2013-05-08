@@ -38,6 +38,7 @@
       "runtime" : {
          "requires" : {
             "Carp" : "0",
+            "DDP" : "0",
             "Pod::Escapes" : "0",
             "Pod::Parser" : "0",
             "Text::Wrap" : "0",
