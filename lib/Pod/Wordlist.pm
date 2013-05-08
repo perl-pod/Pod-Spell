@@ -5,7 +5,12 @@ use warnings;
 # VERSION
 
 our %Wordlist; ## no critic ( Variables::ProhibitPackageVars )
-while(<Pod::Wordlist::DATA>) { chomp($_); $Wordlist{$_} = 1 if m/\S/; }
+
+while ( <DATA> ) {
+	chomp( $_ );
+	$Wordlist{$_} = 1;
+}
+
 1;
 
 # ABSTRACT: English words that come up in Perl documentation
