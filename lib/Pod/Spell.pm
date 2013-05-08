@@ -62,6 +62,7 @@ sub _get_stopwords_from {
 	while ( $text =~ m<(\S+)>g ) {
 		my $word = $1;
 		if ( $word =~ m/^!(.+)/s ) { # "!word" deletes from the stopword list
+			# different $1 from above
 			delete $stopwords->{$1};
 			print "Unlearning stopword $word\n" if $self->_is_debug;
 		}
@@ -152,9 +153,6 @@ sub command { ## no critic ( ArgUnpacking)
 		$self->_treat_words( $self->interpolate(shift) );
 
 		#print $out_fh "\n";
-	}
-	else {
-		# no-op
 	}
 	return;
 }
