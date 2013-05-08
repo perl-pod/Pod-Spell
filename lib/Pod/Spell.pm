@@ -106,16 +106,16 @@ sub textblock {
 }
 
 sub command {    ## no critic ( Subroutines::RequireArgUnpacking )
-	my $self    = shift;
-	my $command = shift;
-	return if $command eq 'pod';
+	my ( $self, $cmd, $text, $line_num, $pod_para ) = @_;
 
-	if ( $command eq 'begin' )
-	{            ## no critic ( ControlStructures::ProhibitCascadingIfElse )
+	return if $cmd eq 'pod';
+
+	if ( $cmd eq 'begin' )
+	{  ## no critic ( ControlStructures::ProhibitCascadingIfElse )
 		my $region_name;
 
 		#print "BEGIN <$_[0]>\n";
-		if ( shift(@_) =~ m/^\s*(\S+)/s ) {
+		if ( $text =~ m/^\s*(\S+)/s ) {
 			$region_name = $1;
 		}
 		else {
@@ -126,12 +126,12 @@ sub command {    ## no critic ( Subroutines::RequireArgUnpacking )
 		push @{ $self->{'region'} }, $region_name;
 
 	}
-	elsif ( $command eq 'end' ) {
+	elsif ( $cmd eq 'end' ) {
 		pop @{ $self->{'region'} };    # doesn't bother to check
 
 	}
-	elsif ( $command eq 'for' ) {
-		if ( $_[0] =~ s/^\s*(\:?)stopwords\s*(.*)//s ) {
+	elsif ( $cmd eq 'for' ) {
+		if ( $text =~ s/^\s*(\:?)stopwords\s*(.*)//s ) {
 			my $para = $2;
 			$para = $self->interpolate($para) if $1;
 			DEBUG > 1 and print "Stopword para: <$2>\n";
@@ -141,21 +141,17 @@ sub command {    ## no critic ( Subroutines::RequireArgUnpacking )
 	elsif ( @{ $self->{'region'} } ) {    # TODO: accept POD formatting
 		                                  # ignore
 	}
-	elsif ($command eq 'head1'
-		or $command eq 'head2'
-		or $command eq 'head2'
-		or $command eq 'head3'
-		or $command eq 'item' )
+	elsif ($cmd eq 'head1'
+		or $cmd eq 'head2'
+		or $cmd eq 'head2'
+		or $cmd eq 'head3'
+		or $cmd eq 'item' )
 	{
 		my $out_fh = $self->output_handle();
 		print $out_fh "\n";
 		$self->_treat_words( $self->interpolate(shift) );
+	}
 
-		#print $out_fh "\n";
-	}
-	else {
-		# no-op
-	}
 	return;
 }
 
