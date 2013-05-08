@@ -154,9 +154,6 @@ sub command { ## no critic ( ArgUnpacking)
 
 		#print $out_fh "\n";
 	}
-	else {
-		# no-op
-	}
 	return;
 }
 
