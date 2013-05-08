@@ -38,7 +38,7 @@ sub verbatim { return ''; } # totally ignore verbatim sections
 
 #----------------------------------------------------------------------
 
-sub _get_stopwords_from { ## no critic ( Subroutines::RequireArgUnpacking )
+sub _get_stopwords_from {
   my ( $self, $arg ) = @_;
   my $stopwords = $self->{'spell_stopwords'};
 
