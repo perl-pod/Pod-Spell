@@ -30,20 +30,31 @@ use Carp;
 #
 
 sub new {
-	my $x   = shift;
-	my $new = $x->SUPER::new(@_);
+	my ( $class, %args ) = @_;
+
+	my $new = $class->SUPER::new( %args );
+
 	$new->{'spell_stopwords'} = {};
 
 	$new->{'spell_stopwords'}
 		= \%Pod::Wordlist::Wordlist; ## no critic ( ProhibitPackageVars )
 
 	$new->{'region'} = [];
+
+	$new->{debug} = $args{debug};
+
 	return $new;
 }
 
 sub verbatim { return ''; }    # totally ignore verbatim sections
 
 #----------------------------------------------------------------------
+
+sub _is_debug {
+	my $self = shift;
+
+	return $self->{debug} ? 1 : 0;
+}
 
 sub _get_stopwords_from {
 	my ( $self, $arg ) = @_;
@@ -53,11 +64,11 @@ sub _get_stopwords_from {
 		my $word = $1;
 		if ( $word =~ m/^!(.+)/s ) { # "!word" deletes from the stopword list
 			delete $stopwords->{$1};
-			DEBUG and print "Unlearning stopword $1\n";
+			print "Unlearning stopword $word\n" if $self->_is_debug;
 		}
 		else {
 			$stopwords->{$1} = 1;
-			DEBUG and print "Learning stopword $1\n";
+			print "Learning stopword $1\n" if $self->_is_debug;
 		}
 	}
 	return;
