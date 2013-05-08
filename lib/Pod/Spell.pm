@@ -415,8 +415,6 @@ Run it through podchecker again just for good measure.
 
 =method verbatim
 
-=method DEBUG
-
 =head1 SEE ALSO
 
 L<Pod::Wordlist|Pod::Wordlist>
