@@ -28,9 +28,6 @@ private lexicon.
 
 =head1 CONTRIBUTING
 
-You are welcome to send me your wordlists too, for possible incorporation
-into this wordlist.  I can take them only in ASCII.
-
 Note that the scope of this file is only English, specifically American
 English.  (But you may find in useful to incorporate into your own
 lexicons, even if they are for other dialects/languages.)
