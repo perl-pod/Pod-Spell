@@ -5,7 +5,7 @@ use warnings;
 our $VERSION = '1.03'; # VERSION
 
 our %Wordlist; ## no critic ( Variables::ProhibitPackageVars )
-while ( <Pod::Wordlist::DATA> ) {
+while ( <DATA> ) {
 	chomp( $_ );
 	$Wordlist{$_} = 1;
 }
