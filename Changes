@@ -1,6 +1,8 @@
 Revision history {{$dist->name}}
 
 {{$NEXT}}
+
+1.02      2013-05-07
 	- convert to dzil and adopt
 
 1.01	2001-10-27
