@@ -21,7 +21,15 @@ print $podfile "\n=head1 TEST undef\n"
 # reread from beginning
 $podfile->seek( 0, 0 );
 
-is -s $podfile, 123,	'podfile size';
+my $p_lines = 0;
+while( $podfile->getline ) {
+	$p_lines++;
+}
+
+# reread from beginning
+$podfile->seek( 0, 0 );
+
+is $p_lines, 11, 'line count';
 
 my $p = new_ok 'Pod::Spell' => [ debug => 1 ];
 
@@ -30,7 +38,12 @@ $p->parse_from_filehandle( $podfile, $textfile );
 # reread from beginning
 $textfile->seek( 0, 0 );
 
-is -s $textfile, 26,	'textfile size';
+my $t_lines = 0;
+while( $textfile->getline ) {
+	$t_lines++;
+}
+
+is $t_lines, 5, 'textfile lines';
 
 # reread from beginning
 $textfile->seek( 0, 0 );
