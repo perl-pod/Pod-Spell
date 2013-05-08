@@ -246,13 +246,14 @@ sub _treat_words {    ## no critic ( Subroutines::RequireArgUnpacking )
 			# or contains anything strange
 		  )
 		{
-			DEBUG and print "rejecting {$word}\n" unless $word eq '_';
+			print "rejecting {$word}\n" if $self->_is_debug && $word ne '_';
 			next;
 		}
 		else {
 			if ( exists $stopwords->{$word} or exists $stopwords->{ lc $word } )
 			{
-				DEBUG and print " [Rejecting \"$word\" as a stopword]\n";
+				print " [Rejecting \"$word\" as a stopword]\n"
+					if $self->_is_debug;
 			}
 			else {
 				$out .= "$leading$word$trailing ";
