@@ -106,9 +106,7 @@ sub textblock {
 }
 
 sub command {    ## no critic ( Subroutines::RequireArgUnpacking )
-	my $self     = shift;
-	my $command  = shift;
-	my ( $text ) = @_;
+	my ( $self, $command, $text ) = @_;
 
 	return if $command eq 'pod';
 
