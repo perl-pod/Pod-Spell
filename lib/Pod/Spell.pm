@@ -105,7 +105,7 @@ sub textblock {
 	return;
 }
 
-sub command {    ## no critic ( Subroutines::RequireArgUnpacking )
+sub command {
 	my ( $self, $cmd, $text, $line_num, $pod_para ) = @_;
 
 	return if $cmd eq 'pod';
