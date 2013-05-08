@@ -81,22 +81,23 @@ sub _get_stopwords_from {
 
 sub textblock {
 	my ( $self, $paragraph ) = @_;
+
 	if ( @{ $self->{'region'} } ) {
 
-		my $last ## no critic ( ProhibitAmbiguousNames )
+		my $last_region ## no critic ( ProhibitAmbiguousNames )
 			= $self->{'region'}[-1];
 
-		if ( $last eq 'stopwords' ) {
+		if ( $last_region eq 'stopwords' ) {
 			$self->_get_stopwords_from($paragraph);
 			return;
 		}
-		elsif ( $last eq ':stopwords' ) {
+		elsif ( $last_region eq ':stopwords' ) {
 			$self->_get_stopwords_from( $self->interpolate($paragraph) );
 
 			# I guess that'd work.
 			return;
 		}
-		elsif ( $last !~ m/^:/s ) {
+		elsif ( $last_region !~ m/^:/s ) {
 			printf "Ignoring a textblock because inside a %s region.\n",
 				$self->{'region'}[-1] if $self->_is_debug;
 			return;
