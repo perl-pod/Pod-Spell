@@ -1,4 +1,4 @@
-package Pod::Wordlist;   # see Wordlist.pod for info
+package Pod::Wordlist;
 use strict;
 use warnings;
 
