@@ -37,11 +37,12 @@ sub verbatim { return ''; } # totally ignore verbatim sections
 
 #----------------------------------------------------------------------
 
-sub _get_stopwords_from { ## no critic ( Subroutines::RequireArgUnpacking )
-  my $stopwords = $_[0]{'spell_stopwords'};
+sub _get_stopwords_from {
+  my ( $self, $arg ) = @_;
+  my $stopwords = $self->{'spell_stopwords'};
 
   my $word;
-  while($_[1] =~ m<(\S+)>g) {
+  while( $arg =~ m<(\S+)>g) {
     $word = $1;
     if($word =~ m/^!(.+)/s) {  # "!word" deletes from the stopword list
       delete $stopwords->{$1};
@@ -52,7 +53,6 @@ sub _get_stopwords_from { ## no critic ( Subroutines::RequireArgUnpacking )
     }
   }
   return;
-
 }
 
 #----------------------------------------------------------------------
