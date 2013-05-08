@@ -23,7 +23,7 @@ $podfile->seek( 0, 0 );
 
 is -s $podfile, 123,	'podfile size';
 
-my $p = new_ok 'Pod::Spell';
+my $p = new_ok 'Pod::Spell' => [ debug => 1 ];
 
 $p->parse_from_filehandle( $podfile, $textfile );
 
