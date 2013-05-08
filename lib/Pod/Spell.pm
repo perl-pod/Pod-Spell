@@ -196,7 +196,6 @@ sub interior_sequence {    ## no critic ( Subroutines::RequireFinalReturn )
 	else {
 		carp "Unknown sequence $command<$_>";
 	}
-	return;
 }
 
 #==========================================================================
@@ -279,13 +278,20 @@ version 1.03
 
 =head1 SYNOPSIS
 
-  % podspell Thing.pm | ispell
- or if you don't have a podspell:
-  % perl -MPod::Spell -e "Pod::Spell->new->parse_from_file(shift)" Thing.pm |spell |fmt
+	use Pod::Spell;
+	Pod::Spell->new->parse_from_file( 'File.pm' );
 
- or:
-  % perl -MPod::Spell -e "Pod::Spell->new->parse_from_filehandle"
-  ...which takes POD on STDIN and sends formatted text to STDOUT
+	Pod::Spell->new->parse_from_filehandle( $fh );
+
+Also look at L<podspell>
+
+	% perl -MPod::Spell -e "Pod::Spell->new->parse_from_file(shift)" Thing.pm |spell |fmt
+
+or:
+
+	% perl -MPod::Spell -e "Pod::Spell->new->parse_from_filehandle"
+
+...which takes POD on STDIN and sends formatted text to STDOUT
 
 ...or instead of piping to spell or C<ispell>, use C<E<gt>temp.txt>, and open
 F<temp.txt> in your word processor for spell-checking.

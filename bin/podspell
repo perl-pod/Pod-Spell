@@ -28,6 +28,10 @@ podspell - pod spell checking command line interface
 
 version 1.03
 
+=head1 SYNOPSIS
+
+	% podspell Thing.pm | ispell
+
 =head1 BUGS
 
 Please report any bugs or feature requests on the bugtracker website
