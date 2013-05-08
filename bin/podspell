@@ -15,3 +15,7 @@ if(@ARGV) {  # iterate over files, sending to STDOUT
 
 # ABSTRACT: pod spell checking command line interface
 # PODNAME: podspell
+
+=head1 SYNOPSIS
+
+	% podspell Thing.pm | ispell
