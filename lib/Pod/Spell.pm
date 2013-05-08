@@ -196,6 +196,7 @@ sub interior_sequence {    ## no critic ( Subroutines::RequireFinalReturn )
 	else {
 		carp "Unknown sequence $command<$_>";
 	}
+	return;
 }
 
 #==========================================================================
