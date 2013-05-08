@@ -105,7 +105,8 @@ sub textblock {
 	return;
 }
 
-sub command {
+sub command { ## no critic ( ArgUnpacking)
+	# why do I have to shift these?
 	my ( $self, $command, $text ) = ( shift, shift, @_ );
 
 	return if $command eq 'pod';
