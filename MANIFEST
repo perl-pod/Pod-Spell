@@ -8,7 +8,6 @@ Makefile.PL
 README
 bin/podspell
 lib/Pod/Spell.pm
-lib/Pod/Spell.pm.bak
 lib/Pod/Wordlist.pm
 perlcritic.rc
 t/00-compile.t
@@ -17,6 +16,7 @@ t/author-critic.t
 t/author-pod-spell.t
 t/author-test-eol.t
 t/basic.t
+t/debug.t
 t/release-cpan-changes.t
 t/release-dist-manifest.t
 t/release-distmeta.t
