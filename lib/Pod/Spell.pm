@@ -62,11 +62,11 @@ sub _get_stopwords_from {
 	while ( $text =~ m<(\S+)>g ) {
 		my $word = $1;
 		if ( $word =~ m/^!(.+)/s ) { # "!word" deletes from the stopword list
-			delete $stopwords->{$word};
+			delete $stopwords->{$1};
 			print "Unlearning stopword $word\n" if $self->_is_debug;
 		}
 		else {
-			$stopwords->{$1} = 1;
+			$stopwords->{$word} = 1;
 			print "Learning stopword $1\n" if $self->_is_debug;
 		}
 	}
