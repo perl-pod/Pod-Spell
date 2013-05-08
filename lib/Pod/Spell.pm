@@ -106,9 +106,10 @@ sub textblock {
 }
 
 sub command {    ## no critic ( Subroutines::RequireArgUnpacking )
-	my $self    = shift;
-	my $command = shift;
-	my $text    = $_[0];
+	my $self     = shift;
+	my $command  = shift;
+	my ( $text ) = @_;
+
 	return if $command eq 'pod';
 
 	if ( $command eq 'begin' )
@@ -116,7 +117,7 @@ sub command {    ## no critic ( Subroutines::RequireArgUnpacking )
 		my $region_name;
 
 		#print "BEGIN <$_[0]>\n";
-		if ( shift(@_) =~ m/^\s*(\S+)/s ) {
+		if ( $text =~ m/^\s*(\S+)/s ) {
 			$region_name = $1;
 		}
 		else {
