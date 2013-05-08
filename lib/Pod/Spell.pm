@@ -39,7 +39,8 @@ sub verbatim { return ''; } # totally ignore verbatim sections
 #----------------------------------------------------------------------
 
 sub _get_stopwords_from { ## no critic ( Subroutines::RequireArgUnpacking )
-  my $stopwords = $_[0]{'spell_stopwords'};
+  my $self = shift;
+  my $stopwords = $self->{'spell_stopwords'};
 
   my $word;
   while($_[1] =~ m<(\S+)>g) {
