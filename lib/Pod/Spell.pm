@@ -4,14 +4,11 @@ use warnings;
 
 our $VERSION = '1.03'; # VERSION
 
+our $DEBUG = 0; ## temporary don't use
+
 use base 'Pod::Parser';
 
 use constant MAXWORDLENGTH => 50; ## no critic ( ProhibitConstantPragma )
-
-BEGIN {
-	*DEBUG = sub () { 0 }
-	  unless defined &DEBUG;
-}
 
 use Pod::Wordlist;
 use Pod::Escapes ('e2char');
@@ -53,11 +50,11 @@ sub _get_stopwords_from {
 		my $word = $1;
 		if ( $word =~ m/^!(.+)/s ) { # "!word" deletes from the stopword list
 			delete $stopwords->{$1};
-			DEBUG and print "Unlearning stopword $1\n";
+			print "Unlearning stopword $word\n" if $DEBUG;
 		}
 		else {
 			$stopwords->{$1} = 1;
-			DEBUG and print "Learning stopword $1\n";
+			print "Learning stopword $word\n" if $DEBUG;
 		}
 	}
 	return;
@@ -83,9 +80,8 @@ sub textblock {
 			return;
 		}
 		elsif ( $last !~ m/^:/s ) {
-			DEBUG
-			  and printf "Ignoring a textblock because inside a %s region.\n",
-			  $self->{'region'}[-1];
+			printf "Ignoring a textblock because inside a %s region.\n",
+				$self->{'region'}[-1] if $DEBUG;
 			return;
 		}
 
@@ -96,8 +92,8 @@ sub textblock {
 }
 
 sub command {    ## no critic ( Subroutines::RequireArgUnpacking )
-	my ( $self, $command, $paragraph, $line_num ) = @_;
-
+	my $self    = shift;
+	my $command = shift;
 	return if $command eq 'pod';
 
 	if ( $command eq 'begin' )
@@ -105,13 +101,13 @@ sub command {    ## no critic ( Subroutines::RequireArgUnpacking )
 		my $region_name;
 
 		#print "BEGIN <$_[0]>\n";
-		if ( $paragraph =~ m/^\s*(\S+)/s ) {
+		if ( shift(@_) =~ m/^\s*(\S+)/s ) {
 			$region_name = $1;
 		}
 		else {
 			$region_name = 'WHATNAME';
 		}
-		DEBUG and print "~~~~ Beginning region \"$region_name\" ~~~~\n";
+		print "~~~~ Beginning region \"$region_name\" ~~~~\n" if $DEBUG;
 		push @{ $self->{'region'} }, $region_name;
 
 	}
@@ -120,10 +116,10 @@ sub command {    ## no critic ( Subroutines::RequireArgUnpacking )
 
 	}
 	elsif ( $command eq 'for' ) {
-		if ( $line_num =~ s/^\s*(\:?)stopwords\s*(.*)//s ) {
+		if ( $_[0] =~ s/^\s*(\:?)stopwords\s*(.*)//s ) {
 			my $para = $2;
 			$para = $self->interpolate($para) if $1;
-			DEBUG > 1 and print "Stopword para: <$2>\n";
+			print "Stopword para: <$2>\n" if $DEBUG > 1;
 			$self->_get_stopwords_from($para);
 		}
 	}
@@ -202,7 +198,7 @@ sub _treat_words {    ## no critic ( Subroutines::RequireArgUnpacking )
 	my $p = shift;
 
 	# Count the things in $_[0]
-	DEBUG > 1 and print "Content: <", $_[0], ">\n";
+	$DEBUG > 1 and print "Content: <", $_[0], ">\n";
 
 	my $stopwords = $p->{'spell_stopwords'};
 	my $word;
@@ -233,13 +229,13 @@ sub _treat_words {    ## no critic ( Subroutines::RequireArgUnpacking )
 			# or contains anything strange
 		  )
 		{
-			DEBUG and print "rejecting {$word}\n" unless $word eq '_';
+			print "rejecting {$word}\n" unless $word eq '_' if $DEBUG;
 			next;
 		}
 		else {
 			if ( exists $stopwords->{$word} or exists $stopwords->{ lc $word } )
 			{
-				DEBUG and print " [Rejecting \"$word\" as a stopword]\n";
+				print " [Rejecting \"$word\" as a stopword]\n" if $DEBUG;
 			}
 			else {
 				$out .= "$leading$word$trailing ";
@@ -322,8 +318,6 @@ C<"=for stopwords"> / C<"=for :stopwords"> region(s) in a document.
 =head2 textblock
 
 =head2 verbatim
-
-=head2 DEBUG
 
 =head1 ADDING STOPWORDS
 
