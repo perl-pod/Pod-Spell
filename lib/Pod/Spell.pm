@@ -71,7 +71,7 @@ sub textblock {
 	if ( @{ $self->{'region'} } ) {
 
 		my $last ## no critic ( ProhibitAmbiguousNames )
-			= $self->{'region'}[-1]; 
+			= $self->{'region'}[-1];
 
 		if ( $last eq 'stopwords' ) {
 			$self->_get_stopwords_from($paragraph);
