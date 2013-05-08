@@ -2,6 +2,7 @@ Revision history Pod-Spell
 
 1.03      2013-05-08
 	- update copyright info
+	- require 5.8 (let me know if this is a problem for you)
 	- improve tests
 	- hopefully fix failing test on windows
 	- improve code readability
