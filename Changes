@@ -1,6 +1,7 @@
 Revision history {{$dist->name}}
 
 {{$NEXT}}
+	- convert to dzil and adopt
 
 1.01	2001-10-27
 	- first release version ( SBURKE )
