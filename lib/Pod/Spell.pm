@@ -269,17 +269,11 @@ sub _treat_words {    ## no critic ( Subroutines::RequireArgUnpacking )
 	use Pod::Spell;
 	Pod::Spell->new->parse_from_file( 'File.pm' );
 
-	Pod::Spell->new->parse_from_filehandle( $fh );
+	Pod::Spell->new->parse_from_filehandle( $infile, $outfile );
 
 Also look at L<podspell>
 
 	% perl -MPod::Spell -e "Pod::Spell->new->parse_from_file(shift)" Thing.pm |spell |fmt
-
-or:
-
-	% perl -MPod::Spell -e "Pod::Spell->new->parse_from_filehandle"
-
-...which takes POD on STDIN and sends formatted text to STDOUT
 
 ...or instead of piping to spell or C<ispell>, use C<E<gt>temp.txt>, and open
 F<temp.txt> in your word processor for spell-checking.
