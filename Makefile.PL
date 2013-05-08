@@ -28,7 +28,6 @@ my %WriteMakefileArgs = (
     "Text::Wrap" => 0,
     "base" => 0,
     "constant" => 0,
-    "integer" => 0,
     "locale" => 0,
     "strict" => 0,
     "warnings" => 0

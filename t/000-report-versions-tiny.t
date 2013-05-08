@@ -64,7 +64,6 @@ eval { $v .= pmver('Test::Pod::Coverage','1.08') };
 eval { $v .= pmver('Text::Wrap','any version') };
 eval { $v .= pmver('base','any version') };
 eval { $v .= pmver('constant','any version') };
-eval { $v .= pmver('integer','any version') };
 eval { $v .= pmver('locale','any version') };
 eval { $v .= pmver('strict','any version') };
 eval { $v .= pmver('version','0.9901') };

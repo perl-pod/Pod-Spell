@@ -20,7 +20,6 @@ use Text::Wrap   ('wrap');
 # We don't need a very new version of Text::Wrap, altho they are nicer.
 $Text::Wrap::huge = 'overflow';  ## no critic ( Variables::ProhibitPackageVars )
 
-use integer;
 use locale;                      # so our uc/lc works right
 use Carp;
 
