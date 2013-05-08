@@ -23,6 +23,7 @@ my %WriteMakefileArgs = (
   "NAME" => "Pod::Spell",
   "PREREQ_PM" => {
     "Carp" => 0,
+    "DDP" => 0,
     "Pod::Escapes" => 0,
     "Pod::Parser" => 0,
     "Text::Wrap" => 0,

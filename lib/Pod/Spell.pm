@@ -49,6 +49,9 @@ sub _get_stopwords_from {
 	my ( $self, $arg ) = @_;
 	my $stopwords = $self->{'spell_stopwords'};
 
+	use DDP;
+	p $arg;
+
 	my $word;
 	while ( $arg =~ m<(\S+)>g ) {
 		$word = $1;
