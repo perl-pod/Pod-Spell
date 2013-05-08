@@ -96,8 +96,8 @@ sub textblock {
 }
 
 sub command {    ## no critic ( Subroutines::RequireArgUnpacking )
-	my $self    = shift;
-	my $command = shift;
+	my ( $self, $command, $paragraph, $line_num ) = @_;
+
 	return if $command eq 'pod';
 
 	if ( $command eq 'begin' )
@@ -105,7 +105,7 @@ sub command {    ## no critic ( Subroutines::RequireArgUnpacking )
 		my $region_name;
 
 		#print "BEGIN <$_[0]>\n";
-		if ( shift(@_) =~ m/^\s*(\S+)/s ) {
+		if ( $paragraph =~ m/^\s*(\S+)/s ) {
 			$region_name = $1;
 		}
 		else {
@@ -120,7 +120,7 @@ sub command {    ## no critic ( Subroutines::RequireArgUnpacking )
 
 	}
 	elsif ( $command eq 'for' ) {
-		if ( $_[0] =~ s/^\s*(\:?)stopwords\s*(.*)//s ) {
+		if ( $line_num =~ s/^\s*(\:?)stopwords\s*(.*)//s ) {
 			my $para = $2;
 			$para = $self->interpolate($para) if $1;
 			DEBUG > 1 and print "Stopword para: <$2>\n";
