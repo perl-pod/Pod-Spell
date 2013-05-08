@@ -1,0 +1,61 @@
+#!/usr/bin/env perl
+use strict;
+use warnings;
+use Pod::Spell;
+
+our $VERSION = '1.03'; # VERSION
+
+if(@ARGV) {  # iterate over files, sending to STDOUT
+  foreach my $x (@ARGV) {
+    Pod::Spell->new->parse_from_file($x, '-');
+  }
+} else {     # take from STDIN, send to STDOUT
+  Pod::Spell->new->parse_from_filehandle();
+}
+
+# ABSTRACT: pod spell checking command line interface
+# PODNAME: podspell
+
+__END__
+
+=pod
+
+=head1 NAME
+
+podspell - pod spell checking command line interface
+
+=head1 VERSION
+
+version 1.03
+
+=head1 BUGS
+
+Please report any bugs or feature requests on the bugtracker website
+https://github.com/xenoterracide/pod-spell/issues
+
+When submitting a bug or request, please include a test-file or a
+patch to an existing test-file that illustrates the bug or desired
+feature.
+
+=head1 AUTHORS
+
+=over 4
+
+=item *
+
+Sean M. Burke <sburke@cpan.org>
+
+=item *
+
+Caleb Cushing <xenoterracide@gmail.com>
+
+=back
+
+=head1 COPYRIGHT AND LICENSE
+
+This software is copyright (c) 2013 by Sean M. Burke.
+
+This is free software; you can redistribute it and/or modify it under
+the same terms as the Perl 5 programming language system itself.
+
+=cut
