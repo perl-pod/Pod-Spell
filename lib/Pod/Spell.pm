@@ -33,8 +33,10 @@ sub new {
 	my $x   = shift;
 	my $new = $x->SUPER::new(@_);
 	$new->{'spell_stopwords'} = {};
-	@{ $new->{'spell_stopwords'} }{ keys %Pod::Wordlist::Wordlist } =
-	  ();    ## no critic ( Variables::ProhibitPackageVars )
+
+	$new->{'spell_stopwords'}
+		= \%Pod::Wordlist::Wordlist; ## no critic ( ProhibitPackageVars )
+
 	$new->{'region'} = [];
 	return $new;
 }
@@ -67,8 +69,10 @@ sub _get_stopwords_from {
 sub textblock {
 	my ( $self, $paragraph ) = @_;
 	if ( @{ $self->{'region'} } ) {
-		my $last = $self->{'region'}[-1]
-		  ;    ## no critic ( NamingConventions::ProhibitAmbiguousNames )
+
+		my $last ## no critic ( ProhibitAmbiguousNames )
+			= $self->{'region'}[-1];
+
 		if ( $last eq 'stopwords' ) {
 			$self->_get_stopwords_from($paragraph);
 			return;
