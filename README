@@ -45,7 +45,6 @@ METHODS
   interior_sequence
   textblock
   verbatim
-  DEBUG
 ADDING STOPWORDS
     You can add stopwords on a per-document basis with "=for stopwords" /
     "=for :stopwords" regions, like so:
