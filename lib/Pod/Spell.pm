@@ -69,8 +69,10 @@ sub _get_stopwords_from {
 sub textblock {
 	my ( $self, $paragraph ) = @_;
 	if ( @{ $self->{'region'} } ) {
-		my $last = $self->{'region'}[-1]
-		  ;    ## no critic ( NamingConventions::ProhibitAmbiguousNames )
+
+		my $last
+			= $self->{'region'}[-1];  ## no critic ( ProhibitAmbiguousNames )
+
 		if ( $last eq 'stopwords' ) {
 			$self->_get_stopwords_from($paragraph);
 			return;
