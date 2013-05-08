@@ -7,7 +7,7 @@ our $VERSION = '1.03'; # VERSION
 our %Wordlist; ## no critic ( Variables::ProhibitPackageVars )
 
 while ( <Pod::Wordlist::DATA>) {
-	$Wordlist{$_} = 1;
+	$Wordlist{$_} = 1 if m/\S/;
 }
 
 1;
