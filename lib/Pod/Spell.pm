@@ -151,7 +151,7 @@ sub command {    ## no critic ( Subroutines::RequireArgUnpacking )
 #--------------------------------------------------------------------------
 
 sub interior_sequence { ## no critic ( Subroutines::RequireFinalReturn )
-	my ( $self, $command, $seq_arg, $pod_seq ) = @_;
+	my ( $self, $command, $seq_arg ) = @_;
 
 	return '' if $command eq 'X' or $command eq 'Z';
 
