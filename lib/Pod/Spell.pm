@@ -9,7 +9,8 @@ use base 'Pod::Parser';
 use constant MAXWORDLENGTH => 50; ## no critic ( ValuesAndExpressions::ProhibitConstantPragma )
 
 BEGIN { *DEBUG = sub () {0} unless defined &DEBUG }
-use Pod::Wordlist ();
+
+use Pod::Wordlist;
 use Pod::Escapes ('e2char');
 use Text::Wrap ('wrap');
  # We don't need a very new version of Text::Wrap, altho they are nicer.

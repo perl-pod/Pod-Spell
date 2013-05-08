@@ -1,14 +1,16 @@
-package Pod::Wordlist;   # see Wordlist.pod for info
+package Pod::Wordlist;
 use strict;
 use warnings;
 
 our $VERSION = '1.03'; # VERSION
 
 our %Wordlist; ## no critic ( Variables::ProhibitPackageVars )
+
 while ( <DATA> ) {
 	chomp( $_ );
 	$Wordlist{$_} = 1;
 }
+
 1;
 
 # ABSTRACT: English words that come up in Perl documentation

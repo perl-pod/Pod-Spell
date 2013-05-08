@@ -36,8 +36,8 @@ my %WriteMakefileArgs = (
   "TEST_REQUIRES" => {
     "File::Find" => 0,
     "File::Temp" => 0,
-    "Test::More" => "0.88",
-    "Test::Most" => 0
+    "Test::Deep" => 0,
+    "Test::More" => "0.88"
   },
   "VERSION" => "1.03",
   "test" => {
