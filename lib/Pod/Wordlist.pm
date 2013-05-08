@@ -542,7 +542,6 @@ NaN
 NaNs
 Nandor
 Napster
-Neeracher
 New
 nawk
 ncftp
@@ -750,18 +749,12 @@ rsh
 rsync
 runnable
 rvalue
-Salzenberg
-Sarathy
 Schwartzian
-Schwern
 SelfLoading
 SourceForge
 STDIN
 STDOUT
 STDERR
-Sugalski
-Sugalski's
-Sussman
 SVs
 Sx
 sbrace%s
@@ -1048,5 +1041,4 @@ xor
 YAPC's
 yacc
 yylex
-Zakharevich
 zsh
