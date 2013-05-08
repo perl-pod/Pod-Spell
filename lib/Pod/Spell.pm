@@ -4,8 +4,6 @@ use warnings;
 
 our $VERSION = '1.03'; # VERSION
 
-our $DEBUG = 0; ## temporary don't use
-
 use base 'Pod::Parser';
 
 use constant MAXWORDLENGTH => 50; ## no critic ( ProhibitConstantPragma )
@@ -27,9 +25,10 @@ use Carp;
 #
 
 sub new {
-	my $x   = shift;
-	my $new = $x->SUPER::new(@_);
+	my ( $class, %args ) = @_;
+	my $new = $x->SUPER::new(%args);
 	$new->{'spell_stopwords'} = {};
+	$new->{debug} = $args{debug};
 
 	$new->{'spell_stopwords'}
 		= \%Pod::Wordlist::Wordlist; ## no critic ( ProhibitPackageVars )
@@ -42,6 +41,12 @@ sub verbatim { return ''; }    # totally ignore verbatim sections
 
 #----------------------------------------------------------------------
 
+sub _is_debug {
+	my $self = shift;
+
+	return $self->{debug} ? 1 : 0;
+}
+
 sub _get_stopwords_from {
 	my ( $self, $arg ) = @_;
 	my $stopwords = $self->{'spell_stopwords'};
@@ -50,11 +55,11 @@ sub _get_stopwords_from {
 		my $word = $1;
 		if ( $word =~ m/^!(.+)/s ) { # "!word" deletes from the stopword list
 			delete $stopwords->{$1};
-			print "Unlearning stopword $word\n" if $DEBUG;
+			$self->_is_debug and print "Unlearning stopword $1\n";
 		}
 		else {
 			$stopwords->{$1} = 1;
-			print "Learning stopword $word\n" if $DEBUG;
+			$self->_is_debug and print "Learning stopword $1\n";
 		}
 	}
 	return;
@@ -80,8 +85,9 @@ sub textblock {
 			return;
 		}
 		elsif ( $last !~ m/^:/s ) {
-			printf "Ignoring a textblock because inside a %s region.\n",
-				$self->{'region'}[-1] if $DEBUG;
+			$self->_is_debug
+			  and printf "Ignoring a textblock because inside a %s region.\n",
+			  $self->{'region'}[-1];
 			return;
 		}
 
@@ -107,7 +113,7 @@ sub command {    ## no critic ( Subroutines::RequireArgUnpacking )
 		else {
 			$region_name = 'WHATNAME';
 		}
-		print "~~~~ Beginning region \"$region_name\" ~~~~\n" if $DEBUG;
+		$self->_is_debug and print "~~~~ Beginning region \"$region_name\" ~~~~\n";
 		push @{ $self->{'region'} }, $region_name;
 
 	}
@@ -119,7 +125,7 @@ sub command {    ## no critic ( Subroutines::RequireArgUnpacking )
 		if ( $_[0] =~ s/^\s*(\:?)stopwords\s*(.*)//s ) {
 			my $para = $2;
 			$para = $self->interpolate($para) if $1;
-			print "Stopword para: <$2>\n" if $DEBUG > 1;
+			$self->_is_debug > 1 and print "Stopword para: <$2>\n";
 			$self->_get_stopwords_from($para);
 		}
 	}
@@ -198,7 +204,7 @@ sub _treat_words {    ## no critic ( Subroutines::RequireArgUnpacking )
 	my $p = shift;
 
 	# Count the things in $_[0]
-	$DEBUG > 1 and print "Content: <", $_[0], ">\n";
+	$self->_is_debug > 1 and print "Content: <", $_[0], ">\n";
 
 	my $stopwords = $p->{'spell_stopwords'};
 	my $word;
@@ -229,13 +235,13 @@ sub _treat_words {    ## no critic ( Subroutines::RequireArgUnpacking )
 			# or contains anything strange
 		  )
 		{
-			print "rejecting {$word}\n" unless $word eq '_' if $DEBUG;
+			$self->_is_debug and print "rejecting {$word}\n" unless $word eq '_';
 			next;
 		}
 		else {
 			if ( exists $stopwords->{$word} or exists $stopwords->{ lc $word } )
 			{
-				print " [Rejecting \"$word\" as a stopword]\n" if $DEBUG;
+				$self->_is_debug and print " [Rejecting \"$word\" as a stopword]\n";
 			}
 			else {
 				$out .= "$leading$word$trailing ";
