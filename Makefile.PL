@@ -19,7 +19,7 @@ my %WriteMakefileArgs = (
   "EXE_FILES" => [
     "bin/podspell"
   ],
-  "LICENSE" => "perl",
+  "LICENSE" => "artistic_2",
   "NAME" => "Pod::Spell",
   "PREREQ_PM" => {
     "Carp" => 0,
