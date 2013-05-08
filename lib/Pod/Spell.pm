@@ -94,9 +94,8 @@ sub textblock {
 			return;
 		}
 		elsif ( $last !~ m/^:/s ) {
-			DEBUG
-			  and printf "Ignoring a textblock because inside a %s region.\n",
-			  $self->{'region'}[-1];
+			printf "Ignoring a textblock because inside a %s region.\n",
+				$self->{'region'}[-1] if $self->_is_debug;
 			return;
 		}
 
@@ -122,7 +121,8 @@ sub command {    ## no critic ( Subroutines::RequireArgUnpacking )
 		else {
 			$region_name = 'WHATNAME';
 		}
-		DEBUG and print "~~~~ Beginning region \"$region_name\" ~~~~\n";
+		print "~~~~ Beginning region \"$region_name\" ~~~~\n"
+			if $self->_is_debug;
 		push @{ $self->{'region'} }, $region_name;
 
 	}
