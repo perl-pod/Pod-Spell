@@ -6,8 +6,7 @@ use warnings;
 
 use base 'Pod::Parser';
 
-use constant MAXWORDLENGTH =>
-  50;    ## no critic ( ValuesAndExpressions::ProhibitConstantPragma )
+use constant MAXWORDLENGTH => 50; ## no critic ( ProhibitConstantPragma )
 
 BEGIN {
 	*DEBUG = sub () { 0 }
