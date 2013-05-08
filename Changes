@@ -1,6 +1,10 @@
 Revision history Pod-Spell
 
 1.03      2013-05-08
+	- improve tests
+	- hopefully fix failing test on windows
+	- improve code readability
+	- remove DEBUG for private _is_debug method
 
 1.02      2013-05-07
 	- convert to dzil and adopt
