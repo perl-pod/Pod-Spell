@@ -201,12 +201,12 @@ sub interior_sequence { ## no critic ( Subroutines::RequireFinalReturn )
 # The guts:
 
 sub _treat_words {    ## no critic ( Subroutines::RequireArgUnpacking )
-	my $p = shift;
+	my $self = shift;
 
 	# Count the things in $_[0]
 	$self->_is_debug > 1 and print "Content: <", $_[0], ">\n";
 
-	my $stopwords = $p->{'spell_stopwords'};
+	my $stopwords = $self->{'spell_stopwords'};
 	my $word;
 	$_[0] =~ tr/\xA0\xAD/ /d;
 
@@ -250,7 +250,7 @@ sub _treat_words {    ## no critic ( Subroutines::RequireArgUnpacking )
 	}
 
 	if ( length $out ) {
-		my $out_fh = $p->output_handle();
+		my $out_fh = $self->output_handle();
 		print $out_fh wrap( '', '', $out ), "\n\n";
 	}
 
