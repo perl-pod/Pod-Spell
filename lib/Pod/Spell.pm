@@ -34,7 +34,7 @@ sub new {
 	my $new = $x->SUPER::new(@_);
 	$new->{'spell_stopwords'} = {};
 
-	@{ $new->{'spell_stopwords'} }{ keys %Pod::Wordlist::Wordlist } = (); ## no critic ( Variables::ProhibitPackageVars )
+	$new->{'spell_stopwords'} = \%Pod::Wordlist::Wordlist; ## no critic ( Variables::ProhibitPackageVars )
 
 	use DDP;
 	p $new->{spell_stopwords};
