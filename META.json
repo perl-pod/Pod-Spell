@@ -44,7 +44,6 @@
             "base" : "0",
             "constant" : "0",
             "locale" : "0",
-            "perl" : "5.008",
             "strict" : "0",
             "warnings" : "0"
          }
