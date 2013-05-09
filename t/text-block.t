@@ -2,11 +2,11 @@ use strict;
 use warnings;
 use Test::More;
 use Test::Deep;
+use File::Temp;
 use Pod::Spell;
 
-my ( $file0, $file1 );
-open( my $podfile, '+<',  \$file0 );
-open( my $textfile, '+<', \$file1 );
+my $podfile = File::Temp->new;
+my $textfile = File::Temp->new;
 
 print $podfile "\n=head1 TEST undef\n"
 	. "\n=begin stopwords\n"
