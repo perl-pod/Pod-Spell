@@ -1,5 +1,7 @@
 Revision history Pod-Spell
 
+1.05      2013-06-05
+
 1.04      2013-05-08
 	- fix tests to work on older perls
 
