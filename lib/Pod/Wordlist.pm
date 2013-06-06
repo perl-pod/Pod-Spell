@@ -80,7 +80,6 @@ This is free software, licensed under:
 
 __DATA__
 Aas
-Abelson
 ACLs
 ActivePerl
 ActiveState
@@ -192,6 +191,7 @@ catfile
 ccflags
 cd
 cetera
+changelog
 charset
 chdir
 checksumming
@@ -648,6 +648,7 @@ perlbot
 perlbug
 perlcc
 perlclib
+perlcritic
 perlcompile
 perlcygwin
 perldata
@@ -866,6 +867,7 @@ spam
 specifier
 specifiers
 spellcheck
+spellchecks
 spellchecking
 sprintf
 sqrt
