@@ -29,5 +29,5 @@ Cushing
 xenoterracide
 lib
 Pod
-Spell
 Wordlist
+Spell

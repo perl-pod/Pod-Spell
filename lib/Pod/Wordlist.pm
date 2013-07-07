@@ -100,7 +100,8 @@ aliasing
 allocs
 alphabetics
 alphanumerics
-api
+API
+APIs
 arcana
 args
 arrayref
