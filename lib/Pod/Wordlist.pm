@@ -61,6 +61,8 @@ aliasing
 allocs
 alphabetics
 alphanumerics
+API
+APIs
 arcana
 args
 arrayref
@@ -593,6 +595,7 @@ Prymmer
 Psion
 parens
 passwd
+passphrase
 patchlevel
 pathconf
 peeraddr
