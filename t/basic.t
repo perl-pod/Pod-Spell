@@ -7,7 +7,9 @@ use File::Temp;
 use Pod::Spell;
 use Pod::Wordlist;
 
-is scalar( keys %Pod::Wordlist::Wordlist ), 1012, 'key count';
+# realistically we're just checking to make sure the number seems reasonable
+# and not broken
+cmp_ok scalar( keys %Pod::Wordlist::Wordlist ), '>=', 1000, 'key count';
 
 my $podfile  = File::Temp->new;
 my $textfile = File::Temp->new;

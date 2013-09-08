@@ -3,7 +3,7 @@ use 5.006;
 use strict;
 use warnings;
 
-our $VERSION = '1.05'; # VERSION
+our $VERSION = '1.06'; # VERSION
 
 use base 'Pod::Parser';
 
@@ -280,7 +280,7 @@ Pod::Spell - a formatter for spellchecking Pod
 
 =head1 VERSION
 
-version 1.05
+version 1.06
 
 =head1 SYNOPSIS
 

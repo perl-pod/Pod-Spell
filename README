@@ -2,7 +2,7 @@ NAME
     Pod::Spell - a formatter for spellchecking Pod
 
 VERSION
-    version 1.05
+    version 1.06
 
 SYNOPSIS
             use Pod::Spell;

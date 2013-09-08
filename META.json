@@ -5,7 +5,7 @@
       "Caleb Cushing <xenoterracide@gmail.com>"
    ],
    "dynamic_config" : 0,
-   "generated_by" : "Dist::Zilla version 4.300035, CPAN::Meta::Converter version 2.120921",
+   "generated_by" : "Dist::Zilla version 4.300037, CPAN::Meta::Converter version 2.132140",
    "license" : [
       "artistic_2"
    ],
@@ -30,6 +30,7 @@
             "Pod::Coverage::TrustPod" : "0",
             "Test::CPAN::Changes" : "0.19",
             "Test::CPAN::Meta" : "0",
+            "Test::Kwalitee" : "1.08",
             "Test::Pod" : "1.41",
             "Test::Pod::Coverage" : "1.08",
             "version" : "0.9901"
@@ -51,8 +52,10 @@
       },
       "test" : {
          "requires" : {
-            "File::Find" : "0",
+            "File::Spec" : "0",
             "File::Temp" : "0",
+            "IO::Handle" : "0",
+            "IPC::Open3" : "0",
             "Test::Deep" : "0",
             "Test::More" : "0.88"
          }
@@ -61,11 +64,11 @@
    "provides" : {
       "Pod::Spell" : {
          "file" : "lib/Pod/Spell.pm",
-         "version" : "1.05"
+         "version" : "1.06"
       },
       "Pod::Wordlist" : {
          "file" : "lib/Pod/Wordlist.pm",
-         "version" : "1.05"
+         "version" : "1.06"
       }
    },
    "release_status" : "stable",
@@ -80,6 +83,6 @@
          "web" : "https://github.com/xenoterracide/pod-spell"
       }
    },
-   "version" : "1.05"
+   "version" : "1.06"
 }
 
