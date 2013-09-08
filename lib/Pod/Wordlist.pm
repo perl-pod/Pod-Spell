@@ -1249,3 +1249,5 @@ workflow
 workflows
 wormhole
 yml
+CISC
+RISC
