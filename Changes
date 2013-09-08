@@ -2,6 +2,9 @@ Revision history {{$dist->name}}
 
 {{$NEXT}}
 
+1.06      2013-09-08
+	- import stopwords from Pod::Wordlist::hanekomu except names
+
 1.05      2013-07-07
 	- add stopwords
 
