@@ -25,10 +25,10 @@ no_index:
 provides:
   Pod::Spell:
     file: lib/Pod/Spell.pm
-    version: 1.06
+    version: 1.07
   Pod::Wordlist:
     file: lib/Pod/Wordlist.pm
-    version: 1.06
+    version: 1.07
 requires:
   Carp: 0
   Pod::Escapes: 0
@@ -44,4 +44,4 @@ resources:
   bugtracker: https://github.com/xenoterracide/pod-spell/issues
   homepage: https://metacpan.org/dist/Pod-Spell
   repository: git://github.com/xenoterracide/pod-spell.git
-version: 1.06
+version: 1.07

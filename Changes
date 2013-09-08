@@ -1,5 +1,7 @@
 Revision history Pod-Spell
 
+1.07      2013-09-08
+
 1.06      2013-09-08
 	- import stopwords from Pod::Wordlist::hanekomu except names
 

@@ -2,7 +2,7 @@ package Pod::Wordlist;
 use strict;
 use warnings;
 
-our $VERSION = '1.06'; # VERSION
+our $VERSION = '1.07'; # VERSION
 
 our %Wordlist; ## no critic ( Variables::ProhibitPackageVars )
 
@@ -23,7 +23,7 @@ Pod::Wordlist - English words that come up in Perl documentation
 
 =head1 VERSION
 
-version 1.06
+version 1.07
 
 =head1 DESCRIPTION
 
