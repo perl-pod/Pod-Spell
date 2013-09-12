@@ -163,7 +163,6 @@ builtins
 Bunce
 bundle's
 byacc
-Bytecode
 bytecode
 byteorder
 byteperl
@@ -271,7 +270,6 @@ dereffing
 deserialized
 diffs
 difftime
-DirHandle
 dirhandle
 distname
 Django
@@ -280,7 +278,6 @@ dmake
 Dominus
 dosish
 dotfile
-DotFiles
 dotfiles
 downcases
 drivename
@@ -335,7 +332,6 @@ fgets
 Fibonacci
 fifo
 fileglob
-FileHandle
 filehandle
 filehandle's
 filehandles
@@ -566,7 +562,6 @@ MachTen
 MacOS
 MacPerl
 mailx
-Makefile
 makefile
 makefiles
 MakeMaker
@@ -598,7 +593,6 @@ metainformation
 metaquoting
 Mexico
 microtuning
-Middleware
 middleware
 miniperl
 miscompiled
@@ -706,9 +700,7 @@ pathconf
 peeraddr
 peerhost
 peerport
-Perl
 perl
-Perl's
 perl's
 perlaix
 perlamiga
@@ -850,7 +842,6 @@ rand
 RDBMS
 rdo
 readdir
-ReadLine
 readline
 readlink
 README
@@ -941,7 +932,6 @@ setuid
 setval
 sfio
 sh
-ShipIt
 shipit
 shmctl
 shmget
@@ -1198,9 +1188,8 @@ username
 UTC
 UTF
 utime
-UUID
 uuid
-UUIDs
+uuids
 val
 value's
 varglob
