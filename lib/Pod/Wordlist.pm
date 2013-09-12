@@ -76,7 +76,6 @@ analyses
 AnyEvent
 AOP
 API
-API
 APIs
 arcana
 args
@@ -157,7 +156,6 @@ bsearch
 bugfix
 bugfixes
 bugfixing
-bugtracker
 bugtracker
 buildable
 builtin
@@ -364,7 +362,6 @@ followups
 fopen
 foreach
 foregrounded
-formatter
 formatter
 formfeed
 formline
@@ -819,7 +816,6 @@ preallocated
 preallocation
 prebuilt
 precompute
-precompute
 precomputed
 precomputes
 predeclaration
@@ -990,16 +986,11 @@ statefulness
 statfs
 statics
 STDERR
-STDERR
-STDIN
 STDIN
 stdio
 stdios
 STDOUT
-STDOUT
 stopword
-stopword
-stopwords
 stopwords
 storable
 storages
@@ -1012,11 +1003,9 @@ strcspn
 strerror
 strftime
 stringification
-stringification
 stringifications
 stringified
 stringifies
-stringify
 stringify
 stringwise
 strlen
@@ -1203,7 +1192,6 @@ urandom
 URI
 URI's
 URI.pm
-URIs
 URIs
 userinfo
 username
