@@ -232,6 +232,8 @@ sub _treat_words {    ## no critic ( Subroutines::RequireArgUnpacking )
 		if   ( $word =~ s/([\)\]\'\"\.\:\;\,\?\!]+)$//s ) { $trailing = $1 }
 		else                                              { $trailing = '' }
 
+		if   ( $word =~ s/('s)$//s ) { $trailing = $1 . $trailing }
+
 		if (
 			$word =~ m/^[\&\%\$\@\:\<\*\\\_]/s
 

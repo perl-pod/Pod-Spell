@@ -44,6 +44,8 @@ lexicons, even if they are for other dialects/languages.)
 # This allows easier detection of words that differ only in case
 # and should be consolidated into a lowercase version.  It also
 # makes diffs easier to follow.
+#
+# Also remove any q{'s} before adding to the list
 
 __DATA__
 Aas
@@ -82,7 +84,6 @@ API
 APIs
 arcana
 args
-array's
 arrayref
 arrayrefs
 asctime
@@ -170,7 +171,6 @@ buildable
 builtin
 builtins
 Bunce
-bundle's
 byacc
 bytecode
 byteorder
@@ -237,7 +237,6 @@ coroutines
 cos
 cosh
 cpan
-CPAN's
 CPAN.pm
 CPANPLUS
 cpantesters
@@ -278,7 +277,7 @@ deallocated
 deallocates
 deallocation
 Debian
-debugger's
+debugger
 decompiler
 decrypting
 delset
@@ -377,7 +376,6 @@ Fibonacci
 fifo
 fileglob
 filehandle
-filehandle's
 filehandles
 filemodes
 filename
@@ -387,7 +385,6 @@ filesize
 filespec
 filespecs
 filesystem
-filesystem's
 filesystems
 filetest
 filetests
@@ -510,7 +507,6 @@ gzipped
 hacky
 hardcoded
 hardcoding
-hash's
 hashref
 hashrefs
 Hietaniemi
@@ -574,7 +570,6 @@ ish
 islower
 ismember
 ISP
-ISP's
 isprint
 ISPs
 ispunct
@@ -798,7 +793,6 @@ peeraddr
 peerhost
 peerport
 perl
-perl's
 perlaix
 perlamiga
 perlbook
@@ -876,13 +870,11 @@ petabytes
 phash
 PHP
 pid
-pipe's
 pkunzip
 placeholders
 Plack
 pluggable
 plugin
-plugin's
 PluginBundle
 plugins
 podchecker
@@ -924,7 +916,6 @@ prereq
 prereqs
 printf
 PRNG
-probe's
 processable
 procfs
 programmatically
@@ -1015,7 +1006,6 @@ seekable
 seekdir
 segfault
 segfaults
-segment's
 SelfLoading
 semctl
 semget
@@ -1165,7 +1155,6 @@ subtypes
 sudo
 suidperl
 superclass
-superclass's
 superclasses
 superuser
 svk
@@ -1204,7 +1193,6 @@ templating
 tempnam
 Tenon
 termcap
-terminal's
 termios
 TeX
 textarea
@@ -1218,7 +1206,6 @@ timezone
 TIMTOWTDI
 titlecase
 Tk
-Tk's
 tmpfile
 tmpnam
 tokenizer
@@ -1321,7 +1308,6 @@ updir
 upgradability
 urandom
 uri
-uri's
 URI.pm
 uris
 url
@@ -1333,9 +1319,7 @@ utime
 uuid
 uuids
 val
-value's
 varglob
-variable's
 variadic
 vec
 versa
@@ -1373,12 +1357,11 @@ writeable
 XKCD
 xor
 XS
-XSUB's
+XSUB
 XSUBs
 yacc
 YAML
-YAML's
-YAPC's
+YAPC
 yml
 yylex
 zsh
