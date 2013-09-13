@@ -12,6 +12,7 @@ use constant MAXWORDLENGTH => 50; ## no critic ( ProhibitConstantPragma )
 use Pod::Wordlist;
 use Pod::Escapes ('e2char');
 use Text::Wrap   ('wrap');
+use Lingua::EN::Inflect ('PL');
 
 # We don't need a very new version of Text::Wrap, altho they are nicer.
 $Text::Wrap::huge = 'overflow';  ## no critic ( Variables::ProhibitPackageVars )
@@ -62,10 +63,12 @@ sub _get_stopwords_from {
 			my $negation = $1;
 			# different $1 from above
 			delete $stopwords->{$negation};
+			delete $stopwords->{PL($negation)};
 			print "Unlearning stopword $word\n" if $self->_is_debug;
 		}
 		else {
 			$stopwords->{$word} = 1;
+			$stopwords->{PL($word)} = 1;
 			print "Learning stopword $1\n" if $self->_is_debug;
 		}
 	}
