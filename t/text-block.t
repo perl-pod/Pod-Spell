@@ -22,7 +22,7 @@ my $p = new_ok 'Pod::Spell' => [ debug => 1 ];
 
 $p->parse_from_filehandle( $podfile, $textfile );
 
-cmp_deeply [ keys( %{ $p->{spell_stopwords} } ) ],
+cmp_deeply [ keys( %{ $p->stopwords->wordlist } ) ],
 	superbagof(qw(Pleumgh zpaph myormsp snickh blah blargh bazh )),
 	'stopwords added'
 	;

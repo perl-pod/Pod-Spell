@@ -7,12 +7,9 @@ use warnings;
 
 use base 'Pod::Parser';
 
-use constant MAXWORDLENGTH => 50; ## no critic ( ProhibitConstantPragma )
-
 use Pod::Wordlist;
 use Pod::Escapes ('e2char');
 use Text::Wrap   ('wrap');
-use Lingua::EN::Inflect ('PL');
 
 # We don't need a very new version of Text::Wrap, altho they are nicer.
 $Text::Wrap::huge = 'overflow';  ## no critic ( Variables::ProhibitPackageVars )
@@ -30,17 +27,17 @@ sub new {
 
 	my $new = $class->SUPER::new( %args );
 
-	$new->{'spell_stopwords'} = {};
-
-	$new->{'spell_stopwords'}
-		= \%Pod::Wordlist::Wordlist; ## no critic ( ProhibitPackageVars )
-
 	$new->{'region'} = [];
 
 	$new->{debug} = $args{debug};
 
+	$new->{stopwords}
+		= $args{stopwords} || Pod::Wordlist->new( _is_debug => $args{debug} );
+
 	return $new;
 }
+
+sub stopwords { $_[0]->{stopwords} }
 
 sub verbatim { return ''; }    # totally ignore verbatim sections
 
@@ -50,29 +47,6 @@ sub _is_debug {
 	my $self = shift;
 
 	return $self->{debug} ? 1 : 0;
-}
-
-sub _get_stopwords_from {
-	my ( $self, $text ) = @_;
-	my $stopwords = $self->{'spell_stopwords'};
-
-	while ( $text =~ m<(\S+)>g ) {
-		my $word = $1;
-		if ( $word =~ m/^!(.+)/s ) {
-			# "!word" deletes from the stopword list
-			my $negation = $1;
-			# different $1 from above
-			delete $stopwords->{$negation};
-			delete $stopwords->{PL($negation)};
-			print "Unlearning stopword $word\n" if $self->_is_debug;
-		}
-		else {
-			$stopwords->{$word} = 1;
-			$stopwords->{PL($word)} = 1;
-			print "Learning stopword $1\n" if $self->_is_debug;
-		}
-	}
-	return;
 }
 
 #----------------------------------------------------------------------
@@ -86,11 +60,11 @@ sub textblock {
 			= $self->{'region'}[-1];
 
 		if ( $last_region eq 'stopwords' ) {
-			$self->_get_stopwords_from($paragraph);
+			$self->stopwords->learn_stopwords($paragraph);
 			return;
 		}
 		elsif ( $last_region eq ':stopwords' ) {
-			$self->_get_stopwords_from( $self->interpolate($paragraph) );
+			$self->stopwords->learn_stopwords( $self->interpolate($paragraph) );
 
 			# I guess that'd work.
 			return;
@@ -138,7 +112,7 @@ sub command { ## no critic ( ArgUnpacking)
 			my $para = $2;
 			$para = $self->interpolate($para) if $1;
 			print "Stopword para: <$2>\n" if $self->_is_debug;
-			$self->_get_stopwords_from($para);
+			$self->stopwords->learn_stopwords($para);
 		}
 	}
 	elsif ( @{ $self->{'region'} } ) {    # TODO: accept POD formatting
@@ -206,66 +180,15 @@ sub interior_sequence { ## no critic ( Subroutines::RequireFinalReturn )
 	}
 }
 
-#==========================================================================
-# The guts:
+#--------------------------------------------------------------------------
 
-sub _treat_words {    ## no critic ( Subroutines::RequireArgUnpacking )
-	my $self = shift;
-
-	# Count the things in $_[0]
-	print "Content: <", $_[0], ">\n" if $self->_is_debug;
-
-	my $stopwords = $self->{'spell_stopwords'};
-	my $word;
-	$_[0] =~ tr/\xA0\xAD/ /d;
-
-	# i.e., normalize non-breaking spaces, and delete soft-hyphens
-
-	my $out = '';
-
-	my ( $leading, $trailing );
-	while ( $_[0] =~ m<(\S+)>g ) {
-
-		# Trim normal English punctuation, if leading or trailing.
-		next if length $1 > MAXWORDLENGTH;
-		$word = $1;
-		if   ( $word =~ s/^([\`\"\'\(\[])//s ) { $leading = $1 }
-		else                                   { $leading = '' }
-
-		if   ( $word =~ s/([\)\]\'\"\.\:\;\,\?\!]+)$//s ) { $trailing = $1 }
-		else                                              { $trailing = '' }
-
-		if   ( $word =~ s/('s)$//s ) { $trailing = $1 . $trailing }
-
-		if (
-			$word =~ m/^[\&\%\$\@\:\<\*\\\_]/s
-
-			# if it looks like it starts with a sigil, etc.
-			or $word =~ m/[\%\^\&\#\$\@\_\<\>\(\)\[\]\{\}\\\*\:\+\/\=\|\`\~]/
-
-			# or contains anything strange
-		  )
-		{
-			print "rejecting {$word}\n" if $self->_is_debug && $word ne '_';
-			next;
-		}
-		else {
-			if ( exists $stopwords->{$word} or exists $stopwords->{ lc $word } )
-			{
-				print " [Rejecting \"$word\" as a stopword]\n"
-					if $self->_is_debug;
-			}
-			else {
-				$out .= "$leading$word$trailing ";
-			}
-		}
-	}
-
+sub _treat_words {
+	my ($self, $text) = @_;
+	my $out = $self->stopwords->strip_stopwords( $text );
 	if ( length $out ) {
 		my $out_fh = $self->output_handle();
 		print $out_fh wrap( '', '', $out ), "\n\n";
 	}
-
 	return;
 }
 
@@ -327,7 +250,8 @@ This adds every word in that paragraph after "stopwords" to the
 stopword list, effective for the rest of the document.  In such a
 list, words are whitespace-separated.  (The amount of whitespace
 doesn't matter, as long as there's no blank lines in the middle
-of the paragraph.)  Words beginning with "!" are
+of the paragraph.)  Plural forms are added automatically using
+L<Lingua::EN::Inflect>. Words beginning with "!" are
 I<deleted> from the stopword list -- so "!qux" deletes "qux" from the
 stopword list, if it was in there in the first place.  Note that if
 a stopword is all-lowercase, then it means that it's okay in I<any>
