@@ -18,8 +18,8 @@ sub _copy_wordlist { return { %Wordlist } }
 
 while ( <DATA> ) {
 	chomp( $_ );
-	$Wordlist{$_} = 1;
-	$Wordlist{PL($_)} = 1;
+	$Wordlist{$_} = undef; # just has to exist
+	$Wordlist{PL($_)} = undef;
 }
 
 =method learn_stopwords
@@ -46,8 +46,8 @@ sub learn_stopwords {
 			print "Unlearning stopword $word\n" if $self->_is_debug;
 		}
 		else {
-			$stopwords->{$word} = 1;
-			$stopwords->{PL($word)} = 1;
+			$stopwords->{$word} = undef;
+			$stopwords->{PL($word)} = undef;
 			print "Learning stopword $1\n" if $self->_is_debug;
 		}
 	}
