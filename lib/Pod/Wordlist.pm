@@ -1,6 +1,7 @@
 package Pod::Wordlist;
 use strict;
 use warnings;
+use Lingua::EN::Inflect ('PL');
 
 # VERSION
 
@@ -9,6 +10,7 @@ our %Wordlist; ## no critic ( Variables::ProhibitPackageVars )
 while ( <DATA> ) {
 	chomp( $_ );
 	$Wordlist{$_} = 1;
+	$Wordlist{PL($_)} = 1;
 }
 
 1;

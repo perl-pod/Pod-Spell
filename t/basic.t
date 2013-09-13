@@ -16,8 +16,8 @@ my $textfile = File::Temp->new;
 
 print $podfile "\n=head1 TEST tree's undef\n"
 	. "\n=for stopwords zpaph myormsp pleumgh\n"
-	. "\n=for :stopwords !myormsp\n\n Glakq\n"
-	. "\nPleumgh zpaph's myormsp snickh.\n\n"
+	. "\n=for :stopwords !myormsp furble\n\n Glakq\n"
+	. "\nPleumgh zpaph's myormsp snickh furbles.\n\n"
 	;
 
 # reread from beginning
