@@ -14,10 +14,10 @@ cmp_ok scalar( keys %Pod::Wordlist::Wordlist ), '>=', 1000, 'key count';
 my $podfile  = File::Temp->new;
 my $textfile = File::Temp->new;
 
-print $podfile "\n=head1 TEST undef\n"
+print $podfile "\n=head1 TEST tree's undef\n"
 	. "\n=for stopwords zpaph myormsp pleumgh\n"
-	. "\n=for :stopwords !myormsp\n\n Glakq\n"
-	. "\nPleumgh zpaph myormsp snickh.\n\n"
+	. "\n=for :stopwords !myormsp furble\n\n Glakq\n"
+	. "\nPleumgh zpaph's myormsp snickh furbles.\n\n"
 	;
 
 # reread from beginning
@@ -32,10 +32,11 @@ $textfile->seek( 0, 0 );
 
 my $in = do { local $/ = undef, <$textfile> };
 
-my @words = $in =~ m/(\w+)/g;
+my @words = $in =~ m/([a-z']+)/ig;
 
-is scalar @words, 3, 'word count';
+is scalar @words, 4, 'word count';
 
-cmp_deeply \@words, bag( qw( TEST myormsp snickh ) ), 'words match';
+cmp_deeply \@words, bag( qw( TEST tree's myormsp snickh ) ), 'words match'
+    or diag "@words";
 
 done_testing;
