@@ -151,7 +151,7 @@ Coreutils ).
 
 	sort share/wordlist -u > /tmp/sorted && mv /tmp/sorted share/wordlist
 
-=method wordlist
+=attr wordlist
 
 	ref $self->wordlist eq 'HASH'; # true
 
