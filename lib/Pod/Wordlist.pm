@@ -133,7 +133,7 @@ not to be found in general English lexicons.  (For example: autovivify,
 backreference, chroot, stringify, wantarray.)
 
 You can also use this wordlist with your word processor by just
-pasting C<Pod/Wordlist.pm>'s content into your wordprocessor, deleting
+pasting C<share/wordlist>'s content into your wordprocessor, deleting
 the leading Perl code so that only the wordlist remains, and then
 spellchecking this resulting list and adding every word in it to your
 private lexicon.
