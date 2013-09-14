@@ -2,6 +2,16 @@ Revision history {{$dist->name}}
 
 {{$NEXT}}
 
+1.07      2013-09-14
+	- add many words
+	[FEATURES]
+	- Pod::Wordlist is an Object ( dagolden )
+	- Lingua::EN::Inflect is used to reduce requiring plurals in the list
+	  ( dagolden )
+	- the wordlist is now a sharedir file
+	[DEPRECATED]
+	- accessing %Pod::Wordlist::Wordlist directly
+
 1.06      2013-09-08
 	- import stopwords from Pod::Wordlist::hanekomu except names
 
