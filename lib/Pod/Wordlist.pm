@@ -20,9 +20,8 @@ sub _copy_wordlist { return { %Wordlist } }
 
 foreach ( read_file( dist_file('Pod-Spell', 'wordlist') ) ) {
 	chomp( $_ );
-	$Wordlist{$_}     = undef; # just has to exist
-	$Wordlist{PL($_)} = undef;
-
+	$Wordlist{$_} = 1;
+	$Wordlist{PL($_)} = 1;
 }
 
 =method learn_stopwords
@@ -49,8 +48,8 @@ sub learn_stopwords {
 			print "Unlearning stopword $word\n" if $self->_is_debug;
 		}
 		else {
-			$stopwords->{$word} = undef;
-			$stopwords->{PL($word)} = undef;
+			$stopwords->{$word} = 1;
+			$stopwords->{PL($word)} = 1;
 			print "Learning stopword $1\n" if $self->_is_debug;
 		}
 	}
