@@ -342,6 +342,10 @@ Run it through podchecker again just for good measure.
 
 =method verbatim
 
+=method stopwords
+
+	$self->stopwords->isa('Pod::WordList'); # true
+
 =head1 SEE ALSO
 
 L<Pod::Wordlist|Pod::Wordlist>
