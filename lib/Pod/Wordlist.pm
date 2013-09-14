@@ -19,7 +19,6 @@ our %Wordlist; ## no critic ( Variables::ProhibitPackageVars )
 sub _copy_wordlist { return { %Wordlist } }
 
 foreach ( read_file( dist_file('Pod-Spell', 'wordlist') ) ) {
-	next if $_ =~ m/^\s*#/; # skip if comment
 	chomp( $_ );
 	$Wordlist{$_} = undef; # just has to exist
 	$Wordlist{PL($_)} = undef;
