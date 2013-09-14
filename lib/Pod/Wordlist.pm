@@ -139,10 +139,17 @@ the leading Perl code so that only the wordlist remains, and then
 spellchecking this resulting list and adding every word in it to your
 private lexicon.
 
-=head1 CONTRIBUTING
+=head1 WORDLIST
 
 Note that the scope of this file is only English, specifically American
 English.  (But you may find in useful to incorporate into your own
 lexicons, even if they are for other dialects/languages.)
+
+remove any q{'s} before adding to the list.
+
+The list should be sorted and uniqued. The following will work (with GNU
+Coreutils ).
+
+	sort share/wordlist -u > /tmp/sorted && mv /tmp/sorted share/wordlist
 
 =cut
