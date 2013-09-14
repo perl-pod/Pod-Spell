@@ -161,6 +161,7 @@ configurator
 coprocess
 copyable
 coredump
+Coreutils
 Coro
 coroutine
 cos
@@ -397,6 +398,7 @@ globbed
 globbing
 globref
 gmtime
+GNU
 Google
 goto
 gotos
@@ -1126,6 +1128,7 @@ Unicode
 unimport
 unindented
 uninitialized
+uniqued
 University
 unix
 Unixish
