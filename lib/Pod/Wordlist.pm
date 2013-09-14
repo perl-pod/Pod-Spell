@@ -1,12 +1,12 @@
 package Pod::Wordlist;
 use strict;
 use warnings;
-use Lingua::EN::Inflect ('PL');
 use File::Slurp                    qw( read_file );
+use Lingua::EN::Inflect            qw( PL        );
 use File::ShareDir::ProjectDistDir qw( dist_file );
 
 use Class::Tiny {
-    wordlist => \&_copy_wordlist,
+    wordlist  => \&_copy_wordlist,
     _is_debug => 0,
 };
 
@@ -20,7 +20,7 @@ sub _copy_wordlist { return { %Wordlist } }
 
 foreach ( read_file( dist_file('Pod-Spell', 'wordlist') ) ) {
 	chomp( $_ );
-	$Wordlist{$_} = undef; # just has to exist
+	$Wordlist{$_}     = undef; # just has to exist
 	$Wordlist{PL($_)} = undef;
 
 }
