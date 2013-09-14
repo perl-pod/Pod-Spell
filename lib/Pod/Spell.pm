@@ -37,7 +37,7 @@ sub new {
 	return $new;
 }
 
-sub stopwords { $_[0]->{stopwords} }
+sub stopwords { my $self = shift; return $self->{stopwords} }
 
 sub verbatim { return ''; }    # totally ignore verbatim sections
 
