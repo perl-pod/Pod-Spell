@@ -1,10 +1,3 @@
-# XXX PLEASE KEEP THE LIST SORTED CASE-INSENSITIVELY
-#
-# This allows easier detection of words that differ only in case
-# and should be consolidated into a lowercase version.  It also
-# makes diffs easier to follow.
-#
-# Also remove any q{'s} before adding to the list
 Aas
 absolutize
 absolutized
@@ -173,8 +166,8 @@ coroutine
 cos
 cosh
 cpan
-CPAN.pm
 CPANPLUS
+CPAN.pm
 cpantester
 cperl
 cpp
@@ -504,7 +497,6 @@ Kerberos
 Kernighan
 ksh
 kwalitee
-l,strtold
 lastkey
 LaTeX
 lc
@@ -538,6 +530,7 @@ lookup
 lossy
 lseek
 lstat
+l,strtold
 lt
 Lukka
 lvalue
@@ -605,8 +598,6 @@ msgget
 MSWin
 mtime
 multi
-multi-value
-multi-valued
 multibyte
 multicast
 multicharacter
@@ -614,7 +605,9 @@ multihomed
 multiline
 multiprocess
 multithreadable
+multi-value
 multivalued
+multi-valued
 multiwindow
 munge
 munger
@@ -830,8 +823,8 @@ quotemeta
 qx
 rand
 RDBM
-RDBMS
 RDBMs
+RDBMS
 rdo
 readdir
 readline
