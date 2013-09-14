@@ -151,4 +151,8 @@ Coreutils ).
 
 	sort share/wordlist -u > /tmp/sorted && mv /tmp/sorted share/wordlist
 
-=cut
+=method wordlist
+
+	ref $self->wordlist eq 'HASH'; # true
+
+This is the instance of the wordlist
