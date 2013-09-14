@@ -494,7 +494,6 @@ Joseki
 jpg
 json
 Kerberos
-Kernighan
 ksh
 kwalitee
 lastkey
@@ -530,7 +529,6 @@ lookup
 lossy
 lseek
 lstat
-l,strtold
 lt
 Lukka
 lvalue
