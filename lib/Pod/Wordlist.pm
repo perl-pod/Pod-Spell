@@ -26,7 +26,7 @@ foreach ( read_file( dist_file('Pod-Spell', 'wordlist') ) ) {
 
 =method learn_stopwords
 
-    $wordlist->learn_stopwords( $text, $debug );
+    $wordlist->learn_stopwords( $text );
 
 Modifies the stopword list based on a text block. See the rules
 for <adding stopwords|Pod::Spell/ADDING STOPWORDS> for details.
@@ -34,7 +34,7 @@ for <adding stopwords|Pod::Spell/ADDING STOPWORDS> for details.
 =cut
 
 sub learn_stopwords {
-	my ( $self, $text, $debug ) = @_;
+	my ( $self, $text ) = @_;
 	my $stopwords = $self->wordlist;
 
 	while ( $text =~ m<(\S+)>g ) {
