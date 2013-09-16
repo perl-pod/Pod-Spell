@@ -125,6 +125,7 @@ catdir
 catfile
 ccflags
 cd
+centric
 cetera
 CGIs
 changelog
@@ -194,7 +195,7 @@ dataset
 datastream
 datatype
 datestamp
-DateTime
+datetime
 DBI
 dbmclose
 dbmopen
