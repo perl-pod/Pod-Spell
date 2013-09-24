@@ -1,6 +1,9 @@
 Revision history {{$dist->name}}
 
 {{$NEXT}}
+	[FIXED]
+	- hyphenated word parts are also checked against the stoplist
+	  and stripped (dagolden)
 
 1.07      2013-09-14
 	- add many words

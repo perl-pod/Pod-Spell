@@ -94,12 +94,12 @@ sub strip_stopwords {
 		if   ( $word =~ s/('s)$//s ) { $trailing = $1 . $trailing }
 
 		if (
+			# if it looks like it starts with a sigil, etc.
 			$word =~ m/^[\&\%\$\@\:\<\*\\\_]/s
 
-			# if it looks like it starts with a sigil, etc.
+			# or contains anything strange
 			or $word =~ m/[\%\^\&\#\$\@\_\<\>\(\)\[\]\{\}\\\*\:\+\/\=\|\`\~]/
 
-			# or contains anything strange
 		  )
 		{
 			print "rejecting {$word}\n" if $self->_is_debug && $word ne '_';
@@ -110,6 +110,23 @@ sub strip_stopwords {
 			{
 				print " [Rejecting \"$word\" as a stopword]\n"
 					if $self->_is_debug;
+			}
+			elsif ( $word =~ /-/ ) {
+				# check individual parts
+				my @keep;
+				for my $part ( split /-/, $word ) {
+					if ( exists $stopwords->{$part} or exists $stopwords->{ lc $part } )
+					{
+						print " [Rejecting \"$part\" as a stopword]\n"
+							if $self->_is_debug;
+					}
+					else {
+						push @keep, $part;
+					}
+				}
+				if ( @keep ) {
+					$out .= $leading . join( "-", @keep ) . "$trailing ";
+				}
 			}
 			else {
 				$out .= "$leading$word$trailing ";
