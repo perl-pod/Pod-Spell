@@ -1,3 +1,5 @@
 severity = 3
 verbose  = 9
-exclude = RegularExpressions::RequireExtendedFormatting
+exclude  = RegularExpressions::RequireExtendedFormatting
+[Subroutines::ProhibitExcessComplexity]
+max_mccabe = 30
