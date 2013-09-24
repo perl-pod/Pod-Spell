@@ -1,6 +1,8 @@
 Revision history {{$dist->name}}
 
 {{$NEXT}}
+
+1.08      2013-09-24
 	[FIXED]
 	- hyphenated word parts are also checked against the stoplist
 	  and stripped (dagolden)
