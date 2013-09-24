@@ -240,6 +240,9 @@ C<"=for stopwords"> / C<"=for :stopwords"> region(s) in a document.
 
 =head1 ADDING STOPWORDS
 
+B<NOTE:> Pod::Spell makes a single pass over the POD.  Stopwords
+must be added B<before> they show up in the POD.
+
 You can add stopwords on a per-document basis with
 C<"=for stopwords"> / C<"=for :stopwords"> regions, like so:
 

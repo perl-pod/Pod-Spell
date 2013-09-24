@@ -4,6 +4,8 @@ Revision history {{$dist->name}}
 	[FIXED]
 	- hyphenated word parts are also checked against the stoplist
 	  and stripped (dagolden)
+	[DOCUMENTED]
+	- noted that stopwords must be added before words appear in Pod
 
 1.07      2013-09-14
 	- add many words
