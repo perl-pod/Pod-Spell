@@ -91,56 +91,36 @@ sub strip_stopwords {
 	# Count the things in $text
 	print "Content: <", $text, ">\n" if $self->_is_debug;
 
-	my $word;
-	$text =~ tr/\xA0\xAD/ /d;
+	my @words = grep { length($_) < MAXWORDLENGTH } split " ", $text;
 
-	# i.e., normalize non-breaking spaces, and delete soft-hyphens
+	for ( @words ) {
+		# strip trailing punctuation; we don't strip periods so we don't
+		# chop abbreviations like "Ph.D."
+		s/([\)\]\'\"\:\;\,\?\!]+)$//s;
 
-	my $out = '';
+		# strip possessive
+		s/('s)$//is;
 
-	while ( $text =~ m<(\S+)>g ) {
+		# strip leading punctuation
+		s/^([\`\"\'\(\[]+)//s;
 
-		# Trim normal English punctuation, if leading or trailing.
-		next if length $1 > MAXWORDLENGTH;
-		my $word = $self->_extract_word($1);
-		next unless length $word;
+		# zero out variable names or things with internal symbols,
+		# since those are probably code expressions outside a C<>
+		my $is_sigil 	= /^[\&\%\$\@\:\<\*\\\_]/;
+		my $is_strange 	= /[\%\^\&\#\$\@\_\<\>\(\)\[\]\{\}\\\*\:\+\/\=\|\`\~]/;
+		$_ = '' if $is_sigil || $is_strange;
 
-		if ( _sigil_or_strange( $word ) ) {
-			print "rejecting {$word}\n" if $self->_is_debug && $word ne '_';
-			next;
-		}
-		elsif ( length( my $remainder = $self->_strip_a_word($word) ) ) {
-			$out .= "$remainder ";
-		}
+		# stop if word was just punctuation and we stripped it all
+		# or if we zeroed it out;
+		next unless length;
+
+		print "Found word: <$_>\n" if $self->_is_debug;
+
+		# replace it with any stopword or stopword parts stripped
+		$_ = $self->_strip_a_word($_);
 	}
 
-	return $out;
-}
-
-sub _extract_word {
-	my ($self, $word) = @_;
-
-	# strip trailing punctuation; we don't strip periods so we don't
-	# chop abbreviations like "Ph.D."
-	$word =~ s/([\)\]\'\"\:\;\,\?\!]+)$//s;
-
-	# strip possessive
-	$word =~ s/('s)$//is;
-
-	# strip leading punctuation
-	$word =~ s/^([\`\"\'\(\[]+)//s;
-
-	print "Found word: <$word>\n" if length $word && $self->_is_debug;
-
-	return ($word);
-}
-
-sub _sigil_or_strange {
-	my ($word) = @_;
-
-	my $is_sigil 	= $word =~ m/^[\&\%\$\@\:\<\*\\\_]/s;
-	my $is_strange 	= $word =~ m/[\%\^\&\#\$\@\_\<\>\(\)\[\]\{\}\\\*\:\+\/\=\|\`\~]/;
-	return $is_sigil || $is_strange;
+	return join(" ", grep { length } @words );
 }
 
 sub _strip_a_word {
