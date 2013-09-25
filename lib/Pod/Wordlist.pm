@@ -84,6 +84,7 @@ sub strip_stopwords {
 		# Trim normal English punctuation, if leading or trailing.
 		next if length $1 > MAXWORDLENGTH;
 		my ($leading, $word, $trailing) = _extract_word($1);
+		next unless length $word;
 
 		if ( _sigil_or_strange( $word ) ) {
 			print "rejecting {$word}\n" if $self->_is_debug && $word ne '_';
@@ -100,13 +101,14 @@ sub strip_stopwords {
 sub _extract_word {
 	my ($word) = @_;
 	my ($leading, $trailing);
-	if   ( $word =~ s/^([\`\"\'\(\[])//s ) { $leading = $1 }
-	else                                   { $leading = '' }
 
 	if   ( $word =~ s/([\)\]\'\"\.\:\;\,\?\!]+)$//s ) { $trailing = $1 }
 	else                                              { $trailing = '' }
 
 	if   ( $word =~ s/('s)$//s ) { $trailing = $1 . $trailing }
+
+	if   ( $word =~ s/^([\`\"\'\(\[])//s ) { $leading = $1 }
+	else                                   { $leading = '' }
 
 	return ($leading, $word, $trailing);
 }
