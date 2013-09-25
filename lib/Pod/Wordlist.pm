@@ -72,7 +72,6 @@ sub strip_stopwords {
 	# Count the things in $text
 	print "Content: <", $text, ">\n" if $self->_is_debug;
 
-	my $stopwords = $self->wordlist;
 	my $word;
 	$text =~ tr/\xA0\xAD/ /d;
 
@@ -90,32 +89,8 @@ sub strip_stopwords {
 			print "rejecting {$word}\n" if $self->_is_debug && $word ne '_';
 			next;
 		}
-		else {
-			if ( exists $stopwords->{$word} or exists $stopwords->{ lc $word } )
-			{
-				print " [Rejecting \"$word\" as a stopword]\n"
-					if $self->_is_debug;
-			}
-			elsif ( $word =~ /-/ ) {
-				# check individual parts
-				my @keep;
-				for my $part ( split /-/, $word ) {
-					if ( exists $stopwords->{$part} or exists $stopwords->{ lc $part } )
-					{
-						print " [Rejecting \"$part\" as a stopword]\n"
-							if $self->_is_debug;
-					}
-					else {
-						push @keep, $part;
-					}
-				}
-				if ( @keep ) {
-					$out .= $leading . join( "-", @keep ) . "$trailing ";
-				}
-			}
-			else {
-				$out .= "$leading$word$trailing ";
-			}
+		elsif ( length( my $remainder = $self->_strip_a_word($word) ) ) {
+			$out .= "$leading$remainder$trailing ";
 		}
 	}
 
@@ -142,6 +117,35 @@ sub _sigil_or_strange {
 	my $is_sigil 	= $word =~ m/^[\&\%\$\@\:\<\*\\\_]/s;
 	my $is_strange 	= $word =~ m/[\%\^\&\#\$\@\_\<\>\(\)\[\]\{\}\\\*\:\+\/\=\|\`\~]/;
 	return $is_sigil || $is_strange;
+}
+
+sub _strip_a_word {
+	my ($self, $word) = @_;
+	my $stopwords = $self->wordlist;
+	my $remainder = '';
+	if ( exists $stopwords->{$word} or exists $stopwords->{ lc $word } ) {
+		print " [Rejecting \"$word\" as a stopword]\n"
+			if $self->_is_debug;
+	}
+	elsif ( $word =~ /-/ ) {
+		# check individual parts
+		my @keep;
+		for my $part ( split /-/, $word ) {
+			if ( exists $stopwords->{$part} or exists $stopwords->{ lc $part } )
+			{
+				print " [Rejecting \"$part\" as a stopword]\n"
+					if $self->_is_debug;
+			}
+			else {
+				push @keep, $part;
+			}
+		}
+		$remainder = join("-", @keep) if @keep;
+	}
+	else {
+		$remainder = $word;
+	}
+	return $remainder;
 }
 
 1;
