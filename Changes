@@ -1,6 +1,8 @@
 Revision history {{$dist->name}}
 
 {{$NEXT}}
+
+1.09      2013-09-25
 	[FIXED]
 	- stopwords with 's are learned without 's to match how they are
 	  checked
