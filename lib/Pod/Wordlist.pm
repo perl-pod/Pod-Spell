@@ -80,19 +80,11 @@ sub strip_stopwords {
 
 	my $out = '';
 
-	my ( $leading, $trailing );
 	while ( $text =~ m<(\S+)>g ) {
 
 		# Trim normal English punctuation, if leading or trailing.
 		next if length $1 > MAXWORDLENGTH;
-		$word = $1;
-		if   ( $word =~ s/^([\`\"\'\(\[])//s ) { $leading = $1 }
-		else                                   { $leading = '' }
-
-		if   ( $word =~ s/([\)\]\'\"\.\:\;\,\?\!]+)$//s ) { $trailing = $1 }
-		else                                              { $trailing = '' }
-
-		if   ( $word =~ s/('s)$//s ) { $trailing = $1 . $trailing }
+		my ($leading, $word, $trailing) = _extract_word($1);
 
 		if (
 			# if it looks like it starts with a sigil, etc.
@@ -136,6 +128,20 @@ sub strip_stopwords {
 	}
 
 	return $out;
+}
+
+sub _extract_word {
+	my ($word) = @_;
+	my ($leading, $trailing);
+	if   ( $word =~ s/^([\`\"\'\(\[])//s ) { $leading = $1 }
+	else                                   { $leading = '' }
+
+	if   ( $word =~ s/([\)\]\'\"\.\:\;\,\?\!]+)$//s ) { $trailing = $1 }
+	else                                              { $trailing = '' }
+
+	if   ( $word =~ s/('s)$//s ) { $trailing = $1 . $trailing }
+
+	return ($leading, $word, $trailing);
 }
 
 1;
