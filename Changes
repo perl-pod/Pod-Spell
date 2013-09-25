@@ -4,6 +4,13 @@ Revision history {{$dist->name}}
 	[FIXED]
 	- stopwords with 's are learned without 's to match how they are
 	  checked
+	[CHANGED]
+	- leading and trailing punctuation is entirely stripped since the
+	  spellchecker won't care anyway.  Trailing periods are *not*
+	  stripped as they might be abbreviations ("Ph.D."), but such words
+	  are checked against the stoplist both with and without
+	  trailing periods to account for abbreviations and words at the
+	  end of a sentence.
 
 1.08      2013-09-24
 	[FIXED]

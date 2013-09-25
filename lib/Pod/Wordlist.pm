@@ -57,6 +57,25 @@ sub learn_stopwords {
 	return;
 }
 
+=method is_stopword
+
+	if ( $wordlist->is_stopword( $word ) ) { ... }
+
+Returns true if the word is found in the stoplist.
+
+=cut
+
+sub is_stopword {
+	my ($self, $word) = @_;
+	my $stopwords = $self->wordlist;
+	if ( exists $stopwords->{$word} or exists $stopwords->{ lc $word } ) {
+		print " [Rejecting \"$word\" as a stopword]\n"
+			if $self->_is_debug;
+		return 1;
+	}
+	return;
+}
+
 =method strip_stopwords
 
     my $out = $wordlist->strip_stopwords( $text );
@@ -83,7 +102,7 @@ sub strip_stopwords {
 
 		# Trim normal English punctuation, if leading or trailing.
 		next if length $1 > MAXWORDLENGTH;
-		my ($leading, $word, $trailing) = _extract_word($1);
+		my $word = $self->_extract_word($1);
 		next unless length $word;
 
 		if ( _sigil_or_strange( $word ) ) {
@@ -91,7 +110,7 @@ sub strip_stopwords {
 			next;
 		}
 		elsif ( length( my $remainder = $self->_strip_a_word($word) ) ) {
-			$out .= "$leading$remainder$trailing ";
+			$out .= "$remainder ";
 		}
 	}
 
@@ -99,18 +118,21 @@ sub strip_stopwords {
 }
 
 sub _extract_word {
-	my ($word) = @_;
-	my ($leading, $trailing);
+	my ($self, $word) = @_;
 
-	if   ( $word =~ s/([\)\]\'\"\.\:\;\,\?\!]+)$//s ) { $trailing = $1 }
-	else                                              { $trailing = '' }
+	# strip trailing punctuation; we don't strip periods so we don't
+	# chop abbreviations like "Ph.D."
+	$word =~ s/([\)\]\'\"\:\;\,\?\!]+)$//s;
 
-	if   ( $word =~ s/('s)$//s ) { $trailing = $1 . $trailing }
+	# strip possessive
+	$word =~ s/('s)$//is;
 
-	if   ( $word =~ s/^([\`\"\'\(\[])//s ) { $leading = $1 }
-	else                                   { $leading = '' }
+	# strip leading punctuation
+	$word =~ s/^([\`\"\'\(\[]+)//s;
 
-	return ($leading, $word, $trailing);
+	print "Found word: <$word>\n" if length $word && $self->_is_debug;
+
+	return ($word);
 }
 
 sub _sigil_or_strange {
@@ -123,26 +145,24 @@ sub _sigil_or_strange {
 
 sub _strip_a_word {
 	my ($self, $word) = @_;
-	my $stopwords = $self->wordlist;
 	my $remainder = '';
-	if ( exists $stopwords->{$word} or exists $stopwords->{ lc $word } ) {
-		print " [Rejecting \"$word\" as a stopword]\n"
-			if $self->_is_debug;
+	# might have trailing period(s) or an internal dash, so first, just check
+	# as is in case that's actually in the word list
+	if ($self->is_stopword($word) ) {
+		# stopword, so do nothing
 	}
 	elsif ( $word =~ /-/ ) {
-		# check individual parts
+		# check individual parts, keep whatever isn't a stopword
 		my @keep;
 		for my $part ( split /-/, $word ) {
-			if ( exists $stopwords->{$part} or exists $stopwords->{ lc $part } )
-			{
-				print " [Rejecting \"$part\" as a stopword]\n"
-					if $self->_is_debug;
-			}
-			else {
-				push @keep, $part;
-			}
+			push @keep, $part if ! $self->is_stopword( $part );
 		}
 		$remainder = join("-", @keep) if @keep;
+	}
+	elsif ( $word =~ m{(.*?)\.+$}) {
+		# trailing period could be end of sentence or ellipses
+		my $part = $1;
+		$remainder = $word if ! $self->is_stopword( $part );
 	}
 	else {
 		$remainder = $word;

@@ -18,7 +18,7 @@ print $podfile "\n=head1 TEST tree's undef\n"
 	. "\n=for stopwords zpaph DDGGSS's myormsp pleumgh bruble-gruble\n"
 	. "\n=for :stopwords !myormsp furble\n\n Glakq\n"
 	. "\nPleumgh bruble-gruble DDGGSS's zpaph's zpaph-kafdkaj myormsp snickh furbles.\n"
-	. qq[\n"'" L<Storable>'s\n]
+	. qq[\n"'" Kh.D. L<Storable>'s\n]
 	. qq[\n]
 	;
 
@@ -34,11 +34,12 @@ $textfile->seek( 0, 0 );
 
 my $in = do { local $/ = undef, <$textfile> };
 
-my @words = $in =~ m/([a-z'-]+)/ig;
+my @words = $in =~ m/([a-z'.-]+)/ig;
 
-is scalar @words, 5, 'word count';
+my @expected = qw( TEST tree kafdkaj myormsp snickh Kh.D. );
+is scalar @words, scalar @expected, 'word count';
 
-cmp_deeply \@words, bag( qw( TEST tree's kafdkaj myormsp snickh ) ), 'words match'
+cmp_deeply \@words, bag( @expected ), 'words match'
     or diag "@words";
 
 done_testing;
