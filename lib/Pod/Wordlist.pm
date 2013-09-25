@@ -48,6 +48,7 @@ sub learn_stopwords {
 			print "Unlearning stopword $word\n" if $self->_is_debug;
 		}
 		else {
+			$word =~ s{'s$}{}; # we strip 's when checking so strip here, too
 			$stopwords->{$word} = 1;
 			$stopwords->{PL($word)} = 1;
 			print "Learning stopword $1\n" if $self->_is_debug;
