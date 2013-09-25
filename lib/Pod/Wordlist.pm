@@ -61,7 +61,7 @@ sub learn_stopwords {
 
 	if ( $wordlist->is_stopword( $word ) ) { ... }
 
-Returns true if the word is found in the stoplist.
+Returns true if the word is found in the stopword list.
 
 =cut
 
@@ -96,18 +96,18 @@ sub strip_stopwords {
 	for ( @words ) {
 		# strip trailing punctuation; we don't strip periods so we don't
 		# chop abbreviations like "Ph.D."
-		s/([\)\]\'\"\:\;\,\?\!]+)$//s;
+		s/[\)\]\'\"\:\;\,\?\!]+$//s;
 
 		# strip possessive
-		s/('s)$//is;
+		s/'s$//is;
 
 		# strip leading punctuation
-		s/^([\`\"\'\(\[]+)//s;
+		s/^[\`\"\'\(\[]+//s;
 
 		# zero out variable names or things with internal symbols,
 		# since those are probably code expressions outside a C<>
-		my $is_sigil 	= /^[\&\%\$\@\:\<\*\\\_]/;
-		my $is_strange 	= /[\%\^\&\#\$\@\_\<\>\(\)\[\]\{\}\\\*\:\+\/\=\|\`\~]/;
+		my $is_sigil   = /^[\&\%\$\@\:\<\*\\\_]/;
+		my $is_strange = /[\%\^\&\#\$\@\_\<\>\(\)\[\]\{\}\\\*\:\+\/\=\|\`\~]/;
 		$_ = '' if $is_sigil || $is_strange;
 
 		# stop if word was just punctuation and we stripped it all
