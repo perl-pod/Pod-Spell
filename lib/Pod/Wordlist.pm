@@ -86,15 +86,7 @@ sub strip_stopwords {
 		next if length $1 > MAXWORDLENGTH;
 		my ($leading, $word, $trailing) = _extract_word($1);
 
-		if (
-			# if it looks like it starts with a sigil, etc.
-			$word =~ m/^[\&\%\$\@\:\<\*\\\_]/s
-
-			# or contains anything strange
-			or $word =~ m/[\%\^\&\#\$\@\_\<\>\(\)\[\]\{\}\\\*\:\+\/\=\|\`\~]/
-
-		  )
-		{
+		if ( _sigil_or_strange( $word ) ) {
 			print "rejecting {$word}\n" if $self->_is_debug && $word ne '_';
 			next;
 		}
@@ -142,6 +134,14 @@ sub _extract_word {
 	if   ( $word =~ s/('s)$//s ) { $trailing = $1 . $trailing }
 
 	return ($leading, $word, $trailing);
+}
+
+sub _sigil_or_strange {
+	my ($word) = @_;
+
+	my $is_sigil 	= $word =~ m/^[\&\%\$\@\:\<\*\\\_]/s;
+	my $is_strange 	= $word =~ m/[\%\^\&\#\$\@\_\<\>\(\)\[\]\{\}\\\*\:\+\/\=\|\`\~]/;
+	return $is_sigil || $is_strange;
 }
 
 1;
