@@ -29,10 +29,10 @@ sub new {
 
 	$new->{'region'} = [];
 
-	$new->{debug} = $args{debug};
+	$new->{debug} = $args{debug} || $ENV{PERL_POD_SPELL_DEBUG};
 
 	$new->{stopwords}
-		= $args{stopwords} || Pod::Wordlist->new( _is_debug => $args{debug} );
+		= $args{stopwords} || Pod::Wordlist->new( _is_debug => $new->{debug} );
 
 	return $new;
 }
