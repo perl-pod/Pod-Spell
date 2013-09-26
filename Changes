@@ -1,6 +1,11 @@
 Revision history {{$dist->name}}
 
 {{$NEXT}}
+	[CHANGED]
+	- improved punctuation stripping algorithm for better word
+	  isolation (example C<< "hello". >> now is found as "hello")
+	- strips all word that do not have at least one \w character
+	  as a spellchecker isn't likely to do anything useful with them
 
 1.09      2013-09-25
 	[FIXED]

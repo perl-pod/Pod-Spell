@@ -94,15 +94,15 @@ sub strip_stopwords {
 	my @words = grep { length($_) < MAXWORDLENGTH } split " ", $text;
 
 	for ( @words ) {
-		# strip trailing punctuation; we don't strip periods so we don't
-		# chop abbreviations like "Ph.D."
-		s/[\)\]\'\"\:\;\,\?\!]+$//s;
+		# strip trailing punctuation; we don't strip periods unless
+		# after punctuation; we don't want to chop abbreviations like "Ph.D."
+		s/[\)\]\}\'\"\:\;\,\?\!]+\.*$//s;
 
 		# strip possessive
 		s/'s$//is;
 
 		# strip leading punctuation
-		s/^[\`\"\'\(\[]+//s;
+		s/^[\(\[\{\'\"\:\;\,\?\!\.]+//s;
 
 		# zero out variable names or things with internal symbols,
 		# since those are probably code expressions outside a C<>
@@ -110,9 +110,10 @@ sub strip_stopwords {
 		my $is_strange = /[\%\^\&\#\$\@\_\<\>\(\)\[\]\{\}\\\*\:\+\/\=\|\`\~]/;
 		$_ = '' if $is_sigil || $is_strange;
 
-		# stop if word was just punctuation and we stripped it all
-		# or if we zeroed it out;
-		next unless length;
+		# stop if there are no "word" characters left; if it's just
+		# punctuation that we didn't happen to strip or it's weird glyphs,
+		# the spellchecker won't do any good anyway
+		next unless /\w/;
 
 		print "Found word: <$_>\n" if $self->_is_debug;
 
