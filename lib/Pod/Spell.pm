@@ -198,6 +198,8 @@ sub _treat_words {
 
 # ABSTRACT: a formatter for spellchecking Pod
 
+=for :stopwords virtE<ugrave>
+
 =head1 SYNOPSIS
 
 	use Pod::Spell;
