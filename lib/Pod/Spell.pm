@@ -1,5 +1,5 @@
 package Pod::Spell;
-use 5.006;
+use 5.008;
 use strict;
 use warnings;
 
@@ -29,10 +29,13 @@ sub new {
 
 	$new->{'region'} = [];
 
+	$new->{no_wide_chars} = $args{no_wide_chars};
+
 	$new->{debug} = $args{debug} || $ENV{PERL_POD_SPELL_DEBUG};
 
-	$new->{stopwords}
-		= $args{stopwords} || Pod::Wordlist->new( _is_debug => $new->{debug} );
+	$new->{stopwords} = $args{stopwords} || Pod::Wordlist->new(
+		_is_debug => $new->{debug}, no_wide_chars => $args{no_wide_chars}
+	);
 
 	return $new;
 }
@@ -239,6 +242,28 @@ out from the stopword list defined by L<Pod::Wordlist|Pod::Wordlist>,
 and can be supplemented (on a per-document basis) by having
 C<"=for stopwords"> / C<"=for :stopwords"> region(s) in a document.
 
+=head1 ENCODINGS
+
+Pod::Parser, which Pod::Spell extends, is extremely naive about
+character encodings.  The C<parse_from_file> method does not apply
+any PerlIO encoding layer.  If your Pod file is encoded in UTF-8,
+your data will be read incorrectly.
+
+You should instead use C<parse_from_filehandle> and manage the input
+and output layers yourself.
+
+	binmode($_, ":utf8") for ($infile, $outfile);
+	$my ps = Pod::Spell->new;
+	$ps->parse_from_filehandle( $infile, $outfile );
+
+If your output destination cannot handle UTF-8, you should set your
+output handle to Latin-1 and tell Pod::Spell to strip out words
+with wide characters.
+
+	binmode($infile, ":utf8");
+	binmode($outfile, ":encoding(latin1)");
+	$my ps = Pod::Spell->new( no_wide_chars => 1 );
+	$ps->parse_from_filehandle( $infile, $outfile );
 
 =head1 ADDING STOPWORDS
 

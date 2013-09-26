@@ -8,6 +8,7 @@ use File::ShareDir::ProjectDistDir qw( dist_file );
 use Class::Tiny {
     wordlist  => \&_copy_wordlist,
     _is_debug => 0,
+    no_wide_chars => 0,
 };
 
 use constant MAXWORDLENGTH => 50; ## no critic ( ProhibitConstantPragma )
@@ -94,6 +95,9 @@ sub strip_stopwords {
 	my @words = grep { length($_) < MAXWORDLENGTH } split " ", $text;
 
 	for ( @words ) {
+		# some spellcheckers can't cope with anything but Latin1
+		$_ = '' if $self->no_wide_chars && /[^\x00-\xFF]/;
+
 		# strip trailing punctuation; we don't strip periods unless
 		# after punctuation; we don't want to chop abbreviations like "Ph.D."
 		s/[\)\]\}\'\"\:\;\,\?\!]+\.*$//s;
@@ -187,3 +191,8 @@ Coreutils ).
 	ref $self->wordlist eq 'HASH'; # true
 
 This is the instance of the wordlist
+
+=attr no_wide_chars
+
+If true, words with characters outside the Latin-1 range C<0x00> to C<0xFF> will
+be stripped like stopwords.
