@@ -98,15 +98,21 @@ sub strip_stopwords {
 		# some spellcheckers can't cope with anything but Latin1
 		$_ = '' if $self->no_wide_chars && /[^\x00-\xFF]/;
 
-		# strip trailing punctuation; we don't strip periods unless
-		# after punctuation; we don't want to chop abbreviations like "Ph.D."
-		s/[\)\]\}\'\"\:\;\,\?\!]+\.*$//s;
+		# strip leading punctuation
+		s/^[\(\[\{\'\"\:\;\,\?\!\.]+//;
+
+		# keep everything up to trailing punctuation, not counting
+		# periods (for abbreviations like "Ph.D."), single-quotes
+		# (for contractions like "don't") or colons (for package
+		# names like "Foo::Bar")
+		s/^([^\)\]\}\"\;\,\?\!]+).*$/$1/;
+
+		# strip trailing single-quote, periods or colons; after this
+		# we have a word that could have internal periods or quotes
+		s/[\.\'\:]+$//;
 
 		# strip possessive
-		s/'s$//is;
-
-		# strip leading punctuation
-		s/^[\(\[\{\'\"\:\;\,\?\!\.]+//s;
+		s/'s$//i;
 
 		# zero out variable names or things with internal symbols,
 		# since those are probably code expressions outside a C<>
@@ -132,25 +138,28 @@ sub strip_stopwords {
 
 sub _strip_a_word {
 	my ($self, $word) = @_;
-	my $remainder = '';
-	# might have trailing period(s) or an internal dash, so first, just check
-	# as is in case that's actually in the word list
-	if ($self->is_stopword($word) ) {
-		# stopword, so do nothing
+	my $remainder;
+
+	# internal period could be abbreviations, so check with
+	# trailing period restored and drop or keep on that basis
+	if ( /\./ ) {
+		my $abbr = "$word.";
+		$remainder = $self->is_stopword($abbr) ? '' : $abbr;
 	}
+	# try word as-is, including possible hyphenation vs stoplist
+	elsif ($self->is_stopword($word) ) {
+		$remainder = '';
+	}
+	# check individual parts of hyphenated word, keep whatever isn't a
+	# stopword as individual words
 	elsif ( $word =~ /-/ ) {
-		# check individual parts, keep whatever isn't a stopword
 		my @keep;
 		for my $part ( split /-/, $word ) {
 			push @keep, $part if ! $self->is_stopword( $part );
 		}
-		$remainder = join("-", @keep) if @keep;
+		$remainder = join(" ", @keep) if @keep;
 	}
-	elsif ( $word =~ m{(.*?)\.+$}) {
-		# trailing period could be end of sentence or ellipses
-		my $part = $1;
-		$remainder = $word if ! $self->is_stopword( $part );
-	}
+	# otherwise, we just keep it
 	else {
 		$remainder = $word;
 	}
