@@ -34,7 +34,7 @@ $textfile->seek( 0, 0 );
 
 my $in = do { local $/ = undef, <$textfile> };
 
-my @words = $in =~ m/([a-z'.-]+)/ig;
+my @words = split " ", $in;
 
 my @expected = qw( TEST tree kafdkaj myormsp snickh Kh.D. );
 is scalar @words, scalar @expected, 'word count';
