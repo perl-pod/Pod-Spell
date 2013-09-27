@@ -46,13 +46,13 @@ sub learn_stopwords {
 			# different $1 from above
 			delete $stopwords->{$negation};
 			delete $stopwords->{PL($negation)};
-			print "Unlearning stopword $word\n" if $self->_is_debug;
+			print "Unlearning stopword <$negation>\n" if $self->_is_debug;
 		}
 		else {
 			$word =~ s{'s$}{}; # we strip 's when checking so strip here, too
 			$stopwords->{$word} = 1;
 			$stopwords->{PL($word)} = 1;
-			print "Learning stopword $word\n" if $self->_is_debug;
+			print "Learning stopword   <$word>\n" if $self->_is_debug;
 		}
 	}
 	return;
@@ -70,8 +70,7 @@ sub is_stopword {
 	my ($self, $word) = @_;
 	my $stopwords = $self->wordlist;
 	if ( exists $stopwords->{$word} or exists $stopwords->{ lc $word } ) {
-		print " [Rejecting \"$word\" as a stopword]\n"
-			if $self->_is_debug;
+		print "  Rejecting   <$word>\n" if $self->_is_debug;
 		return 1;
 	}
 	return;
@@ -95,6 +94,7 @@ sub strip_stopwords {
 	my @words = grep { length($_) < MAXWORDLENGTH } split " ", $text;
 
 	for ( @words ) {
+		print "Parsing word: <$_>\n" if $self->_is_debug;
 		# some spellcheckers can't cope with anything but Latin1
 		$_ = '' if $self->no_wide_chars && /[^\x00-\xFF]/;
 
@@ -119,10 +119,12 @@ sub strip_stopwords {
 		# the spellchecker won't do any good anyway
 		next unless /\w/;
 
-		print "Found word: <$_>\n" if $self->_is_debug;
+		print "  Checking as <$_>\n" if $self->_is_debug;
 
 		# replace it with any stopword or stopword parts stripped
 		$_ = $self->_strip_a_word($_);
+
+		print "  Keeping as  <$_>\n" if $_ && $self->_is_debug;
 	}
 
 	return join(" ", grep { length } @words );
