@@ -1,6 +1,8 @@
 Revision history {{$dist->name}}
 
 {{$NEXT}}
+
+1.10      2013-09-27
 	[FEATURES]
 	- added 'no_wide_chars' option to strip words with such characters
 	  from the output.  This may help spellcheckers that can't cope
