@@ -122,7 +122,7 @@ ADDING STOPWORDS
       =for :stopwords
       virtE<ugrave>
 
-    ...meaning that you're adding a stopword of "virtÃ¹". If you left the ":"
+    ...meaning that you're adding a stopword of "virtù". If you left the ":"
     out, that would mean you were adding a stopword of "virtE<ugrave>" (with
     a literal E, a literal <, etc), which will have no effect, since any
     occurrences of virtE<ugrave> don't look like a normal human-language
@@ -176,7 +176,7 @@ BUGS
 CONTRIBUTORS
     *   David Golden <dagolden@cpan.org>
 
-    *   Olivier MenguÃ© <dolmen@cpan.org>
+    *   Olivier Mengué <dolmen@cpan.org>
 
 AUTHORS
     *   Sean M. Burke <sburke@cpan.org>
