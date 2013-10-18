@@ -36,5 +36,5 @@ Mengué
 dolmen
 lib
 Pod
-Spell
 Wordlist
+Spell
