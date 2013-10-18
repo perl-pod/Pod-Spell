@@ -69,11 +69,11 @@
    "provides" : {
       "Pod::Spell" : {
          "file" : "lib/Pod/Spell.pm",
-         "version" : "1.11"
+         "version" : "1.12"
       },
       "Pod::Wordlist" : {
          "file" : "lib/Pod/Wordlist.pm",
-         "version" : "1.11"
+         "version" : "1.12"
       }
    },
    "release_status" : "stable",
@@ -88,7 +88,7 @@
          "web" : "https://github.com/xenoterracide/pod-spell"
       }
    },
-   "version" : "1.11",
+   "version" : "1.12",
    "x_contributors" : [
       "David Golden <dagolden@cpan.org>",
       "Olivier Mengu\u00e9 <dolmen@cpan.org>"
