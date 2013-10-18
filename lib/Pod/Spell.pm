@@ -327,41 +327,6 @@ will have no effect, since  any occurrences of virtEE<lt>ugrave>
 don't look like a normal human-language word anyway, and so would
 be screened out before the stopword list is consulted anyway.
 
-
-=head1 USING Pod::Spell
-
-My personal advice:
-
-=over
-
-=item *
-
-Write your documentation in Pod.  Pod is described in
-L<perlpod>.  And L<perlmodstyle> has some
-advice on content.  This is the stage where you want to make sure
-you say everything you should, have good and working examples,
-and have coherent grammar.
-
-=item *
-
-Run it through podchecker.  This will report all sorts of problems with
-your Pod; you may choose to ignore some of these problems.  Some, like
-"*** WARNING: Unknown entity EE<lt>qacute>...", you should pay attention
-to.
-
-=item *
-
-Once podchecker errors have been tended to, spellcheck the pod by
-running it through podspell / Pod::Spell.  For any misspellings that are
-reported in the Pod::Spell-formatted text, fix them in the
-original.  Repeat until there's no complaints.
-
-=item *
-
-Run it through podchecker again just for good measure.
-
-=back
-
 =method new
 
 =method command
