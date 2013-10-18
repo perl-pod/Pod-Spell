@@ -151,7 +151,7 @@ __END__
 
 =pod
 
-=encoding ISO-8859-1
+=encoding latin1
 
 =head1 NAME
 

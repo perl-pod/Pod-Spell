@@ -71,9 +71,6 @@ ENCODINGS
             $ps->parse_from_filehandle( $infile, $outfile );
 
 ADDING STOPWORDS
-    NOTE: Pod::Spell makes a single pass over the POD. Stopwords must be
-    added before they show up in the POD.
-
     You can add stopwords on a per-document basis with "=for stopwords" /
     "=for :stopwords" regions, like so:
 
@@ -129,25 +126,25 @@ ADDING STOPWORDS
     word anyway, and so would be screened out before the stopword list is
     consulted anyway.
 
-USING Pod::Spell
-    My personal advice:
+BUGS AND LIMITATIONS
+  finding stopwords defind with "=for"
+    NOTE: Pod::Spell makes a single pass over the POD. Stopwords must be
+    added before they show up in the POD.
 
-    *   Write your documentation in Pod. Pod is described in perlpod. And
-        perlmodstyle has some advice on content. This is the stage where you
-        want to make sure you say everything you should, have good and
-        working examples, and have coherent grammar.
+  finding the wordlist
+    Pod::Spell uses File::ShareDir::ProjectDistDir if you're getting errors
+    about the worldlist being missing, chances are it's a problem with its
+    heuristics. Set "PATH_ISDEV_DEBUG=1" or "PATH_FINDDEV_DEBUG=1", or both
+    in your environment for debuging, and then file a bug with
+    File::ShareDir::ProjectDistDir if necessary.
 
-    *   Run it through podchecker. This will report all sorts of problems
-        with your Pod; you may choose to ignore some of these problems.
-        Some, like "*** WARNING: Unknown entity E<qacute>...", you should
-        pay attention to.
-
-    *   Once podchecker errors have been tended to, spellcheck the pod by
-        running it through podspell / Pod::Spell. For any misspellings that
-        are reported in the Pod::Spell-formatted text, fix them in the
-        original. Repeat until there's no complaints.
-
-    *   Run it through podchecker again just for good measure.
+HINT
+    If you feed output of Pod::Spell into your word processor and run a
+    spell-check, make sure you're *not* also running a grammar-check --
+    because Pod::Spell drops words that it thinks are Perl symbols, jargon,
+    or stopwords, this means you'll have ungrammatical sentences, what with
+    words being missing and all. And you don't need a grammar checker to
+    tell you that.
 
 SEE ALSO
     Pod::Wordlist
@@ -157,14 +154,6 @@ SEE ALSO
     podchecker also known as Pod::Checker
 
     perlpod, perlpodspec
-
-HINT
-    If you feed output of Pod::Spell into your word processor and run a
-    spell-check, make sure you're *not* also running a grammar-check --
-    because Pod::Spell drops words that it thinks are Perl symbols, jargon,
-    or stopwords, this means you'll have ungrammatical sentences, what with
-    words being missing and all. And you don't need a grammar checker to
-    tell you that.
 
 BUGS
     Please report any bugs or feature requests on the bugtracker website

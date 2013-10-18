@@ -205,7 +205,7 @@ __END__
 
 =pod
 
-=encoding ISO-8859-1
+=encoding latin1
 
 =head1 NAME
 
@@ -296,9 +296,6 @@ with wide characters.
 
 =head1 ADDING STOPWORDS
 
-B<NOTE:> Pod::Spell makes a single pass over the POD.  Stopwords
-must be added B<before> they show up in the POD.
-
 You can add stopwords on a per-document basis with
 C<"=for stopwords"> / C<"=for :stopwords"> regions, like so:
 
@@ -356,39 +353,29 @@ will have no effect, since  any occurrences of virtEE<lt>ugrave>
 don't look like a normal human-language word anyway, and so would
 be screened out before the stopword list is consulted anyway.
 
-=head1 USING Pod::Spell
+=head1 BUGS AND LIMITATIONS
 
-My personal advice:
+=head2 finding stopwords defind with C<=for>
 
-=over
+B<NOTE:> Pod::Spell makes a single pass over the POD.  Stopwords
+must be added B<before> they show up in the POD.
 
-=item *
+=head2 finding the wordlist
 
-Write your documentation in Pod.  Pod is described in
-L<perlpod>.  And L<perlmodstyle> has some
-advice on content.  This is the stage where you want to make sure
-you say everything you should, have good and working examples,
-and have coherent grammar.
+Pod::Spell uses L<File::ShareDir::ProjectDistDir> if you're getting errors
+about the worldlist being missing, chances are it's a problem with its
+heuristics. Set C<PATH_ISDEV_DEBUG=1> or C<PATH_FINDDEV_DEBUG=1>, or both in
+your environment for debuging, and then file a bug with
+L<File::ShareDir::ProjectDistDir> if necessary.
 
-=item *
+=head1 HINT
 
-Run it through podchecker.  This will report all sorts of problems with
-your Pod; you may choose to ignore some of these problems.  Some, like
-"*** WARNING: Unknown entity EE<lt>qacute>...", you should pay attention
-to.
-
-=item *
-
-Once podchecker errors have been tended to, spellcheck the pod by
-running it through podspell / Pod::Spell.  For any misspellings that are
-reported in the Pod::Spell-formatted text, fix them in the
-original.  Repeat until there's no complaints.
-
-=item *
-
-Run it through podchecker again just for good measure.
-
-=back
+If you feed output of Pod::Spell into your word processor and run a
+spell-check, make sure you're I<not> also running a grammar-check -- because
+Pod::Spell drops words that it thinks are Perl symbols, jargon, or
+stopwords, this means you'll have ungrammatical sentences, what with
+words being missing and all.  And you don't need a grammar checker
+to tell you that.
 
 =head1 SEE ALSO
 
@@ -399,15 +386,6 @@ L<Pod::Parser|Pod::Parser>
 L<podchecker|podchecker> also known as L<Pod::Checker|Pod::Checker>
 
 L<perlpod|perlpod>, L<perlpodspec>
-
-=head1 HINT
-
-If you feed output of Pod::Spell into your word processor and run a
-spell-check, make sure you're I<not> also running a grammar-check -- because
-Pod::Spell drops words that it thinks are Perl symbols, jargon, or
-stopwords, this means you'll have ungrammatical sentences, what with
-words being missing and all.  And you don't need a grammar checker
-to tell you that.
 
 =head1 BUGS
 
