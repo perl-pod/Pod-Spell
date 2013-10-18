@@ -357,7 +357,7 @@ be screened out before the stopword list is consulted anyway.
 
 =head2 finding stopwords defined with C<=for>
 
-B<NOTE:> Pod::Spell makes a single pass over the POD.  Stopwords
+Pod::Spell makes a single pass over the POD.  Stopwords
 must be added B<before> they show up in the POD.
 
 =head2 finding the wordlist

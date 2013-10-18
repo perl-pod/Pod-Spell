@@ -128,8 +128,8 @@ ADDING STOPWORDS
 
 BUGS AND LIMITATIONS
   finding stopwords defined with "=for"
-    NOTE: Pod::Spell makes a single pass over the POD. Stopwords must be
-    added before they show up in the POD.
+    Pod::Spell makes a single pass over the POD. Stopwords must be added
+    before they show up in the POD.
 
   finding the wordlist
     Pod::Spell uses File::ShareDir::ProjectDistDir if you're getting errors
