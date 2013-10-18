@@ -267,9 +267,6 @@ with wide characters.
 
 =head1 ADDING STOPWORDS
 
-B<NOTE:> Pod::Spell makes a single pass over the POD.  Stopwords
-must be added B<before> they show up in the POD.
-
 You can add stopwords on a per-document basis with
 C<"=for stopwords"> / C<"=for :stopwords"> regions, like so:
 
@@ -341,17 +338,20 @@ be screened out before the stopword list is consulted anyway.
 
 	$self->stopwords->isa('Pod::WordList'); # true
 
-=head1 SEE ALSO
+=head1 BUGS AND LIMITATIONS
 
-L<Pod::Wordlist|Pod::Wordlist>
+=head2 finding stopwords defined with C<=for>
 
-L<Pod::Parser|Pod::Parser>
+Pod::Spell makes a single pass over the POD.  Stopwords
+must be added B<before> they show up in the POD.
 
-L<podchecker|podchecker> also known as L<Pod::Checker|Pod::Checker>
+=head2 finding the wordlist
 
-L<perlpod|perlpod>, L<perlpodspec>
-
-
+Pod::Spell uses L<File::ShareDir::ProjectDistDir> if you're getting errors
+about the wordlist being missing, chances are it's a problem with its
+heuristics. Set C<PATH_ISDEV_DEBUG=1> or C<PATH_FINDDEV_DEBUG=1>, or both in
+your environment for debugging, and then file a bug with
+L<File::ShareDir::ProjectDistDir> if necessary.
 
 =head1 HINT
 
@@ -361,5 +361,15 @@ Pod::Spell drops words that it thinks are Perl symbols, jargon, or
 stopwords, this means you'll have ungrammatical sentences, what with
 words being missing and all.  And you don't need a grammar checker
 to tell you that.
+
+=head1 SEE ALSO
+
+L<Pod::Wordlist|Pod::Wordlist>
+
+L<Pod::Parser|Pod::Parser>
+
+L<podchecker|podchecker> also known as L<Pod::Checker|Pod::Checker>
+
+L<perlpod|perlpod>, L<perlpodspec>
 
 =cut
