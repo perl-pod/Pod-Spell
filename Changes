@@ -1,6 +1,7 @@
 Revision history Pod-Spell
 
 1.12      2013-10-17
+	- improve documentation
 
 1.11      2013-10-17
 	- fix shebang to /usr/bin/perl for EUMM replacment GH #13 (dolmen)
