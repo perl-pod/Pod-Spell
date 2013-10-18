@@ -10,6 +10,7 @@ bin/podspell
 lib/Pod/Spell.pm
 lib/Pod/Wordlist.pm
 perlcritic.rc
+share/wordlist
 t/00-compile.t
 t/000-report-versions-tiny.t
 t/author-critic.t
@@ -21,7 +22,6 @@ t/get-stopwords.t
 t/release-cpan-changes.t
 t/release-dist-manifest.t
 t/release-distmeta.t
-t/release-kwalitee.t
 t/release-meta-json.t
 t/release-minimum-version.t
 t/release-mojibake.t
@@ -32,3 +32,4 @@ t/release-portability.t
 t/release-test-version.t
 t/release-unused-vars.t
 t/text-block.t
+t/utf8.t

@@ -10,10 +10,12 @@ build_requires:
   IPC::Open3: 0
   Test::Deep: 0
   Test::More: 0.88
+  utf8: 0
 configure_requires:
   ExtUtils::MakeMaker: 6.30
+  File::ShareDir::Install: 0.03
 dynamic_config: 0
-generated_by: 'Dist::Zilla version 4.300037, CPAN::Meta::Converter version 2.132140'
+generated_by: 'Dist::Zilla version 4.300039, CPAN::Meta::Converter version 2.132830'
 license: artistic_2
 meta-spec:
   url: http://module-build.sourceforge.net/META-spec-v1.4.html
@@ -25,23 +27,30 @@ no_index:
 provides:
   Pod::Spell:
     file: lib/Pod/Spell.pm
-    version: 1.07
+    version: 1.11
   Pod::Wordlist:
     file: lib/Pod/Wordlist.pm
-    version: 1.07
+    version: 1.11
 requires:
   Carp: 0
+  Class::Tiny: 0
+  File::ShareDir::ProjectDistDir: 0
+  File::Slurp: 0
+  Lingua::EN::Inflect: 0
   Pod::Escapes: 0
   Pod::Parser: 0
   Text::Wrap: 0
   base: 0
   constant: 0
   locale: 0
-  perl: 5.006
+  perl: 5.008
   strict: 0
   warnings: 0
 resources:
   bugtracker: https://github.com/xenoterracide/pod-spell/issues
   homepage: https://metacpan.org/dist/Pod-Spell
   repository: git://github.com/xenoterracide/pod-spell.git
-version: 1.07
+version: 1.11
+x_contributors:
+  - 'David Golden <dagolden@cpan.org>'
+  - 'Olivier Mengué <dolmen@cpan.org>'

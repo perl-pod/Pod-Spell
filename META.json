@@ -5,7 +5,7 @@
       "Caleb Cushing <xenoterracide@gmail.com>"
    ],
    "dynamic_config" : 0,
-   "generated_by" : "Dist::Zilla version 4.300037, CPAN::Meta::Converter version 2.132140",
+   "generated_by" : "Dist::Zilla version 4.300039, CPAN::Meta::Converter version 2.132830",
    "license" : [
       "artistic_2"
    ],
@@ -22,7 +22,8 @@
    "prereqs" : {
       "configure" : {
          "requires" : {
-            "ExtUtils::MakeMaker" : "6.30"
+            "ExtUtils::MakeMaker" : "6.30",
+            "File::ShareDir::Install" : "0.03"
          }
       },
       "develop" : {
@@ -30,7 +31,6 @@
             "Pod::Coverage::TrustPod" : "0",
             "Test::CPAN::Changes" : "0.19",
             "Test::CPAN::Meta" : "0",
-            "Test::Kwalitee" : "1.08",
             "Test::Pod" : "1.41",
             "Test::Pod::Coverage" : "1.08",
             "version" : "0.9901"
@@ -39,13 +39,17 @@
       "runtime" : {
          "requires" : {
             "Carp" : "0",
+            "Class::Tiny" : "0",
+            "File::ShareDir::ProjectDistDir" : "0",
+            "File::Slurp" : "0",
+            "Lingua::EN::Inflect" : "0",
             "Pod::Escapes" : "0",
             "Pod::Parser" : "0",
             "Text::Wrap" : "0",
             "base" : "0",
             "constant" : "0",
             "locale" : "0",
-            "perl" : "5.006",
+            "perl" : "5.008",
             "strict" : "0",
             "warnings" : "0"
          }
@@ -57,18 +61,19 @@
             "IO::Handle" : "0",
             "IPC::Open3" : "0",
             "Test::Deep" : "0",
-            "Test::More" : "0.88"
+            "Test::More" : "0.88",
+            "utf8" : "0"
          }
       }
    },
    "provides" : {
       "Pod::Spell" : {
          "file" : "lib/Pod/Spell.pm",
-         "version" : "1.07"
+         "version" : "1.11"
       },
       "Pod::Wordlist" : {
          "file" : "lib/Pod/Wordlist.pm",
-         "version" : "1.07"
+         "version" : "1.11"
       }
    },
    "release_status" : "stable",
@@ -83,6 +88,10 @@
          "web" : "https://github.com/xenoterracide/pod-spell"
       }
    },
-   "version" : "1.07"
+   "version" : "1.11",
+   "x_contributors" : [
+      "David Golden <dagolden@cpan.org>",
+      "Olivier Mengu\u00e9 <dolmen@cpan.org>"
+   ]
 }
 

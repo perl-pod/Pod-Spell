@@ -1,9 +1,9 @@
-#!/usr/bin/env perl
+#!/usr/bin/perl
 use strict;
 use warnings;
 use Pod::Spell;
 
-our $VERSION = '1.07'; # VERSION
+our $VERSION = '1.11'; # VERSION
 
 if(@ARGV) {  # iterate over files, sending to STDOUT
   foreach my $x (@ARGV) {
@@ -20,13 +20,15 @@ __END__
 
 =pod
 
+=encoding utf-8
+
 =head1 NAME
 
 podspell - pod spell checking command line interface
 
 =head1 VERSION
 
-version 1.07
+version 1.11
 
 =head1 SYNOPSIS
 

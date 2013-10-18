@@ -2,22 +2,22 @@ use strict;
 use warnings;
 use Test::More;
 use Test::Deep;
-use Pod::Spell;
+use Pod::Wordlist;
 
-my $p = new_ok 'Pod::Spell';
+my $p = new_ok 'Pod::Wordlist';
 
-$p->_get_stopwords_from( 'foo bar baz' );
+$p->learn_stopwords( 'foo bar baz' );
 
-cmp_deeply [ keys( %{ $p->{spell_stopwords} } ) ],
+cmp_deeply [ keys( %{ $p->wordlist } ) ],
 	superbagof(qw(foo bar baz )),
 	'stopwords added'
 	;
 
-$p->_get_stopwords_from( '!foo' );
+$p->learn_stopwords( '!foo' );
 
-cmp_deeply [ keys( %{ $p->{spell_stopwords} } ) ], superbagof(qw( bar baz )),
+cmp_deeply [ keys( %{ $p->wordlist } ) ], superbagof(qw( bar baz )),
 	'stopwords still exist';
 
-ok ! exists $p->{spell_stopwords}{foo}, 'foo was removed';
+ok ! exists $p->wordlist->{foo}, 'foo was removed';
 
 done_testing;

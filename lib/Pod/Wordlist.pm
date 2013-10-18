@@ -1,21 +1,157 @@
 package Pod::Wordlist;
 use strict;
 use warnings;
+use File::Slurp                    qw( read_file );
+use Lingua::EN::Inflect            qw( PL        );
+use File::ShareDir::ProjectDistDir qw( dist_file );
 
-our $VERSION = '1.07'; # VERSION
+use Class::Tiny {
+    wordlist  => \&_copy_wordlist,
+    _is_debug => 0,
+    no_wide_chars => 0,
+};
+
+use constant MAXWORDLENGTH => 50; ## no critic ( ProhibitConstantPragma )
+
+our $VERSION = '1.11'; # VERSION
 
 our %Wordlist; ## no critic ( Variables::ProhibitPackageVars )
 
-while ( <DATA> ) {
+sub _copy_wordlist { return { %Wordlist } }
+
+foreach ( read_file( dist_file('Pod-Spell', 'wordlist') ) ) {
 	chomp( $_ );
 	$Wordlist{$_} = 1;
+	$Wordlist{PL($_)} = 1;
+}
+
+
+sub learn_stopwords {
+	my ( $self, $text ) = @_;
+	my $stopwords = $self->wordlist;
+
+	while ( $text =~ m<(\S+)>g ) {
+		my $word = $1;
+		if ( $word =~ m/^!(.+)/s ) {
+			# "!word" deletes from the stopword list
+			my $negation = $1;
+			# different $1 from above
+			delete $stopwords->{$negation};
+			delete $stopwords->{PL($negation)};
+			print "Unlearning stopword <$negation>\n" if $self->_is_debug;
+		}
+		else {
+			$word =~ s{'s$}{}; # we strip 's when checking so strip here, too
+			$stopwords->{$word} = 1;
+			$stopwords->{PL($word)} = 1;
+			print "Learning stopword   <$word>\n" if $self->_is_debug;
+		}
+	}
+	return;
+}
+
+
+sub is_stopword {
+	my ($self, $word) = @_;
+	my $stopwords = $self->wordlist;
+	if ( exists $stopwords->{$word} or exists $stopwords->{ lc $word } ) {
+		print "  Rejecting   <$word>\n" if $self->_is_debug;
+		return 1;
+	}
+	return;
+}
+
+
+sub strip_stopwords {
+	my ($self, $text) = @_;
+
+	# Count the things in $text
+	print "Content: <", $text, ">\n" if $self->_is_debug;
+
+	my @words = grep { length($_) < MAXWORDLENGTH } split " ", $text;
+
+	for ( @words ) {
+		print "Parsing word: <$_>\n" if $self->_is_debug;
+		# some spellcheckers can't cope with anything but Latin1
+		$_ = '' if $self->no_wide_chars && /[^\x00-\xFF]/;
+
+		# strip leading punctuation
+		s/^[\(\[\{\'\"\:\;\,\?\!\.]+//;
+
+		# keep everything up to trailing punctuation, not counting
+		# periods (for abbreviations like "Ph.D."), single-quotes
+		# (for contractions like "don't") or colons (for package
+		# names like "Foo::Bar")
+		s/^([^\)\]\}\"\;\,\?\!]+).*$/$1/;
+
+		# strip trailing single-quote, periods or colons; after this
+		# we have a word that could have internal periods or quotes
+		s/[\.\'\:]+$//;
+
+		# strip possessive
+		s/'s$//i;
+
+		# zero out variable names or things with internal symbols,
+		# since those are probably code expressions outside a C<>
+		my $is_sigil   = /^[\&\%\$\@\:\<\*\\\_]/;
+		my $is_strange = /[\%\^\&\#\$\@\_\<\>\(\)\[\]\{\}\\\*\:\+\/\=\|\`\~]/;
+		$_ = '' if $is_sigil || $is_strange;
+
+		# stop if there are no "word" characters left; if it's just
+		# punctuation that we didn't happen to strip or it's weird glyphs,
+		# the spellchecker won't do any good anyway
+		next unless /\w/;
+
+		print "  Checking as <$_>\n" if $self->_is_debug;
+
+		# replace it with any stopword or stopword parts stripped
+		$_ = $self->_strip_a_word($_);
+
+		print "  Keeping as  <$_>\n" if $_ && $self->_is_debug;
+	}
+
+	return join(" ", grep { length } @words );
+}
+
+sub _strip_a_word {
+	my ($self, $word) = @_;
+	my $remainder;
+
+	# internal period could be abbreviations, so check with
+	# trailing period restored and drop or keep on that basis
+	if ( /\./ ) {
+		my $abbr = "$word.";
+		$remainder = $self->is_stopword($abbr) ? '' : $abbr;
+	}
+	# try word as-is, including possible hyphenation vs stoplist
+	elsif ($self->is_stopword($word) ) {
+		$remainder = '';
+	}
+	# check individual parts of hyphenated word, keep whatever isn't a
+	# stopword as individual words
+	elsif ( $word =~ /-/ ) {
+		my @keep;
+		for my $part ( split /-/, $word ) {
+			push @keep, $part if ! $self->is_stopword( $part );
+		}
+		$remainder = join(" ", @keep) if @keep;
+	}
+	# otherwise, we just keep it
+	else {
+		$remainder = $word;
+	}
+	return $remainder;
 }
 
 1;
 
 # ABSTRACT: English words that come up in Perl documentation
 
+__END__
+
 =pod
+
+=encoding utf-8
 
 =head1 NAME
 
@@ -23,27 +159,68 @@ Pod::Wordlist - English words that come up in Perl documentation
 
 =head1 VERSION
 
-version 1.07
+version 1.11
 
 =head1 DESCRIPTION
 
 Pod::Wordlist is used by L<Pod::Spell|Pod::Spell>, providing a set of words
-(as keys in the hash C<%Pod::Spell::Wordlist>) that are English jargon
-words that come up in Perl documentation, but which are not to be found
-in general English lexicons.  (For example: autovivify, backreference,
-chroot, stringify, wantarray.)
+that are English jargon words that come up in Perl documentation, but which are
+not to be found in general English lexicons.  (For example: autovivify,
+backreference, chroot, stringify, wantarray.)
 
 You can also use this wordlist with your word processor by just
-pasting C<Pod/Wordlist.pm>'s content into your wordprocessor, deleting
+pasting C<share/wordlist>'s content into your wordprocessor, deleting
 the leading Perl code so that only the wordlist remains, and then
 spellchecking this resulting list and adding every word in it to your
 private lexicon.
 
-=head1 CONTRIBUTING
+=head1 ATTRIBUTES
+
+=head2 wordlist
+
+	ref $self->wordlist eq 'HASH'; # true
+
+This is the instance of the wordlist
+
+=head2 no_wide_chars
+
+If true, words with characters outside the Latin-1 range C<0x00> to C<0xFF> will
+be stripped like stopwords.
+
+=head1 METHODS
+
+=head2 learn_stopwords
+
+    $wordlist->learn_stopwords( $text );
+
+Modifies the stopword list based on a text block. See the rules
+for <adding stopwords|Pod::Spell/ADDING STOPWORDS> for details.
+
+=head2 is_stopword
+
+	if ( $wordlist->is_stopword( $word ) ) { ... }
+
+Returns true if the word is found in the stopword list.
+
+=head2 strip_stopwords
+
+    my $out = $wordlist->strip_stopwords( $text );
+
+Returns a string with space separated words from the original
+text with stopwords removed.
+
+=head1 WORDLIST
 
 Note that the scope of this file is only English, specifically American
 English.  (But you may find in useful to incorporate into your own
 lexicons, even if they are for other dialects/languages.)
+
+remove any q{'s} before adding to the list.
+
+The list should be sorted and uniqued. The following will work (with GNU
+Coreutils ).
+
+	sort share/wordlist -u > /tmp/sorted && mv /tmp/sorted share/wordlist
 
 =head1 BUGS
 
@@ -77,1216 +254,3 @@ This is free software, licensed under:
   The Artistic License 2.0 (GPL Compatible)
 
 =cut
-
-__DATA__
-Aas
-ACLs
-ActivePerl
-ActiveState
-Albery
-Amiga
-AmigaOS
-Aminet
-AutoLoader
-absolutize
-absolutized
-absolutizing
-accessor
-accessors
-acos
-addset
-aliased
-aliasing
-allocs
-alphabetics
-alphanumerics
-API
-APIs
-arcana
-args
-arrayref
-asctime
-asin
-associativity
-atan
-atexit
-atime
-atof
-atoi
-atol
-autocroak
-autoflush
-autoflushing
-autogenerate
-autogenerated
-autoincrement
-autoload
-autoloadable
-autoloaded
-autoloading
-automagically
-autoprocess
-autoquoting
-autosplit
-autouse
-autovivification
-autovivified
-autovivifies
-autovivify
-autovivifying
-awk
-Bunce
-Bytecode
-backends
-backgrounded
-backgrounding
-backlink
-backquotes
-backquoting
-backreference
-backreferences
-backreferencing
-backslashed
-backslashing
-backtick
-backticks
-backtrace
-backtraces
-backwhack
-backwhacking
-bareword
-barewords
-basename
-bidirectional
-binmode
-bistable
-bitfields
-bitstrings
-bitwise
-blib
-blockdenting
-bool
-boolean
-booleans
-bsearch
-bugfix
-bugfixes
-bugfixing
-bugtracker
-buildable
-builtin
-builtins
-byacc
-bytecode
-byteorder
-byteperl
-bytestream
-CGIs
-CPAN's
-CPAN.pm
-Cwd
-calloc
-canonicalize
-capturable
-catdir
-catfile
-ccflags
-cd
-cetera
-changelog
-charset
-chdir
-checksumming
-chmod
-chown
-chr
-chroot
-chrooted
-clearerr
-clickable
-closebrace
-closedir
-cmp
-codepage
-codepoint
-coderef
-coderefs
-commifies
-compilable
-computerese
-config
-configurability
-coprocess
-coprocesses
-copyable
-coredump
-coredumps
-coroutines
-cos
-cosh
-cperl
-cpp
-creat
-cron
-cruft
-csh
-css
-ctermid
-ctime
-curdir
-curlies
-cuserid
-cyclicities
-cyclicity
-cygwin
-Debian
-DirHandle
-Dominus
-DotFiles
-DTDs
-DynaLoader
-daemonization
-datagram
-datagrams
-datastream
-datatypes
-dbmclose
-dbmopen
-deallocate
-deallocated
-deallocates
-deallocation
-decompiler
-delset
-delurk
-deparse
-dequeue
-deref
-dereference
-dereferenced
-dereferencer
-dereferencers
-dereferencing
-dereffing
-diffs
-difftime
-dirhandle
-djgpp
-dmake
-dosish
-downcases
-drivename
-EXEs
-egrep
-egroup
-elsif
-emacs
-emptyset
-encipherment
-encodings
-endgrent
-endhostent
-endian
-endnetent
-endprotoent
-endpwent
-endservent
-enqueue
-enqueues
-enum
-eof
-eq
-errno
-et
-euid
-eval
-evalled
-evals
-execl
-execle
-execlp
-execv
-execve
-execvp
-FAQs
-Fibonacci
-FileHandle
-FreezeThaw
-Friedl
-fabs
-fclose
-fcntl
-fdopen
-feof
-ferror
-fflush
-fgetc
-fgetpos
-fgets
-fifo
-fileglob
-filehandle
-filehandle's
-filehandles
-filemodes
-fileno
-filesize
-filespec
-filespecs
-filesystem
-filesystem's
-filesystems
-filetest
-filetests
-fillset
-fixpath
-fmod
-fmt
-followups
-fopen
-foreach
-foregrounded
-formatter
-formfeed
-formline
-formlines
-fpathconf
-fprintf
-fputc
-fputs
-fread
-freopen
-frontend
-fscanf
-fseek
-fsetpos
-fstat
-ftell
-ftok
-func
-fwrite
-Getopts
-GIFs
-Gisle
-Google
-gcc
-gcos
-getall
-getattr
-getc
-getcc
-getcflag
-getchar
-getcwd
-getegid
-getenv
-geteuid
-getgid
-getgrent
-getgrgid
-getgrnam
-getgroups
-gethostbyaddr
-gethostbyname
-gethostent
-getiflag
-getispeed
-getlflag
-getlogin
-getncnt
-getnetbyaddr
-getnetbyname
-getnetent
-getoflag
-getospeed
-getpeername
-getpgrp
-getpid
-getppid
-getpriority
-getprotobyname
-getprotobynumber
-getprotoent
-getpwent
-getpwnam
-getpwuid
-getservbyname
-getservbyport
-getservent
-getsockname
-gettimeofday
-getuid
-getval
-getzcnt
-gid
-gids
-glibc
-globals
-globbed
-globbing
-globrefs
-gmtime
-goto
-gotos
-grandfathered
-grep
-grepped
-grepping
-greps
-groff
-gt
-gunzip
-gvim
-gzip
-gzipped
-Hietaniemi
-Hurd
-hardcoded
-hardcoding
-hashref
-htgroup
-htmldir
-htmlroot
-htpasswd
-httpd
-Ilya
-iconv
-idempotency
-inf
-inferencing
-infile
-initializer
-inlined
-inlining
-inode
-inplace
-int
-interconversion
-interconverted
-interprocess
-ints
-ioctl
-isalnum
-isalpha
-isatty
-iscntrl
-isdigit
-isgraph
-islower
-ismember
-isprint
-ispunct
-isspace
-isupper
-isxdigit
-iterator
-Jarkko
-japh
-jpg
-Kerberos
-Kernighan
-ksh
-LaTeX
-Lenzo
-Lukka
-l,strtold
-lastkey
-lc
-lcfirst
-ldexp
-ldiv
-lex
-lexer
-lexers
-lexicals
-lexing
-lexperl
-libdes
-libnet
-libwww
-localeconv
-localhost
-localtime
-lockf
-logfile
-logicals
-longjmp
-lookahead
-lookbehind
-lseek
-lt
-lvalue
-lvalues
-lwp
-MachTen
-MacOS
-MacPerl
-Makefile
-Mexico
-Mozilla
-mailx
-makefile
-makefiles
-malloc
-manpage
-manpages
-matlab
-maxima
-mblen
-mbstowcs
-mbtowc
-memchr
-memcmp
-memcpy
-memmove
-memoization
-memoize
-memoized
-memoizing
-memset
-metacharacter
-metacharacters
-metaclasses
-metaconfig
-metainformation
-metaquoting
-microtuning
-miniperl
-miscompiled
-misconfiguration
-misconfigured
-mkdir
-mkdtemp
-mkfifo
-mkstemp
-mkstemps
-mktemp
-mktime
-modf
-mortalize
-mortalized
-mortalizes
-mountpoint
-msgctl
-msgget
-mtime
-multibyte
-multicharacter
-multihomed
-multiline
-multiprocess
-multithreadable
-multivalued
-multiwindow
-munition
-mutator
-mutators
-mutexes
-mv
-mysql
-NaN
-NaNs
-Nandor
-Napster
-New
-nawk
-ncftp
-ndbm
-ne
-newline
-newlines
-nmake
-nonabortive
-nonblocking
-nonthreaded
-noop
-nosuid
-nroff
-numerics
-nvi
-nybble
-nybbles
-Orcish
-Orwant
-obsoleted
-occurence
-of
-offsetof
-opcode
-opcodes
-openbrace
-opendir
-opnumber
-ord
-orientedness
-outdent
-outfile
-overloadable
-overpackage
-overpackages
-overwriteable
-Perl
-Perl's
-Perlis
-Perlish
-PodParser
-Prymmer
-Psion
-parens
-passwd
-passphrase
-patchlevel
-pathconf
-peeraddr
-peerhost
-peerport
-perl
-perl's
-perlaix
-perlamiga
-perlbook
-perlboot
-perlbootc
-perlbot
-perlbug
-perlcc
-perlclib
-perlcritic
-perlcompile
-perlcygwin
-perldata
-perldbmfilter
-perldebguts
-perldebtut
-perldelta
-perldiag
-perldoc
-perldos
-perldsc
-perlebcdic
-perlepoc
-perlfaq
-perlfilter
-perlfork
-perlform
-perlhack
-perlhist
-perlhpux
-perlintern
-perlio
-perliotut
-perlipc
-perllexwarn
-perllol
-perlmachten
-perlmacos
-perlmain
-perlmodinstall
-perlmpeix
-perlnewmod
-perlnumber
-perlobj
-perlopentut
-perlpod
-perlport
-perlref
-perlreftut
-perlrequick
-perlretut
-perlrun
-perls
-perlsh
-perlsolaris
-perlstyle
-perlsyn
-perlthrtut
-perltoc
-perltodo
-perltootc
-perltrap
-perlunicode
-perlutil
-perlvos
-perlxs
-perlxstut
-perror
-pessimal
-pessimize
-petabytes
-phash
-pid
-pkunzip
-plugin
-podchecker
-podified
-podlators
-podpath
-podroot
-podselect
-polymorphic
-polymorphing
-postamble
-pow
-pragma
-pragmas
-pragmata
-preallocate
-preallocated
-preallocation
-prebuilt
-precompute
-precomputed
-predeclaration
-predeclare
-predeclared
-prepend
-prepended
-prepending
-printf
-processable
-procfs
-pseudoclass
-ptr
-pumpking
-pumpkings
-putc
-putchar
-Quicksort
-qr
-qsort
-quotemeta
-qx
-README.posix?bc
-ReadLine
-Redhat
-RemotePort
-RFCs
-rand
-rdo
-readdir
-readline
-readlink
-readpipe
-realloc
-reals
-realtime
-recomputation
-recompute
-recomputing
-recurse
-recv
-redeclaration
-redistributable
-regex
-regexes
-regexp
-regexps
-reimplement
-renderable
-renice
-reparse
-representable
-reswap
-reval
-rewinddir
-rindex
-rmdir
-roff
-rootdir
-rsh
-rsync
-runnable
-rvalue
-Schwartzian
-SelfLoading
-SourceForge
-STDIN
-STDOUT
-STDERR
-SVs
-Sx
-sbrace%s
-scanf
-scoping
-sed
-seekdir
-segfault
-segfaults
-semctl
-semget
-semop
-sendmail
-setall
-setattr
-setcc
-setcflag
-setenv
-setgid
-setgrent
-sethostent
-setiflag
-setispeed
-setjmp
-setlflag
-setlocale
-setlogsock
-setnetent
-setoflag
-setospeed
-setpgid
-setpriority
-setprotoent
-setpwent
-setregid
-setreuid
-setservent
-setsid
-setuid
-setval
-sfio
-sh
-shmctl
-shmget
-shmread
-shmwrite
-sigaction
-sighandler
-siglongjmp
-sigpending
-sigprocmask
-sigsetjmp
-sigsuspend
-sigtrap
-sinh
-sizeof
-snd
-sockaddr
-sockdomain
-sockhost
-sockport
-socktype
-soundex
-spam
-specifier
-specifiers
-spellcheck
-spellchecks
-spellchecking
-sprintf
-sqrt
-srand
-sscanf
-statefulness
-statfs
-statics
-stdio
-stdios
-stopword
-stopwords
-strcat
-strchr
-strcmp
-strcoll
-strcpy
-strcspn
-strerror
-strftime
-stringification
-stringified
-stringify
-stringwise
-strlen
-strncat
-strncmp
-strncpy
-strpbrk
-strrchr
-strspn
-strstr
-strtod
-strtok
-strtol
-strtoul
-struct
-structs
-strxfrm
-stty
-subclassed
-subclassing
-subdirs
-subexpression
-subexpressions
-submatch
-submatches
-subnodes
-subpatterns
-subprocess
-subprocesses
-subscriptable
-substr
-substring
-substrings
-subtree
-subtrees
-sudo
-suidperl
-superclass
-superclass's
-superclasses
-superuser
-symlink
-symlinks
-sysadmin
-syscall
-syscalls
-sysconf
-syslog
-sysopen
-sysread
-sysseek
-syswrite
-Tcl
-Tenon
-TeX
-Tk
-Tk's
-Torkington
-Tuomas
-Turoff
-taintedness
-tanh
-tarball
-tarballs
-tcdrain
-tcflow
-tcflush
-tcgetattr
-tcgetpgrp
-tcsendbreak
-tcsetpgrp
-tcsh
-telldir
-tempdir
-tempfile
-templating
-tempnam
-termcap
-termios
-textarea
-textareas
-threadedness
-timegm
-timelocal
-timezone
-titlecase
-tmpfile
-tmpnam
-tokenizer
-tolower
-toupper
-tr
-transcoding
-tridirectional
-trn
-tty
-ttyname
-ttys
-twip
-twips
-typechecking
-typedefs
-typeglob
-typeglobs
-typemap
-typemaps
-tzname
-tzset
-University
-Unixish
-URI.pm
-URIs
-uc
-ucfirst
-uid
-uids
-ulimit
-umask
-umasks
-uname
-unbackslashed
-unbuffer
-unbuffered
-unbuffering
-uncastable
-unconfigured
-uncuddled
-undef
-undefine
-undefines
-undefining
-undefs
-undenting
-undump
-unescape
-unescaped
-unescaping
-unexpand
-ungetc
-unimport
-unimports
-uninitialized
-unmaintainable
-unmaintained
-unmangled
-unmemoized
-unmorph
-unmounting
-unparsable
-unportable
-unprototyped
-unreferenced
-unshift
-unshifted
-unsignedness
-unsubscripted
-untaint
-untainting
-untrap
-untrappable
-untrapped
-untrusted
-unzipper
-upcase
-updir
-upgradability
-urandom
-userinfo
-utime
-Vromans
-val
-varglob
-variadic
-vec
-vfprintf
-vgrind
-vprintf
-vsprintf
-WindowsNT
-waitpid
-wallclock
-wantarray
-wcstombs
-wctomb
-whitespace
-wordpad
-wordlist
-wordlists
-wordprocessor
-wrapsuid
-writable
-XSUB's
-XSUBs
-xor
-YAPC's
-yacc
-yylex
-zsh
- AnyEvent
-AOP
-API
-AspectJ
-Babelfish
-CamelCase
-Coro
-CPAN
-CPANPLUS
-DateTime
-DBI
-Django
-DSL
-EINTR
-EPP
-Firefox
-FirePHP
-FIXME
-GraphViz
-GUID
-GUIDs
-HTTP
-HTTPS
-IETF
-IP
-IPv4
-IPv6
-IRC
-ISP
-ISP's
-JSON
-MakeMaker
-Markdown
-Middleware
-MongoDB
-mkdn
-modulino
-MVC
-OO
-OOP
-PARC
-PHP
-Plack
-PSGI
-RDBMS
-README
-ShipIt
-SMTP
-Spiffy
-SQL
-SQLite
-SSL
-STDERR
-STDIN
-STDOUT
-svk
-TIMTOWTDI
-Unicode
-URI
-URI's
-URIs
-UTC
-UTF
-UUID
-UUIDs
-W3CDTF
-wiki
-XS
-YAML
-YAML's
-adaptee
-adaptees
-administrativa
-afterwards
-aggregator
-aggregators
-analyses
-array's
-backend
-behaviour
-benchmarked
-blog
-blogs
-breakpoint
-breakpoints
-bugtracker
-bundle's
-callback
-callbacks
-callee
-chomp
-chomps
-chunked
-configurator
-configurators
-crosscutting
-debugger's
-denormalized
-deserialized
-distname
-dotfile
-dotfiles
-filename
-filenames
-formatter
-github
-hash's
-homepage
-hostname
-indices
-init
-iteratively
-japanese
-Joseki
-kwalitee
-locator
-lookup
-lookups
-marshalling
-metadata
-middleware
-mixin
-monkeypatch
-monkeypatches
-monkeypatching
-multi
-multi-value
-multi-valued
-munge
-munger
-munging
-namespace
-namespaces
-nestable
-ok
-op
-parameterizable
-pipe's
-placeholders
-pluggable
-plugin's
-plugins
-pointcut
-pointcuts
-pre
-precompute
-precomputes
-prepends
-preprocessed
-prereq
-prereqs
-probe's
-redirections
-redispatch
-ref
-reusability
-runtime
-san
-searchable
-seekable
-segment's
-shipit
-sigils
-startup
-stopword
-stopwords
-storable
-storages
-stringification
-stringifications
-stringifies
-stringify
-subclass
-subclasses
-subdirectories
-subdirectory
-subobjects
-symlinked
-terminal's
-timestamp
-tokenizes
-toolchain
-tuple
-unblessed
-unshifts
-username
-uuid
-value's
-variable's
-vim
-wellformedness
-whitelist
-whitelists
-workflow
-workflows
-wormhole
-yml
-CISC
-RISC

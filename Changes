@@ -1,6 +1,49 @@
 Revision history Pod-Spell
 
-1.07      2013-09-08
+1.11      2013-10-17
+	- fix shebang to /usr/bin/perl for EUMM replacment GH #13 (dolmen)
+
+1.10      2013-09-27
+	[FEATURES]
+	- added 'no_wide_chars' option to strip words with such characters
+	  from the output.  This may help spellcheckers that can't cope
+	  with UTF-8
+	[CHANGED]
+	- improved punctuation stripping algorithm for better word
+	  isolation (example C<< "hello". >> now is found as "hello")
+	- strips all word that do not have at least one \w character
+	  as a spellchecker isn't likely to do anything useful with them
+	[DOCUMENTED]
+	- added recommendations for dealing with character encoding
+
+1.09      2013-09-25
+	[FIXED]
+	- stopwords with 's are learned without 's to match how they are
+	  checked
+	[CHANGED]
+	- leading and trailing punctuation is entirely stripped since the
+	  spellchecker won't care anyway.  Trailing periods are *not*
+	  stripped as they might be abbreviations ("Ph.D."), but such words
+	  are checked against the stoplist both with and without
+	  trailing periods to account for abbreviations and words at the
+	  end of a sentence.
+
+1.08      2013-09-24
+	[FIXED]
+	- hyphenated word parts are also checked against the stoplist
+	  and stripped (dagolden) GH #9
+	[DOCUMENTED]
+	- noted that stopwords must be added before words appear in Pod
+
+1.07      2013-09-14
+	- add many words
+	[FEATURES]
+	- Pod::Wordlist is an Object ( dagolden )
+	- Lingua::EN::Inflect is used to reduce requiring plurals in the list
+	  ( dagolden )
+	- the wordlist is now a sharedir file
+	[DEPRECATED]
+	- accessing %Pod::Wordlist::Wordlist directly
 
 1.06      2013-09-08
 	- import stopwords from Pod::Wordlist::hanekomu except names

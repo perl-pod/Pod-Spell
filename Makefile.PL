@@ -2,10 +2,12 @@
 use strict;
 use warnings;
 
-use 5.006;
+use 5.008;
 
 use ExtUtils::MakeMaker 6.30;
 
+use File::ShareDir::Install;
+install_share dist => "share";
 
 
 my %WriteMakefileArgs = (
@@ -13,7 +15,8 @@ my %WriteMakefileArgs = (
   "AUTHOR" => "Sean M. Burke <sburke\@cpan.org>, Caleb Cushing <xenoterracide\@gmail.com>",
   "BUILD_REQUIRES" => {},
   "CONFIGURE_REQUIRES" => {
-    "ExtUtils::MakeMaker" => "6.30"
+    "ExtUtils::MakeMaker" => "6.30",
+    "File::ShareDir::Install" => "0.03"
   },
   "DISTNAME" => "Pod-Spell",
   "EXE_FILES" => [
@@ -23,6 +26,10 @@ my %WriteMakefileArgs = (
   "NAME" => "Pod::Spell",
   "PREREQ_PM" => {
     "Carp" => 0,
+    "Class::Tiny" => 0,
+    "File::ShareDir::ProjectDistDir" => 0,
+    "File::Slurp" => 0,
+    "Lingua::EN::Inflect" => 0,
     "Pod::Escapes" => 0,
     "Pod::Parser" => 0,
     "Text::Wrap" => 0,
@@ -38,9 +45,10 @@ my %WriteMakefileArgs = (
     "IO::Handle" => 0,
     "IPC::Open3" => 0,
     "Test::Deep" => 0,
-    "Test::More" => "0.88"
+    "Test::More" => "0.88",
+    "utf8" => 0
   },
-  "VERSION" => "1.07",
+  "VERSION" => "1.11",
   "test" => {
     "TESTS" => "t/*.t"
   }
@@ -78,5 +86,10 @@ delete $WriteMakefileArgs{CONFIGURE_REQUIRES}
 
 WriteMakefile(%WriteMakefileArgs);
 
+{
+package
+MY;
+use File::ShareDir::Install qw(postamble);
+}
 
 

@@ -1,13 +1,11 @@
 package Pod::Spell;
-use 5.006;
+use 5.008;
 use strict;
 use warnings;
 
-our $VERSION = '1.07'; # VERSION
+our $VERSION = '1.11'; # VERSION
 
 use base 'Pod::Parser';
-
-use constant MAXWORDLENGTH => 50; ## no critic ( ProhibitConstantPragma )
 
 use Pod::Wordlist;
 use Pod::Escapes ('e2char');
@@ -29,17 +27,20 @@ sub new {
 
 	my $new = $class->SUPER::new( %args );
 
-	$new->{'spell_stopwords'} = {};
-
-	$new->{'spell_stopwords'}
-		= \%Pod::Wordlist::Wordlist; ## no critic ( ProhibitPackageVars )
-
 	$new->{'region'} = [];
 
-	$new->{debug} = $args{debug};
+	$new->{no_wide_chars} = $args{no_wide_chars};
+
+	$new->{debug} = $args{debug} || $ENV{PERL_POD_SPELL_DEBUG};
+
+	$new->{stopwords} = $args{stopwords} || Pod::Wordlist->new(
+		_is_debug => $new->{debug}, no_wide_chars => $args{no_wide_chars}
+	);
 
 	return $new;
 }
+
+sub stopwords { my $self = shift; return $self->{stopwords} }
 
 sub verbatim { return ''; }    # totally ignore verbatim sections
 
@@ -49,27 +50,6 @@ sub _is_debug {
 	my $self = shift;
 
 	return $self->{debug} ? 1 : 0;
-}
-
-sub _get_stopwords_from {
-	my ( $self, $text ) = @_;
-	my $stopwords = $self->{'spell_stopwords'};
-
-	while ( $text =~ m<(\S+)>g ) {
-		my $word = $1;
-		if ( $word =~ m/^!(.+)/s ) {
-			# "!word" deletes from the stopword list
-			my $negation = $1;
-			# different $1 from above
-			delete $stopwords->{$negation};
-			print "Unlearning stopword $word\n" if $self->_is_debug;
-		}
-		else {
-			$stopwords->{$word} = 1;
-			print "Learning stopword $1\n" if $self->_is_debug;
-		}
-	}
-	return;
 }
 
 #----------------------------------------------------------------------
@@ -83,11 +63,11 @@ sub textblock {
 			= $self->{'region'}[-1];
 
 		if ( $last_region eq 'stopwords' ) {
-			$self->_get_stopwords_from($paragraph);
+			$self->stopwords->learn_stopwords($paragraph);
 			return;
 		}
 		elsif ( $last_region eq ':stopwords' ) {
-			$self->_get_stopwords_from( $self->interpolate($paragraph) );
+			$self->stopwords->learn_stopwords( $self->interpolate($paragraph) );
 
 			# I guess that'd work.
 			return;
@@ -135,7 +115,7 @@ sub command { ## no critic ( ArgUnpacking)
 			my $para = $2;
 			$para = $self->interpolate($para) if $1;
 			print "Stopword para: <$2>\n" if $self->_is_debug;
-			$self->_get_stopwords_from($para);
+			$self->stopwords->learn_stopwords($para);
 		}
 	}
 	elsif ( @{ $self->{'region'} } ) {    # TODO: accept POD formatting
@@ -203,64 +183,15 @@ sub interior_sequence { ## no critic ( Subroutines::RequireFinalReturn )
 	}
 }
 
-#==========================================================================
-# The guts:
+#--------------------------------------------------------------------------
 
-sub _treat_words {    ## no critic ( Subroutines::RequireArgUnpacking )
-	my $self = shift;
-
-	# Count the things in $_[0]
-	print "Content: <", $_[0], ">\n" if $self->_is_debug;
-
-	my $stopwords = $self->{'spell_stopwords'};
-	my $word;
-	$_[0] =~ tr/\xA0\xAD/ /d;
-
-	# i.e., normalize non-breaking spaces, and delete soft-hyphens
-
-	my $out = '';
-
-	my ( $leading, $trailing );
-	while ( $_[0] =~ m<(\S+)>g ) {
-
-		# Trim normal English punctuation, if leading or trailing.
-		next if length $1 > MAXWORDLENGTH;
-		$word = $1;
-		if   ( $word =~ s/^([\`\"\'\(\[])//s ) { $leading = $1 }
-		else                                   { $leading = '' }
-
-		if   ( $word =~ s/([\)\]\'\"\.\:\;\,\?\!]+)$//s ) { $trailing = $1 }
-		else                                              { $trailing = '' }
-
-		if (
-			$word =~ m/^[\&\%\$\@\:\<\*\\\_]/s
-
-			# if it looks like it starts with a sigil, etc.
-			or $word =~ m/[\%\^\&\#\$\@\_\<\>\(\)\[\]\{\}\\\*\:\+\/\=\|\`\~]/
-
-			# or contains anything strange
-		  )
-		{
-			print "rejecting {$word}\n" if $self->_is_debug && $word ne '_';
-			next;
-		}
-		else {
-			if ( exists $stopwords->{$word} or exists $stopwords->{ lc $word } )
-			{
-				print " [Rejecting \"$word\" as a stopword]\n"
-					if $self->_is_debug;
-			}
-			else {
-				$out .= "$leading$word$trailing ";
-			}
-		}
-	}
-
+sub _treat_words {
+	my ($self, $text) = @_;
+	my $out = $self->stopwords->strip_stopwords( $text );
 	if ( length $out ) {
 		my $out_fh = $self->output_handle();
 		print $out_fh wrap( '', '', $out ), "\n\n";
 	}
-
 	return;
 }
 
@@ -274,13 +205,15 @@ __END__
 
 =pod
 
+=encoding utf-8
+
 =head1 NAME
 
 Pod::Spell - a formatter for spellchecking Pod
 
 =head1 VERSION
 
-version 1.07
+version 1.11
 
 =head1 SYNOPSIS
 
@@ -332,7 +265,39 @@ C<"=for stopwords"> / C<"=for :stopwords"> region(s) in a document.
 
 =head2 verbatim
 
+=head2 stopwords
+
+	$self->stopwords->isa('Pod::WordList'); # true
+
+=for :stopwords virtE<ugrave>
+
+=head1 ENCODINGS
+
+Pod::Parser, which Pod::Spell extends, is extremely naive about
+character encodings.  The C<parse_from_file> method does not apply
+any PerlIO encoding layer.  If your Pod file is encoded in UTF-8,
+your data will be read incorrectly.
+
+You should instead use C<parse_from_filehandle> and manage the input
+and output layers yourself.
+
+	binmode($_, ":utf8") for ($infile, $outfile);
+	$my ps = Pod::Spell->new;
+	$ps->parse_from_filehandle( $infile, $outfile );
+
+If your output destination cannot handle UTF-8, you should set your
+output handle to Latin-1 and tell Pod::Spell to strip out words
+with wide characters.
+
+	binmode($infile, ":utf8");
+	binmode($outfile, ":encoding(latin1)");
+	$my ps = Pod::Spell->new( no_wide_chars => 1 );
+	$ps->parse_from_filehandle( $infile, $outfile );
+
 =head1 ADDING STOPWORDS
+
+B<NOTE:> Pod::Spell makes a single pass over the POD.  Stopwords
+must be added B<before> they show up in the POD.
 
 You can add stopwords on a per-document basis with
 C<"=for stopwords"> / C<"=for :stopwords"> regions, like so:
@@ -344,7 +309,8 @@ This adds every word in that paragraph after "stopwords" to the
 stopword list, effective for the rest of the document.  In such a
 list, words are whitespace-separated.  (The amount of whitespace
 doesn't matter, as long as there's no blank lines in the middle
-of the paragraph.)  Words beginning with "!" are
+of the paragraph.)  Plural forms are added automatically using
+L<Lingua::EN::Inflect>. Words beginning with "!" are
 I<deleted> from the stopword list -- so "!qux" deletes "qux" from the
 stopword list, if it was in there in the first place.  Note that if
 a stopword is all-lowercase, then it means that it's okay in I<any>
@@ -451,6 +417,20 @@ https://github.com/xenoterracide/pod-spell/issues
 When submitting a bug or request, please include a test-file or a
 patch to an existing test-file that illustrates the bug or desired
 feature.
+
+=head1 CONTRIBUTORS
+
+=over 4
+
+=item *
+
+David Golden <dagolden@cpan.org>
+
+=item *
+
+Olivier Mengué <dolmen@cpan.org>
+
+=back
 
 =head1 AUTHORS
 

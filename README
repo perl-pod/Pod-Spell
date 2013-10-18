@@ -2,7 +2,7 @@ NAME
     Pod::Spell - a formatter for spellchecking Pod
 
 VERSION
-    version 1.07
+    version 1.11
 
 SYNOPSIS
             use Pod::Spell;
@@ -45,7 +45,35 @@ METHODS
   interior_sequence
   textblock
   verbatim
+  stopwords
+            $self->stopwords->isa('Pod::WordList'); # true
+
+ENCODINGS
+    Pod::Parser, which Pod::Spell extends, is extremely naive about
+    character encodings. The "parse_from_file" method does not apply any
+    PerlIO encoding layer. If your Pod file is encoded in UTF-8, your data
+    will be read incorrectly.
+
+    You should instead use "parse_from_filehandle" and manage the input and
+    output layers yourself.
+
+            binmode($_, ":utf8") for ($infile, $outfile);
+            $my ps = Pod::Spell->new;
+            $ps->parse_from_filehandle( $infile, $outfile );
+
+    If your output destination cannot handle UTF-8, you should set your
+    output handle to Latin-1 and tell Pod::Spell to strip out words with
+    wide characters.
+
+            binmode($infile, ":utf8");
+            binmode($outfile, ":encoding(latin1)");
+            $my ps = Pod::Spell->new( no_wide_chars => 1 );
+            $ps->parse_from_filehandle( $infile, $outfile );
+
 ADDING STOPWORDS
+    NOTE: Pod::Spell makes a single pass over the POD. Stopwords must be
+    added before they show up in the POD.
+
     You can add stopwords on a per-document basis with "=for stopwords" /
     "=for :stopwords" regions, like so:
 
@@ -55,16 +83,17 @@ ADDING STOPWORDS
     This adds every word in that paragraph after "stopwords" to the stopword
     list, effective for the rest of the document. In such a list, words are
     whitespace-separated. (The amount of whitespace doesn't matter, as long
-    as there's no blank lines in the middle of the paragraph.) Words
-    beginning with "!" are *deleted* from the stopword list -- so "!qux"
-    deletes "qux" from the stopword list, if it was in there in the first
-    place. Note that if a stopword is all-lowercase, then it means that it's
-    okay in *any* case; but if the word has any capital letters, then it
-    means that it's okay *only* with *that* case. So a Wordlist entry of
-    "perl" would permit "perl", "Perl", and (less interestingly) "PERL",
-    "pERL", "PerL", et cetera. However, a Wordlist entry of "Perl" catches
-    only "Perl", not "perl". So if you wanted to make sure you said only
-    "Perl", never "perl", you could add this to the top of your document:
+    as there's no blank lines in the middle of the paragraph.) Plural forms
+    are added automatically using Lingua::EN::Inflect. Words beginning with
+    "!" are *deleted* from the stopword list -- so "!qux" deletes "qux" from
+    the stopword list, if it was in there in the first place. Note that if a
+    stopword is all-lowercase, then it means that it's okay in *any* case;
+    but if the word has any capital letters, then it means that it's okay
+    *only* with *that* case. So a Wordlist entry of "perl" would permit
+    "perl", "Perl", and (less interestingly) "PERL", "pERL", "PerL", et
+    cetera. However, a Wordlist entry of "Perl" catches only "Perl", not
+    "perl". So if you wanted to make sure you said only "Perl", never
+    "perl", you could add this to the top of your document:
 
       =for stopwords !perl Perl
 
@@ -93,7 +122,7 @@ ADDING STOPWORDS
       =for :stopwords
       virtE<ugrave>
 
-    ...meaning that you're adding a stopword of "virt�". If you left the ":"
+    ...meaning that you're adding a stopword of "virtù". If you left the ":"
     out, that would mean you were adding a stopword of "virtE<ugrave>" (with
     a literal E, a literal <, etc), which will have no effect, since any
     occurrences of virtE<ugrave> don't look like a normal human-language
@@ -143,6 +172,11 @@ BUGS
 
     When submitting a bug or request, please include a test-file or a patch
     to an existing test-file that illustrates the bug or desired feature.
+
+CONTRIBUTORS
+    *   David Golden <dagolden@cpan.org>
+
+    *   Olivier Mengué <dolmen@cpan.org>
 
 AUTHORS
     *   Sean M. Burke <sburke@cpan.org>
