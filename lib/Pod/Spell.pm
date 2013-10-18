@@ -355,7 +355,7 @@ be screened out before the stopword list is consulted anyway.
 
 =head1 BUGS AND LIMITATIONS
 
-=head2 finding stopwords defind with C<=for>
+=head2 finding stopwords defined with C<=for>
 
 B<NOTE:> Pod::Spell makes a single pass over the POD.  Stopwords
 must be added B<before> they show up in the POD.
@@ -363,9 +363,9 @@ must be added B<before> they show up in the POD.
 =head2 finding the wordlist
 
 Pod::Spell uses L<File::ShareDir::ProjectDistDir> if you're getting errors
-about the worldlist being missing, chances are it's a problem with its
+about the wordlist being missing, chances are it's a problem with its
 heuristics. Set C<PATH_ISDEV_DEBUG=1> or C<PATH_FINDDEV_DEBUG=1>, or both in
-your environment for debuging, and then file a bug with
+your environment for debugging, and then file a bug with
 L<File::ShareDir::ProjectDistDir> if necessary.
 
 =head1 HINT

@@ -127,15 +127,15 @@ ADDING STOPWORDS
     consulted anyway.
 
 BUGS AND LIMITATIONS
-  finding stopwords defind with "=for"
+  finding stopwords defined with "=for"
     NOTE: Pod::Spell makes a single pass over the POD. Stopwords must be
     added before they show up in the POD.
 
   finding the wordlist
     Pod::Spell uses File::ShareDir::ProjectDistDir if you're getting errors
-    about the worldlist being missing, chances are it's a problem with its
+    about the wordlist being missing, chances are it's a problem with its
     heuristics. Set "PATH_ISDEV_DEBUG=1" or "PATH_FINDDEV_DEBUG=1", or both
-    in your environment for debuging, and then file a bug with
+    in your environment for debugging, and then file a bug with
     File::ShareDir::ProjectDistDir if necessary.
 
 HINT
