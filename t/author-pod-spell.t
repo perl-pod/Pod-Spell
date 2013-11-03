@@ -32,9 +32,9 @@ David
 Golden
 dagolden
 Olivier
-Mengué
+MenguÃ©
 dolmen
 lib
 Pod
-Wordlist
 Spell
+Wordlist
