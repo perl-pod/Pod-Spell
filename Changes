@@ -2,6 +2,9 @@ Revision history {{$dist->name}}
 
 {{$NEXT}}
 
+1.13      2013-11-02
+	- fix encoding issues issues in pod for perldoc
+
 1.12      2013-10-17
 	- improve documentation
 
