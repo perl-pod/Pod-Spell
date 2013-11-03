@@ -151,6 +151,8 @@ __END__
 
 =pod
 
+=encoding UTF-8
+
 =head1 NAME
 
 Pod::Wordlist - English words that come up in Perl documentation

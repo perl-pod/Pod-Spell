@@ -20,6 +20,8 @@ __END__
 
 =pod
 
+=encoding UTF-8
+
 =head1 NAME
 
 podspell - pod spell checking command line interface

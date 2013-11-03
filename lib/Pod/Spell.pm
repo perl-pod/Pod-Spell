@@ -205,6 +205,8 @@ __END__
 
 =pod
 
+=encoding UTF-8
+
 =head1 NAME
 
 Pod::Spell - a formatter for spellchecking Pod
