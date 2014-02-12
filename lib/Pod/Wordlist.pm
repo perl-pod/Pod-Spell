@@ -1,9 +1,9 @@
 package Pod::Wordlist;
 use strict;
 use warnings;
-use File::Slurp                    qw( read_file );
-use Lingua::EN::Inflect            qw( PL        );
-use File::ShareDir::ProjectDistDir qw( dist_file );
+use Lingua::EN::Inflect 'PL';
+use File::ShareDir::ProjectDistDir 0.005
+	dist_file => defaults => { pathtiny => 1 };
 
 use Class::Tiny {
     wordlist  => \&_copy_wordlist,
@@ -19,7 +19,7 @@ our %Wordlist; ## no critic ( Variables::ProhibitPackageVars )
 
 sub _copy_wordlist { return { %Wordlist } }
 
-foreach ( read_file( dist_file('Pod-Spell', 'wordlist') ) ) {
+foreach ( split "\n", dist_file('Pod-Spell', 'wordlist')->slurp ) {
 	chomp( $_ );
 	$Wordlist{$_} = 1;
 	$Wordlist{PL($_)} = 1;
