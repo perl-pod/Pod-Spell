@@ -2,6 +2,10 @@ Revision history {{$dist->name}}
 
 {{$NEXT}}
 
+1.14      2014-02-12
+	- Discontinue use of File::Slurp, use Path::Tiny->lines instead
+	  GH #15 ( Ether )
+
 1.13      2013-11-02
 	- fix encoding issues issues in pod for perldoc
 
