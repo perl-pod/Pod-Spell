@@ -4,6 +4,10 @@ Checklist
 
 Commits:
 
+* make sure that you have tests for the bug you are fixing
+* make sure that the test suite passes after your commit. This distribution
+  is built with Dist::Zilla ensure that running `dzil test` passes. You are
+  responsible for ensuring that generated, hand written and author tests pass.
 * make commits of logical units
 * check for unnecessary whitespace with "git diff --check" before committing
 * do not check in commented out code or unneeded files
@@ -17,10 +21,6 @@ Commits:
   Your Name <you@example.com>" line to the commit message (or just use the
   option "-s" when committing) to confirm that you agree to the Developer's
   Certificate of Origin
-* make sure that you have tests for the bug you are fixing
-* make sure that the test suite passes after your commit. This distribution
-  is built with Dist::Zilla ensure that running `dzil test` passes. You are
-  responsible for ensuring that generated, hand written and author tests pass.
 
 Patch:
 
