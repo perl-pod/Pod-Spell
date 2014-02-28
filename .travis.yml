@@ -14,7 +14,7 @@ before_install:
    - git config --global user.email $HOSTNAME":not-for-mail@travis-ci.org"
 install:
    - cpanm --quiet --notest Dist::Zilla
-   - cpanm --quiet --notest Dist::Zilla::PluginBundle::Author::XENO
+   - cpanm --quiet --notest --with-recommends Dist::Zilla::PluginBundle::Author::XENO
    - "dzil authordeps | cpanm --quiet --notest"
    - "dzil listdeps   | cpanm --verbose"
 script:
