@@ -19,7 +19,7 @@ our %Wordlist; ## no critic ( Variables::ProhibitPackageVars )
 
 sub _copy_wordlist { return { %Wordlist } }
 
-foreach ( dist_file('Pod-Spell', 'wordlist')->lines({ chomp => 1 })) {
+foreach ( dist_file('Pod-Spell', 'wordlist')->lines_utf8({ chomp => 1 })) {
 	$Wordlist{$_} = 1;
 	$Wordlist{PL($_)} = 1;
 }
