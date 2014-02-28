@@ -2,6 +2,10 @@ Revision history {{$dist->name}}
 
 {{$NEXT}}
 
+1.15      2014-02-28
+	- Convert to strict mode of File::ShareDir::ProjectDistDir (KENTNL)
+	- change to use Path::Tiny->lines_utf8
+
 1.14      2014-02-12
 	- Discontinue use of File::Slurp, use Path::Tiny->lines instead
 	  GH #15 ( Ether )
