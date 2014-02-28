@@ -2,8 +2,8 @@ package Pod::Wordlist;
 use strict;
 use warnings;
 use Lingua::EN::Inflect 'PL';
-use File::ShareDir::ProjectDistDir 0.005
-	dist_file => defaults => { pathtiny => 1 };
+use File::ShareDir::ProjectDistDir 1.000
+	dist_file => defaults => { pathtiny => 1 , strict => 1 };
 
 use Class::Tiny {
     wordlist  => \&_copy_wordlist,
