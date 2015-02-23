@@ -4,6 +4,9 @@ Revision history {{$dist->name}}
 	- New maintainer: Olivier Mengué (DOLMEN)
 	  Repo is now hosted at github.com/perl-pod/Pod-Spell
 	- Fix warning in strip_stopwords (GH #23)
+	- re-apply "podspell script: set output encoding from locale CTYPE"
+	  (GH #22, #17). The issue in 1.16 was an incorrect dependency
+	  on I18N::Langinfo.
 
 1.17      2015-03-08
 	- revert changes in 1.16 they are not compatible with windows GH #18
