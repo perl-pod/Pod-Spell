@@ -1,6 +1,8 @@
 Revision history {{$dist->name}}
 
 {{$NEXT}}
+
+1.16      2015-02-24
 	- podspell script: set output encoding from locale CTYPE (DOLMEN)
 
 1.15      2014-02-28
