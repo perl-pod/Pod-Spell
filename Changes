@@ -1,6 +1,8 @@
 Revision history {{$dist->name}}
 
 {{$NEXT}}
+
+1.17      2015-03-08
 	- revert changes in 1.16 they are not compatible with windows GH #18
 
 1.16      2015-02-24
