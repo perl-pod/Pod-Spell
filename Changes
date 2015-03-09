@@ -1,6 +1,7 @@
 Revision history {{$dist->name}}
 
 {{$NEXT}}
+	- revert changes in 1.16 they are not compatible with windows GH #18
 
 1.16      2015-02-24
 	- podspell script: set output encoding from locale CTYPE (DOLMEN)
