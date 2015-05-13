@@ -40,17 +40,13 @@ sub new {
 	return $new;
 }
 
-sub stopwords { my $self = shift; return $self->{stopwords} }
+sub stopwords { (shift)->{stopwords} }
 
-sub verbatim { return ''; }    # totally ignore verbatim sections
+sub verbatim { '' }    # totally ignore verbatim sections
 
 #----------------------------------------------------------------------
 
-sub _is_debug {
-	my $self = shift;
-
-	return $self->{debug} ? 1 : 0;
-}
+sub _is_debug { (shift)->{debug} ? 1 : 0; }
 
 #----------------------------------------------------------------------
 
