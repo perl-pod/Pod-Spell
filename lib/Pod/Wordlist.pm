@@ -2,8 +2,7 @@ package Pod::Wordlist;
 use strict;
 use warnings;
 use Lingua::EN::Inflect 'PL';
-use File::ShareDir::ProjectDistDir 1.000
-	dist_file => defaults => { pathtiny => 1 , strict => 1 };
+use File::Share ();
 
 use Class::Tiny {
     wordlist  => \&_copy_wordlist,
@@ -19,9 +18,16 @@ our %Wordlist; ## no critic ( Variables::ProhibitPackageVars )
 
 sub _copy_wordlist { return { %Wordlist } }
 
-foreach ( dist_file('Pod-Spell', 'wordlist')->lines_utf8({ chomp => 1 })) {
-	$Wordlist{$_} = 1;
-	$Wordlist{PL($_)} = 1;
+{
+	open my $f, '<:raw:encoding(UTF-8)',
+			File::Share::dist_file('Pod-Spell', 'wordlist')
+		or die "can't open wordlist!";
+	while (<$f>) {
+		chomp;
+		$Wordlist{$_} = 1;
+		$Wordlist{PL($_)} = 1;
+	}
+	close $f
 }
 
 =method learn_stopwords
