@@ -132,7 +132,7 @@ sub strip_stopwords {
 		print "  Keeping as  <$_>\n" if $_ && $self->_is_debug;
 	}
 
-	return join(" ", grep { length } @words );
+	return join(" ", grep { defined && length } @words );
 }
 
 sub _strip_a_word {
