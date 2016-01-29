@@ -1,6 +1,8 @@
 Revision history {{$dist->name}}
 
 {{$NEXT}}
+
+1.18      2016-01-30
 	- New maintainer: Olivier Mengué (DOLMEN)
 	  Repo is now hosted at github.com/perl-pod/Pod-Spell
 	- Fix warning in strip_stopwords (GH #23)
