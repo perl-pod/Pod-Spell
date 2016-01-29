@@ -197,6 +197,8 @@ sub _treat_words {
 
 # ABSTRACT: a formatter for spellchecking Pod
 
+__END__
+
 =for :stopwords virtE<ugrave>
 
 =head1 SYNOPSIS

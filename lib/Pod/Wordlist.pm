@@ -168,6 +168,8 @@ sub _strip_a_word {
 1;
 
 # ABSTRACT: English words that come up in Perl documentation
+__END__
+
 =pod
 
 =head1 DESCRIPTION
