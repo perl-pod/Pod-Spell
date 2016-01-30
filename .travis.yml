@@ -1,4 +1,10 @@
 language: perl
+sudo: false
+addons:
+   apt:
+      packages:
+      - aspell
+      - aspell-en
 perl:
    - 5.20
    - 5.18
