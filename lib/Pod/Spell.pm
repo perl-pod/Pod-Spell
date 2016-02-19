@@ -5,7 +5,7 @@ use warnings;
 
 # VERSION
 
-use base 'Pod::Parser';
+use parent 'Pod::Parser';
 
 use Pod::Wordlist;
 use Pod::Escapes ('e2char');
