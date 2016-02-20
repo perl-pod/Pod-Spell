@@ -1,6 +1,8 @@
 Revision history {{$dist->name}}
 
 {{$NEXT}}
+
+1.19      2016-02-20
 	- Don't set $Text::Wrap::huge globally, but localize it
 	- Load Pod::Wordlist only if used
 
