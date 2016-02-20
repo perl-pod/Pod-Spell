@@ -5,6 +5,45 @@ use warnings;
 
 # VERSION
 
+sub new {
+	my ( $class, %args ) = @_;
+
+	my $no_wide_chars = delete $args{no_wide_chars};
+	my $debug = delete($args{debug}) || $ENV{PERL_POD_SPELL_DEBUG};
+
+	my $stopwords = $args{stopwords} || do {
+		require Pod::Wordlist;
+		Pod::Wordlist->new(
+			_is_debug => $debug,
+			no_wide_chars => $no_wide_chars
+		)
+	};
+
+	my %self = (
+		processor => Pod::Spell::_Processor->new( $debug, $stopwords ),
+		stopwords => $stopwords,
+		debug => $debug,
+	);
+
+	bless \%self, $class
+}
+
+sub _is_debug { (shift)->{debug} ? 1 : 0; }
+
+sub stopwords { (shift)->{stopwords} }
+
+sub parse_from_file {
+	shift->{processor}->parse_from_file(@_)
+}
+
+sub parse_from_filehandle {
+	shift->{processor}->parse_from_filehandle(@_)
+}
+
+
+package # Hide from indexing
+	Pod::Spell::_Processor;
+
 use parent 'Pod::Parser';
 
 use Pod::Escapes ('e2char');
@@ -13,42 +52,51 @@ use Text::Wrap   ('wrap');
 use locale;                      # so our uc/lc works right
 use Carp;
 
+
+sub new {
+	my ( $class, $debug, $stopwords ) = @_;
+
+	my $self = $class->SUPER::new;
+	@{$self}{qw< debug stopwords >} = ($debug, $stopwords);
+	$self
+}
+
+#----------------------------------------------------------------------
+
+sub _is_debug { (shift)->{debug} ? 1 : 0; }
+sub stopwords { (shift)->{stopwords} }
+
+#----------------------------------------------------------------------
+
+
+sub parse_from_file {
+	my $self = shift;
+
+	$self->{region} = [];
+
+	$self->SUPER::parse_from_file(@_);
+
+	delete $self->{region}
+}
+
+sub parse_from_filehandle {
+	my $self = shift;
+
+	$self->{region} = [];
+
+	$self->SUPER::parse_from_filehandle(@_);
+
+	delete $self->{region}
+}
+
+
 #==========================================================================
 #
 #  Override some methods
 #
 
-sub new {
-	my ( $class, %args ) = @_;
-
-	my $new = $class->SUPER::new( %args );
-
-	$new->{'region'} = [];
-
-	$new->{no_wide_chars} = $args{no_wide_chars};
-
-	$new->{debug} = $args{debug} || $ENV{PERL_POD_SPELL_DEBUG};
-
-	$new->{stopwords} = $args{stopwords} || do {
-		require Pod::Wordlist;
-		Pod::Wordlist->new(
-			_is_debug => $new->{debug},
-			no_wide_chars => $args{no_wide_chars}
-		)
-	};
-
-	return $new;
-}
-
-sub stopwords { (shift)->{stopwords} }
-
 sub verbatim { '' }    # totally ignore verbatim sections
 
-#----------------------------------------------------------------------
-
-sub _is_debug { (shift)->{debug} ? 1 : 0; }
-
-#----------------------------------------------------------------------
 
 sub textblock {
 	my ( $self, $paragraph ) = @_;
@@ -201,7 +249,7 @@ sub _treat_words {
 
 __END__
 
-=for :stopwords virtE<ugrave>
+=for :stopwords PODs virtE<ugrave>
 
 =head1 SYNOPSIS
 
@@ -326,17 +374,61 @@ be screened out before the stopword list is consulted anyway.
 
 =method new
 
-=method command
-
-=method interior_sequence
-
-=method textblock
-
-=method verbatim
-
 =method stopwords
 
 	$self->stopwords->isa('Pod::WordList'); # true
+
+=method parse_from_filehandle($in_fh,$out_fh)
+
+This method takes an input filehandle (which is assumed to already be
+opened for reading) and reads the entire input stream looking for blocks
+(paragraphs) of POD documentation to be processed. If no first argument
+is given the default input filehandle C<STDIN> is used.
+
+The C<$in_fh> parameter may be any object that provides a B<getline()>
+method to retrieve a single line of input text (hence, an appropriate
+wrapper object could be used to parse PODs from a single string or an
+array of strings).
+
+=method parse_from_file($filename,$outfile)
+
+This method takes a filename and does the following:
+
+=over 2
+
+=item *
+
+opens the input and output files for reading
+(creating the appropriate filehandles)
+
+=item *
+
+invokes the B<parse_from_filehandle()> method passing it the
+corresponding input and output filehandles.
+
+=item *
+
+closes the input and output files.
+
+=back
+
+If the special input filename "", "-" or "<&STDIN" is given then the STDIN
+filehandle is used for input (and no open or close is performed). If no
+input filename is specified then "-" is implied. Filehandle references,
+or objects that support the regular IO operations (like C<E<lt>$fhE<gt>>
+or C<$fh-<Egt>getline>) are also accepted; the handles must already be
+opened.
+
+If a second argument is given then it should be the name of the desired
+output file. If the special output filename "-" or ">&STDOUT" is given
+then the STDOUT filehandle is used for output (and no open or close is
+performed). If the special output filename ">&STDERR" is given then the
+STDERR filehandle is used for output (and no open or close is
+performed). If no output filehandle is currently in use and no output
+filename is specified, then "-" is implied.
+Alternatively, filehandle references or objects that support the regular
+IO operations (like C<print>, e.g. L<IO::String>) are also accepted;
+the object must already be opened.
 
 =head1 BUGS AND LIMITATIONS
 
