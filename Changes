@@ -1,6 +1,8 @@
 Revision history {{$dist->name}}
 
 {{$NEXT}}
+
+1.19_90   2016-02-20
 	- Hide internals: the POD parser is moved to a private package and
 	  the Pod::Spell package now only exposes the public interface.
 	  This is a first step towards rewriting the parser using Pod::Simple
