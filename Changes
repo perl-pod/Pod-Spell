@@ -2,6 +2,7 @@ Revision history {{$dist->name}}
 
 {{$NEXT}}
 	- Don't set $Text::Wrap::huge globally, but localize it
+	- Load Pod::Wordlist only if used
 
 1.18      2016-01-30
 	- New maintainer: Olivier Mengué (DOLMEN)

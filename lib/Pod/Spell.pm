@@ -7,7 +7,6 @@ use warnings;
 
 use parent 'Pod::Parser';
 
-use Pod::Wordlist;
 use Pod::Escapes ('e2char');
 use Text::Wrap   ('wrap');
 
@@ -30,9 +29,13 @@ sub new {
 
 	$new->{debug} = $args{debug} || $ENV{PERL_POD_SPELL_DEBUG};
 
-	$new->{stopwords} = $args{stopwords} || Pod::Wordlist->new(
-		_is_debug => $new->{debug}, no_wide_chars => $args{no_wide_chars}
-	);
+	$new->{stopwords} = $args{stopwords} || do {
+		require Pod::Wordlist;
+		Pod::Wordlist->new(
+			_is_debug => $new->{debug},
+			no_wide_chars => $args{no_wide_chars}
+		)
+	};
 
 	return $new;
 }
