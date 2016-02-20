@@ -11,9 +11,6 @@ use Pod::Wordlist;
 use Pod::Escapes ('e2char');
 use Text::Wrap   ('wrap');
 
-# We don't need a very new version of Text::Wrap, altho they are nicer.
-$Text::Wrap::huge = 'overflow';  ## no critic ( Variables::ProhibitPackageVars )
-
 use locale;                      # so our uc/lc works right
 use Carp;
 
@@ -186,6 +183,8 @@ sub _treat_words {
 	my $out = $self->stopwords->strip_stopwords( $text );
 	if ( length $out ) {
 		my $out_fh = $self->output_handle();
+		# We don't need a very new version of Text::Wrap, altho they are nicer.
+		local $Text::Wrap::huge = 'overflow'; ## no critic ( Variables::ProhibitPackageVars )
 		print $out_fh wrap( '', '', $out ), "\n\n";
 	}
 	return;
