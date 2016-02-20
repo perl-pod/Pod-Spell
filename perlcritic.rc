@@ -4,3 +4,5 @@ exclude  = RegularExpressions::RequireExtendedFormatting
 [-Subroutines::RequireFinalReturn]
 [Subroutines::ProhibitExcessComplexity]
 max_mccabe = 30
+[-Subroutines::RequireArgUnpacking]
+[-Modules::ProhibitMultiplePackages]
