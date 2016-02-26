@@ -1,5 +1,13 @@
 language: perl
 sudo: false
+env:
+   global:
+   - AUTOMATED_TESTING="1"
+   - HARNESS_OPTIONS="j10:c"
+   - HARNESS_TIMER=1
+   # Test::DependentModules
+   - PERL_TEST_DM_CPAN_VERBOSE=1
+   - PERL_TEST_DM_PROCESSES=4
 addons:
    apt:
       packages:
@@ -22,4 +30,7 @@ install:
    - "dzil authordeps | cpanm --quiet --notest"
    - "dzil listdeps --develop  | cpanm --verbose"
 script:
+   # Author testing in hope that this will trigger Test::Spelling tests in
+   # dependent modules
+   - export AUTHOR_TESTING=1
    - dzil smoke --release --author
