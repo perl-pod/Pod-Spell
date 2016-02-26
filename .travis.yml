@@ -31,4 +31,4 @@ script:
    # Author testing in hope that this will trigger Test::Spelling tests in
    # dependent modules
    - export AUTHOR_TESTING=1
-   - dzil smoke --release --author
+   - TEST_VERBOSE=1 dzil smoke --release --author
