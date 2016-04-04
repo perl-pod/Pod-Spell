@@ -2,8 +2,6 @@ package Pod::Wordlist;
 use strict;
 use warnings;
 use Lingua::EN::Inflect 'PL';
-use File::ShareDir::ProjectDistDir 1.000
-	dist_file => defaults => { pathtiny => 1 , strict => 1 };
 
 use Class::Tiny {
     wordlist  => \&_copy_wordlist,
@@ -11,7 +9,20 @@ use Class::Tiny {
     no_wide_chars => 0,
 };
 
+use Path::Tiny qw( path );
 use constant MAXWORDLENGTH => 50; ## no critic ( ProhibitConstantPragma )
+use constant _DIST_DIR => do {
+  my $dir;
+  if ( -e __FILE__ ) {
+    my $local_dir = path(__FILE__)->parent->parent->parent->child('share/dist/Pod-Spell');
+    $dir = $local_dir->absolute if -e $local_dir;
+  }
+  if ( not defined $dir ) {
+    require File::ShareDir;
+    $dir = File::ShareDir::dist_dir('Pod-Spell');
+  }
+  "$dir";
+};
 
 # VERSION
 
@@ -19,7 +30,7 @@ our %Wordlist; ## no critic ( Variables::ProhibitPackageVars )
 
 sub _copy_wordlist { return { %Wordlist } }
 
-foreach ( dist_file('Pod-Spell', 'wordlist')->lines_utf8({ chomp => 1 })) {
+foreach ( path(_DIST_DIR,'wordlist')->lines_utf8({ chomp => 1 })) {
 	$Wordlist{$_} = 1;
 	$Wordlist{PL($_)} = 1;
 }
