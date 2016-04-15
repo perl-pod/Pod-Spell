@@ -21,4 +21,3 @@ $w->learn_stopwords("anaglyph.pl");
 is $w->strip_stopwords("Name: anaglyph.pl"), "Name", "Program name with extension";
 
 done_testing;
-
