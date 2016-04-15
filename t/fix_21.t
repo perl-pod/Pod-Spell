@@ -9,11 +9,11 @@ my $DEBUG = 0;
 my $w;
 
 $w = Pod::Wordlist->new(_is_debug => $DEBUG);
-$w->learn_stopwords("Ph.D"); 
+$w->learn_stopwords("Ph.D");
 is $w->strip_stopwords("Ph.D. John Doe"), "John Doe", "Abbreviation without final dot";
 
 $w = Pod::Wordlist->new(_is_debug => $DEBUG);
-$w->learn_stopwords("Ph.D."); 
+$w->learn_stopwords("Ph.D.");
 is $w->strip_stopwords("Ph.D. John Doe"), "John Doe", "Abbreviation with final dot";
 
 $w = Pod::Wordlist->new(_is_debug => $DEBUG);
