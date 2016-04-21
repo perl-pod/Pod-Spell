@@ -1,6 +1,9 @@
 Revision history {{$dist->name}}
 
 {{$NEXT}}
+	- Drop use of File::ShareDir::ProjectDistDir (GitHub #26). Thanks Kent
+	  Fredric!
+	- Allow stop words with '.' (GitHub #28). Thanks Paulo Custodio!
 
 1.19_90   2016-02-20
 	- Hide internals: the POD parser is moved to a private package and
