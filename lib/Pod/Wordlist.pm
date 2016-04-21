@@ -10,18 +10,22 @@ use Class::Tiny {
 };
 
 use Path::Tiny qw( path );
-use constant MAXWORDLENGTH => 50;
-use constant _DIST_DIR => do {
-  my $dir;
-  if ( -e __FILE__ ) {
-    my $local_dir = path(__FILE__)->parent->parent->parent->child('share/dist/Pod-Spell');
-    $dir = $local_dir->absolute if -e $local_dir;
-  }
-  if ( not defined $dir ) {
-    require File::ShareDir;
-    $dir = File::ShareDir::dist_dir('Pod-Spell');
-  }
-  "$dir";
+use constant {
+
+	MAXWORDLENGTH => 50,
+
+	_DIST_DIR => do {
+		my $dir;
+		if ( -e __FILE__ ) {
+			my $local_dir = path(__FILE__)->parent->parent->parent->child('share/dist/Pod-Spell');
+			$dir = $local_dir->absolute if -e $local_dir;
+		}
+		if ( not defined $dir ) {
+			require File::ShareDir;
+			$dir = File::ShareDir::dist_dir('Pod-Spell');
+		}
+		"$dir"
+	},
 };
 
 # VERSION
