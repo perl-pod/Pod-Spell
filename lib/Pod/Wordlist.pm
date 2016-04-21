@@ -10,7 +10,7 @@ use Class::Tiny {
 };
 
 use Path::Tiny qw( path );
-use constant MAXWORDLENGTH => 50; ## no critic ( ProhibitConstantPragma )
+use constant MAXWORDLENGTH => 50;
 use constant _DIST_DIR => do {
   my $dir;
   if ( -e __FILE__ ) {
