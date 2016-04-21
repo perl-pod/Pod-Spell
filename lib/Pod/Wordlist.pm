@@ -4,9 +4,9 @@ use warnings;
 use Lingua::EN::Inflect 'PL';
 
 use Class::Tiny {
-    wordlist  => \&_copy_wordlist,
-    _is_debug => 0,
-    no_wide_chars => 0,
+	wordlist  => \&_copy_wordlist,
+	_is_debug => 0,
+	no_wide_chars => 0,
 };
 
 use Path::Tiny qw( path );
