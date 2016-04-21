@@ -160,13 +160,13 @@ sub _strip_a_word {
 	}
 	# internal period could be abbreviations, so check with
 	# trailing period restored and drop or keep on that basis
-	elsif ( $word =~ /\./ ) {
+	elsif ( index($word, '.') >= 0 ) {
 		my $abbr = "$word.";
 		$remainder = $self->is_stopword($abbr) ? '' : $abbr;
 	}
 	# check individual parts of hyphenated word, keep whatever isn't a
 	# stopword as individual words
-	elsif ( $word =~ /-/ ) {
+	elsif ( index($word, '-') >= 0 ) {
 		my @keep;
 		for my $part ( split /-/, $word ) {
 			push @keep, $part if ! $self->is_stopword( $part );
