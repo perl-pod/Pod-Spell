@@ -154,15 +154,15 @@ sub _strip_a_word {
 	my ($self, $word) = @_;
 	my $remainder;
 
+	# try word as-is, including possible hyphenation vs stoplist
+	if ($self->is_stopword($word) ) {
+		$remainder = '';
+	}
 	# internal period could be abbreviations, so check with
 	# trailing period restored and drop or keep on that basis
-	if ( /\./ ) {
+	elsif ( $word =~ /\./ ) {
 		my $abbr = "$word.";
 		$remainder = $self->is_stopword($abbr) ? '' : $abbr;
-	}
-	# try word as-is, including possible hyphenation vs stoplist
-	elsif ($self->is_stopword($word) ) {
-		$remainder = '';
 	}
 	# check individual parts of hyphenated word, keep whatever isn't a
 	# stopword as individual words
