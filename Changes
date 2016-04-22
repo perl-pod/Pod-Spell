@@ -1,6 +1,7 @@
 Revision history {{$dist->name}}
 
 {{$NEXT}}
+	- Stable release, made in Rugby, UK during Perl QA Hackathon 2016
 
 1.19_91   2016-04-21
 	- Drop use of File::ShareDir::ProjectDistDir (GitHub #26). Thanks Kent
