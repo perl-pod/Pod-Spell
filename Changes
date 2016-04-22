@@ -1,6 +1,8 @@
 Revision history {{$dist->name}}
 
 {{$NEXT}}
+
+1.20      2016-04-22
 	- Stable release, made in Rugby, UK during Perl QA Hackathon 2016
 
 1.19_91   2016-04-21
