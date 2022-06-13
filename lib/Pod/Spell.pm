@@ -209,9 +209,9 @@ sub interior_sequence { ## no critic ( Subroutines::RequireFinalReturn )
 
 		# don't lose word-boundaries
 		my $out = '';
-		$out .= ' ' if s/^\s+//s;
+		$out .= ' ' if $seq_arg =~ s/^\s+//s;
 		my $append;
-		$append = 1 if s/\s+$//s;
+		$append = 1 if $seq_arg =~ s/\s+$//s;
 		$out .= '_' if length $seq_arg;
 
 		# which, if joined to another word, will set off the Perl-token alarm
