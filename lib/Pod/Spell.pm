@@ -19,8 +19,13 @@ sub new {
         )
     };
 
+    my $parser = Pod::Spell::_Processor->new;
+    $parser->stopwords($stopwords);
+    $parser->_is_debug($debug);
+    $parser->output_fh(\*STDOUT);
+
     my %self = (
-        processor => Pod::Spell::_Processor->new( $debug, $stopwords ),
+        processor => $parser,
         stopwords => $stopwords,
         debug => $debug,
     );
@@ -37,211 +42,111 @@ sub parse_from_file {
 }
 
 sub parse_from_filehandle {
-    shift->{processor}->parse_from_filehandle(@_)
+    shift->{processor}->parse_from_file(@_)
 }
-
 
 package # Hide from indexing
     Pod::Spell::_Processor;
+use parent 'Pod::Simple';
 
-use parent 'Pod::Parser';
+use Text::Wrap ();
 
-use Pod::Escapes ('e2char');
-use Text::Wrap   ('wrap');
-
-use locale;                      # so our uc/lc works right
-use Carp;
-
+__PACKAGE__->_accessorize(qw(
+    stopwords
+    _is_debug
+));
 
 sub new {
-    my ( $class, $debug, $stopwords ) = @_;
-
-    my $self = $class->SUPER::new;
-    @{$self}{qw< debug stopwords >} = ($debug, $stopwords);
-    $self
+    my $class = shift;
+    my $self = $class->SUPER::new(@_);
+    $self->accept_targets('stopwords');
+    return $self;
 }
 
-#----------------------------------------------------------------------
+my %track_elements = (
+    for       => 1,
+    Verbatim  => 1,
+    L         => 1,
+    C         => 1,
+    F         => 1,
+);
 
-sub _is_debug { (shift)->{debug} ? 1 : 0; }
-sub stopwords { (shift)->{stopwords} }
+sub _handle_element_start { ## no critic (Subroutines::ProhibitUnusedPrivateSubroutines)
+    my ($self, $element_name, $attr) = @_;
+    $self->{buffer} = ''
+        if !defined $self->{buffer};
 
-#----------------------------------------------------------------------
-
-
-sub parse_from_file {
-    my $self = shift;
-
-    $self->{region} = [];
-
-    $self->SUPER::parse_from_file(@_);
-
-    delete $self->{region}
-}
-
-sub parse_from_filehandle {
-    my $self = shift;
-
-    $self->{region} = [];
-
-    $self->SUPER::parse_from_filehandle(@_);
-
-    delete $self->{region}
-}
-
-
-#==========================================================================
-#
-#  Override some methods
-#
-
-sub verbatim { '' }    # totally ignore verbatim sections
-
-
-sub textblock {
-    my ( $self, $paragraph ) = @_;
-
-    if ( @{ $self->{'region'} } ) {
-
-        my $last_region ## no critic ( ProhibitAmbiguousNames )
-            = $self->{'region'}[-1];
-
-        if ( $last_region eq 'stopwords' ) {
-            $self->stopwords->learn_stopwords($paragraph);
-            return;
-        }
-        elsif ( $last_region eq ':stopwords' ) {
-            $self->stopwords->learn_stopwords( $self->interpolate($paragraph) );
-
-            # I guess that'd work.
-            return;
-        }
-        elsif ( $last_region !~ m/^:/s ) {
-            printf "Ignoring a textblock because inside a %s region.\n",
-                $self->{'region'}[-1] if $self->_is_debug;
-            return;
-        }
-
-        # else fall thru, as with a :footnote region or something...
-    }
-    $self->_treat_words( $self->interpolate($paragraph) );
-    return;
-}
-
-sub command { ## no critic ( ArgUnpacking)
-    # why do I have to shift these?
-    my ( $self, $command, $text ) = ( shift, shift, @_ );
-
-    return if $command eq 'pod';
-
-    if ( $command eq 'begin' )
-    {            ## no critic ( ControlStructures::ProhibitCascadingIfElse )
-        my $region_name;
-
-        #print "BEGIN <$_[0]>\n";
-        if ( $text =~ m/^\s*(\S+)/s ) {
-            $region_name = $1;
-        }
-        else {
-            $region_name = 'WHATNAME';
-        }
-        print "~~~~ Beginning region \"$region_name\" ~~~~\n"
-            if $self->_is_debug;
-        push @{ $self->{'region'} }, $region_name;
-
-    }
-    elsif ( $command eq 'end' ) {
-        pop @{ $self->{'region'} };    # doesn't bother to check
-
-    }
-    elsif ( $command eq 'for' ) {
-        if ( $text =~ s/^\s*(\:?)stopwords\s*(.*)//s ) {
-            my $para = $2;
-            $para = $self->interpolate($para) if $1;
-            print "Stopword para: <$2>\n" if $self->_is_debug;
-            $self->stopwords->learn_stopwords($para);
-        }
-    }
-    elsif ( @{ $self->{'region'} } ) {    # TODO: accept POD formatting
-                                          # ignore
-    }
-    elsif ($command eq 'head1'
-        or $command eq 'head2'
-        or $command eq 'head2'
-        or $command eq 'head3'
-        or $command eq 'item' )
-    {
-        my $out_fh = $self->output_handle();
-        print $out_fh "\n";
-        $self->_treat_words( $self->interpolate(shift) );
-
-        #print $out_fh "\n";
-    }
-    return;
-}
-
-#--------------------------------------------------------------------------
-
-sub interior_sequence { ## no critic ( Subroutines::RequireFinalReturn )
-    my ( $self, $command, $seq_arg ) = @_;
-
-    return '' if $command eq 'X' or $command eq 'Z';
-
-    # Expand escapes into the actual character now, carping if invalid.
-    if ( $command eq 'E' ) {
-        my $it = e2char( $seq_arg );
-        if ( defined $it ) {
-            return $it;
-        }
-        else {
-            carp "Unknown escape: E<$seq_arg>";
-            return "E<$seq_arg>";
-        }
-    }
-
-    # For all the other sequences, empty content produces no output.
-    return if $seq_arg eq '';
-
-    if ( $command eq 'B' or $command eq 'I' or $command eq 'S' ) {
-        $seq_arg;
-    }
-    elsif ( $command eq 'C' or $command eq 'F' ) {
-
-        # don't lose word-boundaries
-        my $out = '';
-        $out .= ' ' if $seq_arg =~ s/^\s+//s;
-        my $append;
-        $append = 1 if $seq_arg =~ s/\s+$//s;
-        $out .= '_' if length $seq_arg;
-
-        # which, if joined to another word, will set off the Perl-token alarm
-        $out .= ' ' if $append;
-        $out;
-    }
-    elsif ( $command eq 'L' ) {
-        return $1 if m/^([^|]+)\|/s;
-        '';
-    }
-    else {
-        carp "Unknown sequence $command<$seq_arg>";
+    if ($track_elements{$element_name}) {
+        push @{ $self->{in_element} }, [ $element_name, $attr ];
     }
 }
 
-#--------------------------------------------------------------------------
-
-sub _treat_words {
+sub _handle_text { ## no critic (Subroutines::ProhibitUnusedPrivateSubroutines)
     my ($self, $text) = @_;
-    my $out = $self->stopwords->strip_stopwords( $text );
-    if ( length $out ) {
-        my $out_fh = $self->output_handle();
-        # We don't need a very new version of Text::Wrap, altho they are nicer.
-        local $Text::Wrap::huge = 'overflow'; ## no critic ( Variables::ProhibitPackageVars )
-        print $out_fh wrap( '', '', $out ), "\n\n";
+
+    my $in = $self->{in_element};
+    if ($in && @$in) {
+        my ($element_name, $attr) = @{$in->[-1]};
+        ## no critic (ControlStructures::ProhibitCascadingIfElse)
+        if ($element_name eq 'for' && $attr->{target_matching} eq 'stopwords') {
+            # this will match both for/begin and stopwords/:stopwords
+
+            print "Stopword para: <$text>\n"
+                if $self->_is_debug;
+            $self->stopwords->learn_stopwords($text);
+            return;
+        }
+        # totally ignore verbatim sections
+        elsif ($element_name eq 'Verbatim') {
+            return;
+        }
+        elsif ($element_name eq 'L') {
+            return
+                if $attr->{'content-implicit'};
+        }
+        elsif ($element_name eq 'C' || $element_name eq 'F') {
+            # maintain word boundaries
+            my $pre = $text =~ s{\A\s+}{} ? ' ' : '';
+            my $post = $text =~ s{\s+\z}{} ? ' ' : '';
+            # if _ is joined with text before or after, it will be treated as
+            # a Perl token and the entire word ignored
+            $text = $pre . (length $text ? '_' : '') . $post;
+        }
     }
-    return;
+
+    $self->{buffer} .= $text;
 }
 
-#--------------------------------------------------------------------------
+sub _handle_element_end { ## no critic (Subroutines::ProhibitUnusedPrivateSubroutines)
+    my ($self, $element_name) = @_;
+
+    my $in = $self->{in_element};
+    if ($in && @$in && $in->[-1][0] eq $element_name) {
+        pop @$in;
+    }
+
+    return
+        if $element_name !~ m{\A(?:Para|head\d|item-.*|over-block)\z};
+
+    my $buffer = delete $self->{buffer};
+    if (!defined $buffer || !length $buffer) {
+        return;
+    }
+
+    my $fh = $self->output_fh;
+
+    my $out = $self->stopwords->strip_stopwords($buffer);
+
+    # maintain exact output of older Pod::Parser based implementation
+    print { $fh } "\n"
+        if $element_name ne 'Para';
+
+    return
+        if !length $out;
+
+    local $Text::Wrap::huge = 'overflow'; ## no critic ( Variables::ProhibitPackageVars )
+    print { $fh } Text::Wrap::wrap( '', '', $out ) . "\n\n";
+}
 
 1;
 
