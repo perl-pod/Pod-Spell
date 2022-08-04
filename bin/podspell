@@ -34,4 +34,4 @@ __END__
 
 =head1 SYNOPSIS
 
-	% podspell Thing.pm | ispell
+    % podspell Thing.pm | ispell

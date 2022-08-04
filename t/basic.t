@@ -15,19 +15,19 @@ my $podfile  = File::Temp->new;
 my $textfile = File::Temp->new;
 
 print $podfile "\n=head1 TEST tree's undef\n"
-	. "\n=for stopwords zpaph DDGGSS's myormsp pleumgh bruble-gruble\n"
-	. "\n=for :stopwords !myormsp furble\n\n Glakq\n"
-	. "\nPleumgh bruble-gruble DDGGSS's zpaph's zpaph-kafdkaj-snee myormsp snickh furbles.\n"
-	. "\nFoo::Bar \$a \@b \%c __PACKAGE__->mumble() Foo->{\$bar}\n"
-	. qq[\n"'" Kh.D. ('WinX32'.) L<Storable>'s\n]
-	. qq[\nbeforecode C<incode> aftercode\n]
-	. qq[\nbeforespacecodeC< inspacecode >afterspacecode\n]
-	. qq[\nbeforejoinedcodeC<injoinedcode>afterjoinedcode\n]
-	. qq[\nbeforeprecodeC<inprecode >afterprecode\n]
-	. qq[\nbeforepostcodeC< inpostcode>afterpostcode\n]
-	. qq[\nbeforeescapecodeC<E<gt> inescapecode>afterescapecode\n]
-	. qq[\n]
-	;
+    . "\n=for stopwords zpaph DDGGSS's myormsp pleumgh bruble-gruble\n"
+    . "\n=for :stopwords !myormsp furble\n\n Glakq\n"
+    . "\nPleumgh bruble-gruble DDGGSS's zpaph's zpaph-kafdkaj-snee myormsp snickh furbles.\n"
+    . "\nFoo::Bar \$a \@b \%c __PACKAGE__->mumble() Foo->{\$bar}\n"
+    . qq[\n"'" Kh.D. ('WinX32'.) L<Storable>'s\n]
+    . qq[\nbeforecode C<incode> aftercode\n]
+    . qq[\nbeforespacecodeC< inspacecode >afterspacecode\n]
+    . qq[\nbeforejoinedcodeC<injoinedcode>afterjoinedcode\n]
+    . qq[\nbeforeprecodeC<inprecode >afterprecode\n]
+    . qq[\nbeforepostcodeC< inpostcode>afterpostcode\n]
+    . qq[\nbeforeescapecodeC<E<gt> inescapecode>afterescapecode\n]
+    . qq[\n]
+    ;
 
 # reread from beginning
 $podfile->seek( 0, 0 );

@@ -5,28 +5,28 @@ use warnings;
 use Lingua::EN::Inflect 'PL';
 
 use Class::Tiny {
-	wordlist  => \&_copy_wordlist,
-	_is_debug => 0,
-	no_wide_chars => 0,
+    wordlist  => \&_copy_wordlist,
+    _is_debug => 0,
+    no_wide_chars => 0,
 };
 
 use Path::Tiny qw( path );
 use constant {
 
-	MAXWORDLENGTH => 50,
+    MAXWORDLENGTH => 50,
 
-	_DIST_DIR => do {
-		my $dir;
-		if ( -e __FILE__ ) {
-			my $local_dir = path(__FILE__)->parent->parent->parent->child('share/dist/Pod-Spell');
-			$dir = $local_dir->absolute if -e $local_dir;
-		}
-		if ( not defined $dir ) {
-			require File::ShareDir;
-			$dir = File::ShareDir::dist_dir('Pod-Spell');
-		}
-		"$dir"
-	},
+    _DIST_DIR => do {
+        my $dir;
+        if ( -e __FILE__ ) {
+            my $local_dir = path(__FILE__)->parent->parent->parent->child('share/dist/Pod-Spell');
+            $dir = $local_dir->absolute if -e $local_dir;
+        }
+        if ( not defined $dir ) {
+            require File::ShareDir;
+            $dir = File::ShareDir::dist_dir('Pod-Spell');
+        }
+        "$dir"
+    },
 };
 
 # VERSION
@@ -36,8 +36,8 @@ our %Wordlist; ## no critic ( Variables::ProhibitPackageVars )
 sub _copy_wordlist { return { %Wordlist } }
 
 foreach ( path(_DIST_DIR,'wordlist')->lines_utf8({ chomp => 1 })) {
-	$Wordlist{$_} = 1;
-	$Wordlist{PL($_)} = 1;
+    $Wordlist{$_} = 1;
+    $Wordlist{PL($_)} = 1;
 }
 
 =method learn_stopwords
@@ -50,45 +50,45 @@ for <adding stopwords|Pod::Spell/ADDING STOPWORDS> for details.
 =cut
 
 sub learn_stopwords {
-	my ( $self, $text ) = @_;
-	my $stopwords = $self->wordlist;
+    my ( $self, $text ) = @_;
+    my $stopwords = $self->wordlist;
 
-	while ( $text =~ m<(\S+)>g ) {
-		my $word = $1;
-		if ( $word =~ m/^!(.+)/s ) {
-			# "!word" deletes from the stopword list
-			my $negation = $1;
-			# different $1 from above
-			delete $stopwords->{$negation};
-			delete $stopwords->{PL($negation)};
-			print "Unlearning stopword <$negation>\n" if $self->_is_debug;
-		}
-		else {
-			$word =~ s{'s$}{}; # we strip 's when checking so strip here, too
-			$stopwords->{$word} = 1;
-			$stopwords->{PL($word)} = 1;
-			print "Learning stopword   <$word>\n" if $self->_is_debug;
-		}
-	}
-	return;
+    while ( $text =~ m<(\S+)>g ) {
+        my $word = $1;
+        if ( $word =~ m/^!(.+)/s ) {
+            # "!word" deletes from the stopword list
+            my $negation = $1;
+            # different $1 from above
+            delete $stopwords->{$negation};
+            delete $stopwords->{PL($negation)};
+            print "Unlearning stopword <$negation>\n" if $self->_is_debug;
+        }
+        else {
+            $word =~ s{'s$}{}; # we strip 's when checking so strip here, too
+            $stopwords->{$word} = 1;
+            $stopwords->{PL($word)} = 1;
+            print "Learning stopword   <$word>\n" if $self->_is_debug;
+        }
+    }
+    return;
 }
 
 =method is_stopword
 
-	if ( $wordlist->is_stopword( $word ) ) { ... }
+    if ( $wordlist->is_stopword( $word ) ) { ... }
 
 Returns true if the word is found in the stopword list.
 
 =cut
 
 sub is_stopword {
-	my ($self, $word) = @_;
-	my $stopwords = $self->wordlist;
-	if ( exists $stopwords->{$word} or exists $stopwords->{ lc $word } ) {
-		print "  Rejecting   <$word>\n" if $self->_is_debug;
-		return 1;
-	}
-	return;
+    my ($self, $word) = @_;
+    my $stopwords = $self->wordlist;
+    if ( exists $stopwords->{$word} or exists $stopwords->{ lc $word } ) {
+        print "  Rejecting   <$word>\n" if $self->_is_debug;
+        return 1;
+    }
+    return;
 }
 
 =method strip_stopwords
@@ -101,84 +101,84 @@ text with stopwords removed.
 =cut
 
 sub strip_stopwords {
-	my ($self, $text) = @_;
+    my ($self, $text) = @_;
 
-	# Count the things in $text
-	print "Content: <", $text, ">\n" if $self->_is_debug;
+    # Count the things in $text
+    print "Content: <", $text, ">\n" if $self->_is_debug;
 
-	my @words = grep { length($_) < MAXWORDLENGTH } split " ", $text;
+    my @words = grep { length($_) < MAXWORDLENGTH } split " ", $text;
 
-	for ( @words ) {
-		print "Parsing word: <$_>\n" if $self->_is_debug;
-		# some spellcheckers can't cope with anything but Latin1
-		$_ = '' if $self->no_wide_chars && /[^\x00-\xFF]/;
+    for ( @words ) {
+        print "Parsing word: <$_>\n" if $self->_is_debug;
+        # some spellcheckers can't cope with anything but Latin1
+        $_ = '' if $self->no_wide_chars && /[^\x00-\xFF]/;
 
-		# strip leading punctuation
-		s/^[\(\[\{\'\"\:\;\,\?\!\.]+//;
+        # strip leading punctuation
+        s/^[\(\[\{\'\"\:\;\,\?\!\.]+//;
 
-		# keep everything up to trailing punctuation, not counting
-		# periods (for abbreviations like "Ph.D."), single-quotes
-		# (for contractions like "don't") or colons (for package
-		# names like "Foo::Bar")
-		s/^([^\)\]\}\"\;\,\?\!]+).*$/$1/;
+        # keep everything up to trailing punctuation, not counting
+        # periods (for abbreviations like "Ph.D."), single-quotes
+        # (for contractions like "don't") or colons (for package
+        # names like "Foo::Bar")
+        s/^([^\)\]\}\"\;\,\?\!]+).*$/$1/;
 
-		# strip trailing single-quote, periods or colons; after this
-		# we have a word that could have internal periods or quotes
-		s/[\.\'\:]+$//;
+        # strip trailing single-quote, periods or colons; after this
+        # we have a word that could have internal periods or quotes
+        s/[\.\'\:]+$//;
 
-		# strip possessive
-		s/'s$//i;
+        # strip possessive
+        s/'s$//i;
 
-		# zero out variable names or things with internal symbols,
-		# since those are probably code expressions outside a C<>
-		my $is_sigil   = /^[\&\%\$\@\:\<\*\\\_]/;
-		my $is_strange = /[\%\^\&\#\$\@\_\<\>\(\)\[\]\{\}\\\*\:\+\/\=\|\`\~]/;
-		$_ = '' if $is_sigil || $is_strange;
+        # zero out variable names or things with internal symbols,
+        # since those are probably code expressions outside a C<>
+        my $is_sigil   = /^[\&\%\$\@\:\<\*\\\_]/;
+        my $is_strange = /[\%\^\&\#\$\@\_\<\>\(\)\[\]\{\}\\\*\:\+\/\=\|\`\~]/;
+        $_ = '' if $is_sigil || $is_strange;
 
-		# stop if there are no "word" characters left; if it's just
-		# punctuation that we didn't happen to strip or it's weird glyphs,
-		# the spellchecker won't do any good anyway
-		next unless /\w/;
+        # stop if there are no "word" characters left; if it's just
+        # punctuation that we didn't happen to strip or it's weird glyphs,
+        # the spellchecker won't do any good anyway
+        next unless /\w/;
 
-		print "  Checking as <$_>\n" if $self->_is_debug;
+        print "  Checking as <$_>\n" if $self->_is_debug;
 
-		# replace it with any stopword or stopword parts stripped
-		$_ = $self->_strip_a_word($_);
+        # replace it with any stopword or stopword parts stripped
+        $_ = $self->_strip_a_word($_);
 
-		print "  Keeping as  <$_>\n" if $_ && $self->_is_debug;
-	}
+        print "  Keeping as  <$_>\n" if $_ && $self->_is_debug;
+    }
 
-	return join(" ", grep { defined && length } @words );
+    return join(" ", grep { defined && length } @words );
 }
 
 sub _strip_a_word {
-	my ($self, $word) = @_;
-	my $remainder;
+    my ($self, $word) = @_;
+    my $remainder;
 
-	# try word as-is, including possible hyphenation vs stoplist
-	if ($self->is_stopword($word) ) {
-		$remainder = '';
-	}
-	# internal period could be abbreviations, so check with
-	# trailing period restored and drop or keep on that basis
-	elsif ( index($word, '.') >= 0 ) {
-		my $abbr = "$word.";
-		$remainder = $self->is_stopword($abbr) ? '' : $abbr;
-	}
-	# check individual parts of hyphenated word, keep whatever isn't a
-	# stopword as individual words
-	elsif ( index($word, '-') >= 0 ) {
-		my @keep;
-		for my $part ( split /-/, $word ) {
-			push @keep, $part if ! $self->is_stopword( $part );
-		}
-		$remainder = join(" ", @keep) if @keep;
-	}
-	# otherwise, we just keep it
-	else {
-		$remainder = $word;
-	}
-	return $remainder;
+    # try word as-is, including possible hyphenation vs stoplist
+    if ($self->is_stopword($word) ) {
+        $remainder = '';
+    }
+    # internal period could be abbreviations, so check with
+    # trailing period restored and drop or keep on that basis
+    elsif ( index($word, '.') >= 0 ) {
+        my $abbr = "$word.";
+        $remainder = $self->is_stopword($abbr) ? '' : $abbr;
+    }
+    # check individual parts of hyphenated word, keep whatever isn't a
+    # stopword as individual words
+    elsif ( index($word, '-') >= 0 ) {
+        my @keep;
+        for my $part ( split /-/, $word ) {
+            push @keep, $part if ! $self->is_stopword( $part );
+        }
+        $remainder = join(" ", @keep) if @keep;
+    }
+    # otherwise, we just keep it
+    else {
+        $remainder = $word;
+    }
+    return $remainder;
 }
 
 1;
@@ -212,11 +212,11 @@ remove any q{'s} before adding to the list.
 The list should be sorted and uniqued. The following will work (with GNU
 Coreutils ).
 
-	sort share/wordlist -u > /tmp/sorted && mv /tmp/sorted share/wordlist
+    sort share/wordlist -u > /tmp/sorted && mv /tmp/sorted share/wordlist
 
 =attr wordlist
 
-	ref $self->wordlist eq 'HASH'; # true
+    ref $self->wordlist eq 'HASH'; # true
 
 This is the instance of the wordlist
 
