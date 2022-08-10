@@ -1,9 +1,11 @@
 #!/usr/bin/perl
+use 5.008;
 use strict;
 use warnings;
-use Pod::Spell;
 
-# VERSION
+our $VERSION = '1.20';
+
+use Pod::Spell;
 
 if ($] ge '5.008001') {
   # Try to get the encoding from the locale

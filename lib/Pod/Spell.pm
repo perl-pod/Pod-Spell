@@ -3,7 +3,7 @@ use 5.008;
 use strict;
 use warnings;
 
-# VERSION
+our $VERSION = '1.20';
 
 sub new {
     my ( $class, %args ) = @_;
