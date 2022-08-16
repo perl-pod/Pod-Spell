@@ -15,7 +15,7 @@ use constant {
         my $file;
         if ( -e __FILE__ ) {
             my ($d, $p) = File::Spec->splitpath(__FILE__);
-            $p = File::Spec->catdir($p, (File::Spec->updir) x 2, qw(share dist Pod-Spell));
+            $p = File::Spec->catdir($p, (File::Spec->updir) x 2, 'share');
             my $full_path = Cwd::abs_path(File::Spec->catpath($d, $p, 'wordlist'));
             if ($full_path && -e $full_path) {
                 $file = $full_path;
