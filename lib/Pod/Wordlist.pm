@@ -48,15 +48,6 @@ while ( defined( my $line = readline $fh ) ) {
 }
 close $fh;
 
-=method learn_stopwords
-
-    $wordlist->learn_stopwords( $text );
-
-Modifies the stopword list based on a text block. See the rules
-for <adding stopwords|Pod::Spell/ADDING STOPWORDS> for details.
-
-=cut
-
 sub learn_stopwords {
     my ( $self, $text ) = @_;
     my $stopwords = $self->wordlist;
@@ -81,14 +72,6 @@ sub learn_stopwords {
     return;
 }
 
-=method is_stopword
-
-    if ( $wordlist->is_stopword( $word ) ) { ... }
-
-Returns true if the word is found in the stopword list.
-
-=cut
-
 sub is_stopword {
     my ($self, $word) = @_;
     my $stopwords = $self->wordlist;
@@ -98,15 +81,6 @@ sub is_stopword {
     }
     return;
 }
-
-=method strip_stopwords
-
-    my $out = $wordlist->strip_stopwords( $text );
-
-Returns a string with space separated words from the original
-text with stopwords removed.
-
-=cut
 
 sub strip_stopwords {
     my ($self, $text) = @_;
@@ -191,10 +165,19 @@ sub _strip_a_word {
 
 1;
 
-# ABSTRACT: English words that come up in Perl documentation
 __END__
 
 =pod
+
+=encoding UTF-8
+
+=head1 NAME
+
+Pod::Wordlist - English words that come up in Perl documentation
+
+=head1 VERSION
+
+This is the development version of Pod::Wordlist.
 
 =head1 DESCRIPTION
 
@@ -209,6 +192,41 @@ the leading Perl code so that only the wordlist remains, and then
 spellchecking this resulting list and adding every word in it to your
 private lexicon.
 
+=head1 METHODS
+
+=head2 learn_stopwords
+
+    $wordlist->learn_stopwords( $text );
+
+Modifies the stopword list based on a text block. See the rules
+for <adding stopwords|Pod::Spell/ADDING STOPWORDS> for details.
+
+=head2 is_stopword
+
+    if ( $wordlist->is_stopword( $word ) ) { ... }
+
+Returns true if the word is found in the stopword list.
+
+=head2 strip_stopwords
+
+    my $out = $wordlist->strip_stopwords( $text );
+
+Returns a string with space separated words from the original
+text with stopwords removed.
+
+=head1 ATTRIBUTES
+
+=head2 wordlist
+
+    ref $self->wordlist eq 'HASH'; # true
+
+This is the instance of the wordlist
+
+=head2 no_wide_chars
+
+If true, words with characters outside the Latin-1 range C<0x00> to C<0xFF> will
+be stripped like stopwords.
+
 =head1 WORDLIST
 
 Note that the scope of this file is only English, specifically American
@@ -221,14 +239,3 @@ The list should be sorted and uniqued. The following will work (with GNU
 Coreutils ).
 
     sort share/wordlist -u > /tmp/sorted && mv /tmp/sorted share/wordlist
-
-=attr wordlist
-
-    ref $self->wordlist eq 'HASH'; # true
-
-This is the instance of the wordlist
-
-=attr no_wide_chars
-
-If true, words with characters outside the Latin-1 range C<0x00> to C<0xFF> will
-be stripped like stopwords.

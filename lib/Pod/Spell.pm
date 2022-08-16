@@ -150,11 +150,21 @@ sub _handle_element_end { ## no critic (Subroutines::ProhibitUnusedPrivateSubrou
 
 1;
 
-# ABSTRACT: a formatter for spellchecking Pod
-
 __END__
 
+=pod
+
+=encoding UTF-8
+
 =for :stopwords PODs virtE<ugrave>
+
+=head1 NAME
+
+Pod::Spell - a formatter for spellchecking Pod
+
+=head1 VERSION
+
+This is the development version of Pod::Spell.
 
 =head1 SYNOPSIS
 
@@ -167,56 +177,117 @@ Also look at L<podspell>
 
     % perl -MPod::Spell -e "Pod::Spell->new->parse_from_file(shift)" Thing.pm |spell |fmt
 
-...or instead of piping to spell or C<ispell>, use C<E<gt>temp.txt>, and open
+...or instead of piping to spell or C<ispell>, use C<< >temp.txt >>, and open
 F<temp.txt> in your word processor for spell-checking.
-
 
 =head1 DESCRIPTION
 
 Pod::Spell is a Pod formatter whose output is good for
-spellchecking.  Pod::Spell rather like L<Pod::Text|Pod::Text>, except that
+spellchecking.  Pod::Spell is rather like L<Pod::Text>, except that
 it doesn't put much effort into actual formatting, and it suppresses things
 that look like Perl symbols or Perl jargon (so that your spellchecking
 program won't complain about mystery words like "C<$thing>"
 or "C<Foo::Bar>" or "hashref").
 
-This class provides no new public methods.  All methods of interest are
-inherited from L<Pod::Parser|Pod::Parser> (which see).  The especially
-interesting ones are C<parse_from_filehandle> (which without arguments
-takes from STDIN and sends to STDOUT) and C<parse_from_file>.  But you
-can probably just make do with the examples in the synopsis though.
-
 This class works by filtering out words that look like Perl or any
-form of computerese (like "C<$thing>" or "C<NE<gt>7>" or
+form of computerese (like "C<$thing>" or "C<< N>7 >>" or
 "C<@{$foo}{'bar','baz'}>", anything in CE<lt>...E<gt> or FE<lt>...E<gt>
 codes, anything in verbatim paragraphs (code blocks), and anything
 in the stopword list.  The default stopword list for a document starts
-out from the stopword list defined by L<Pod::Wordlist|Pod::Wordlist>,
+out from the stopword list defined by L<Pod::Wordlist>,
 and can be supplemented (on a per-document basis) by having
 C<"=for stopwords"> / C<"=for :stopwords"> region(s) in a document.
 
+=head1 METHODS
+
+=head2 new
+
+    Pod::Spell->new(%options)
+
+Creates a new Pod::Spell instance. Accepts several options:
+
+=over 4
+
+=item debug
+
+When set to a true value, will output debugging messages about how the Pod
+is being processed.
+
+Defaults to false.
+
+=item stopwords
+
+Can be specified to use an alternate wordlist instance.
+
+Defaults to a new Pod::Wordlist instance.
+
+=item no_wide_chars
+
+Will be passed to Pod::Wordlist when creating a new instance. Causes all words
+with characters outside the Latin-1 range to be stripped from the output.
+
+=back
+
+=head2 stopwords
+
+    $self->stopwords->isa('Pod::WordList'); # true
+
+=head2 parse_from_filehandle($in_fh,$out_fh)
+
+This method takes an input filehandle (which is assumed to already be
+opened for reading) and reads the entire input stream looking for blocks
+(paragraphs) of POD documentation to be processed. If no first argument
+is given the default input filehandle C<STDIN> is used.
+
+The C<$in_fh> parameter may be any object that provides a B<getline()>
+method to retrieve a single line of input text (hence, an appropriate
+wrapper object could be used to parse PODs from a single string or an
+array of strings).
+
+=head2 parse_from_file($filename,$outfile)
+
+This method takes a filename and does the following:
+
+=over 2
+
+=item *
+
+opens the input and output files for reading
+(creating the appropriate filehandles)
+
+=item *
+
+invokes the B<parse_from_filehandle()> method passing it the
+corresponding input and output filehandles.
+
+=item *
+
+closes the input and output files.
+
+=back
+
+If the special input filename "", "-" or "<&STDIN" is given then the STDIN
+filehandle is used for input (and no open or close is performed). If no
+input filename is specified then "-" is implied. Filehandle references,
+or objects that support the regular IO operations (like C<E<lt>$fhE<gt>>
+or C<$fh-<Egt>getline>) are also accepted; the handles must already be
+opened.
+
+If a second argument is given then it should be the name of the desired
+output file. If the special output filename "-" or ">&STDOUT" is given
+then the STDOUT filehandle is used for output (and no open or close is
+performed). If the special output filename ">&STDERR" is given then the
+STDERR filehandle is used for output (and no open or close is
+performed). If no output filehandle is currently in use and no output
+filename is specified, then "-" is implied.
+Alternatively, filehandle references or objects that support the regular
+IO operations (like C<print>, e.g. L<IO::String>) are also accepted;
+the object must already be opened.
+
 =head1 ENCODINGS
 
-Pod::Parser, which Pod::Spell extends, is extremely naive about
-character encodings.  The C<parse_from_file> method does not apply
-any PerlIO encoding layer.  If your Pod file is encoded in UTF-8,
-your data will be read incorrectly.
-
-You should instead use C<parse_from_filehandle> and manage the input
-and output layers yourself.
-
-    binmode($_, ":utf8") for ($infile, $outfile);
-    $my ps = Pod::Spell->new;
-    $ps->parse_from_filehandle( $infile, $outfile );
-
-If your output destination cannot handle UTF-8, you should set your
-output handle to Latin-1 and tell Pod::Spell to strip out words
-with wide characters.
-
-    binmode($infile, ":utf8");
-    binmode($outfile, ":encoding(latin1)");
-    $my ps = Pod::Spell->new( no_wide_chars => 1 );
-    $ps->parse_from_filehandle( $infile, $outfile );
+If your Pod is encoded in something other than Latin-1, it should declare
+an encoding using the L<< perlpod/C<=encoding I<encodingname>> >> directive.
 
 =head1 ADDING STOPWORDS
 
@@ -277,78 +348,12 @@ will have no effect, since  any occurrences of virtEE<lt>ugrave>
 don't look like a normal human-language word anyway, and so would
 be screened out before the stopword list is consulted anyway.
 
-=method new
-
-=method stopwords
-
-    $self->stopwords->isa('Pod::WordList'); # true
-
-=method parse_from_filehandle($in_fh,$out_fh)
-
-This method takes an input filehandle (which is assumed to already be
-opened for reading) and reads the entire input stream looking for blocks
-(paragraphs) of POD documentation to be processed. If no first argument
-is given the default input filehandle C<STDIN> is used.
-
-The C<$in_fh> parameter may be any object that provides a B<getline()>
-method to retrieve a single line of input text (hence, an appropriate
-wrapper object could be used to parse PODs from a single string or an
-array of strings).
-
-=method parse_from_file($filename,$outfile)
-
-This method takes a filename and does the following:
-
-=over 2
-
-=item *
-
-opens the input and output files for reading
-(creating the appropriate filehandles)
-
-=item *
-
-invokes the B<parse_from_filehandle()> method passing it the
-corresponding input and output filehandles.
-
-=item *
-
-closes the input and output files.
-
-=back
-
-If the special input filename "", "-" or "<&STDIN" is given then the STDIN
-filehandle is used for input (and no open or close is performed). If no
-input filename is specified then "-" is implied. Filehandle references,
-or objects that support the regular IO operations (like C<E<lt>$fhE<gt>>
-or C<$fh-<Egt>getline>) are also accepted; the handles must already be
-opened.
-
-If a second argument is given then it should be the name of the desired
-output file. If the special output filename "-" or ">&STDOUT" is given
-then the STDOUT filehandle is used for output (and no open or close is
-performed). If the special output filename ">&STDERR" is given then the
-STDERR filehandle is used for output (and no open or close is
-performed). If no output filehandle is currently in use and no output
-filename is specified, then "-" is implied.
-Alternatively, filehandle references or objects that support the regular
-IO operations (like C<print>, e.g. L<IO::String>) are also accepted;
-the object must already be opened.
-
-=head1 BUGS AND LIMITATIONS
+=head1 CAVEATS
 
 =head2 finding stopwords defined with C<=for>
 
 Pod::Spell makes a single pass over the POD.  Stopwords
 must be added B<before> they show up in the POD.
-
-=head2 finding the wordlist
-
-Pod::Spell uses L<File::ShareDir::ProjectDistDir> if you're getting errors
-about the wordlist being missing, chances are it's a problem with its
-heuristics. Set C<PATH_ISDEV_DEBUG=1> or C<PATH_FINDDEV_DEBUG=1>, or both in
-your environment for debugging, and then file a bug with
-L<File::ShareDir::ProjectDistDir> if necessary.
 
 =head1 HINT
 
@@ -361,12 +366,14 @@ to tell you that.
 
 =head1 SEE ALSO
 
-L<Pod::Wordlist|Pod::Wordlist>
+=over 4
 
-L<Pod::Parser|Pod::Parser>
+=item * L<Pod::Wordlist>
 
-L<podchecker|podchecker> also known as L<Pod::Checker|Pod::Checker>
+=item * L<Pod::Simple>
 
-L<perlpod|perlpod>, L<perlpodspec>
+=item * L<podchecker> also known as L<Pod::Checker>
 
-=cut
+=item * L<perlpod>, L<perlpodspec>
+
+=back

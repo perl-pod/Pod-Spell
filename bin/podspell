@@ -29,10 +29,11 @@ if(@ARGV) {  # iterate over files, sending to STDOUT
   Pod::Spell->new->parse_from_filehandle();
 }
 
-# ABSTRACT: pod spell checking command line interface
-# PODNAME: podspell
-
 __END__
+
+=head1 NAME
+
+podspell - pod spell checking command line interface
 
 =head1 SYNOPSIS
 
