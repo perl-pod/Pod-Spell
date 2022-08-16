@@ -6,6 +6,28 @@ use warnings;
 our $VERSION = '1.20';
 
 use Lingua::EN::Inflect 'PL';
+use File::Spec ();
+use Cwd ();
+use constant {
+    MAXWORDLENGTH => 50,
+
+    _WORDLIST => do {
+        my $file;
+        if ( -e __FILE__ ) {
+            my ($d, $p) = File::Spec->splitpath(__FILE__);
+            $p = File::Spec->catdir($p, (File::Spec->updir) x 2, qw(share dist Pod-Spell));
+            my $full_path = Cwd::abs_path(File::Spec->catpath($d, $p, 'wordlist'));
+            if ($full_path && -e $full_path) {
+                $file = $full_path;
+            }
+        }
+        if ( not defined $file ) {
+            require File::ShareDir;
+            $file = File::ShareDir::dist_file('Pod-Spell', 'wordlist');
+        }
+        $file
+    },
+};
 
 use Class::Tiny {
     wordlist  => \&_copy_wordlist,
@@ -13,33 +35,18 @@ use Class::Tiny {
     no_wide_chars => 0,
 };
 
-use Path::Tiny qw( path );
-use constant {
-
-    MAXWORDLENGTH => 50,
-
-    _DIST_DIR => do {
-        my $dir;
-        if ( -e __FILE__ ) {
-            my $local_dir = path(__FILE__)->parent->parent->parent->child('share/dist/Pod-Spell');
-            $dir = $local_dir->absolute if -e $local_dir;
-        }
-        if ( not defined $dir ) {
-            require File::ShareDir;
-            $dir = File::ShareDir::dist_dir('Pod-Spell');
-        }
-        "$dir"
-    },
-};
-
 our %Wordlist; ## no critic ( Variables::ProhibitPackageVars )
 
 sub _copy_wordlist { return { %Wordlist } }
 
-foreach ( path(_DIST_DIR,'wordlist')->lines_utf8({ chomp => 1 })) {
-    $Wordlist{$_} = 1;
-    $Wordlist{PL($_)} = 1;
+open my $fh, '<:encoding(UTF-8)', _WORDLIST
+    or die 'Cannot read '._WORDLIST.": $!";
+while ( defined( my $line = readline $fh ) ) {
+    chomp $line;
+    $Wordlist{$line} = 1;
+    $Wordlist{PL($line)} = 1;
 }
+close $fh;
 
 =method learn_stopwords
 
