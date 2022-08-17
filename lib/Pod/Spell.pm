@@ -156,7 +156,7 @@ __END__
 
 =encoding UTF-8
 
-=for :stopwords PODs virtE<ugrave>
+=for :stopwords PODs virtE<ugrave> qux
 
 =head1 NAME
 
