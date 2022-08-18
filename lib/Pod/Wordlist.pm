@@ -40,7 +40,7 @@ our %Wordlist; ## no critic ( Variables::ProhibitPackageVars )
 sub _copy_wordlist { return { %Wordlist } }
 
 open my $fh, '<:encoding(UTF-8)', _WORDLIST
-    or die 'Cannot read '._WORDLIST.": $!";
+    or die 'Cannot read '._WORDLIST.": $!"; ## no critic (ErrorHandling::RequireCarping)
 while ( defined( my $line = readline $fh ) ) {
     chomp $line;
     $Wordlist{$line} = 1;
