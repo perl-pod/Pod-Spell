@@ -1,6 +1,10 @@
 Revision history Pod-Spell
 
 {{$NEXT}}
+    - port to use Pod::Simple rather than Pod::Parser
+    - use File::Spec rather than Path::Tiny
+    - allow explicit debug option to override environment variable
+    - packaging and metadata updates
 
 1.20      2016-04-22
     - Stable release, made in Rugby, UK during Perl QA Hackathon 2016
