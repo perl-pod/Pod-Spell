@@ -9,7 +9,7 @@ sub new {
     my ( $class, %args ) = @_;
 
     my $no_wide_chars = delete $args{no_wide_chars};
-    my $debug = delete($args{debug}) || $ENV{PERL_POD_SPELL_DEBUG};
+    my $debug = exists $args{debug} ? delete $args{debug} : $ENV{PERL_POD_SPELL_DEBUG};
 
     my $stopwords = $args{stopwords} || do {
         require Pod::Wordlist;
