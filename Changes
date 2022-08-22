@@ -1,6 +1,6 @@
 Revision history Pod-Spell
 
-{{$NEXT}}
+1.20      2022-08-22 (TRIAL RELEASE)
     - port to use Pod::Simple rather than Pod::Parser
     - use File::Spec rather than Path::Tiny
     - allow explicit debug option to override environment variable
