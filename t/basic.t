@@ -1,7 +1,6 @@
 use strict;
 use warnings;
 use Test::More;
-use Test::Deep;
 use File::Temp;
 
 use Pod::Spell;
@@ -52,7 +51,7 @@ my @expected = qw(
 );
 is scalar @words, scalar @expected, 'word count';
 
-cmp_deeply \@words, bag( @expected ), 'words match'
+is_deeply [ sort @words ], [ sort @expected ], 'words match'
     or diag "@words";
 
 done_testing;

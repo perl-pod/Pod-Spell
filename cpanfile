@@ -13,6 +13,5 @@ requires 'perl' => '5.008';
 
 on 'test' => sub {
   requires 'File::Temp' => '0';
-  requires 'Test::Deep' => '0';
   requires 'Test::More' => '0.88';
 };

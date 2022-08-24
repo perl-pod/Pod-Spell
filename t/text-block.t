@@ -1,7 +1,6 @@
 use strict;
 use warnings;
 use Test::More;
-use Test::Deep;
 use File::Temp;
 use Pod::Spell;
 
@@ -22,9 +21,9 @@ my $p = new_ok 'Pod::Spell' => [ debug => 1 ];
 
 $p->parse_from_filehandle( $podfile, $textfile );
 
-cmp_deeply [ keys( %{ $p->stopwords->wordlist } ) ],
-    superbagof(qw(Pleumgh zpaph myormsp snickh blah blargh bazh )),
-    'stopwords added'
-    ;
+my $wordlist = $p->stopwords->wordlist;
+
+ok $wordlist->{$_}, "stopword added: $_"
+  for qw( Pleumgh zpaph myormsp snickh blah blargh bazh );
 
 done_testing;
