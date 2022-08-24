@@ -1,5 +1,7 @@
 Revision history Pod-Spell
 
+{{$NEXT}}
+
 1.21      2022-08-24 (TRIAL RELEASE)
     - port to use Pod::Simple rather than Pod::Parser
     - use File::Spec rather than Path::Tiny
