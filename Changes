@@ -1,6 +1,7 @@
 Revision history Pod-Spell
 
 {{$NEXT}}
+    - fix finding wordlist when not run against files directly in lib/
 
 1.21      2022-08-24 (TRIAL RELEASE)
     - port to use Pod::Simple rather than Pod::Parser
