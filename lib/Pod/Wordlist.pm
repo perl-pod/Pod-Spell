@@ -7,26 +7,8 @@ our $VERSION = '1.22';
 
 use Lingua::EN::Inflect 'PL';
 use File::Spec ();
-use Cwd ();
 use constant {
     MAXWORDLENGTH => 50,
-
-    _WORDLIST => do {
-        my $file;
-        if ( -e __FILE__ ) {
-            my ($d, $p) = File::Spec->splitpath(__FILE__);
-            $p = File::Spec->catdir($p, (File::Spec->updir) x 2, 'share');
-            my $full_path = Cwd::abs_path(File::Spec->catpath($d, $p, 'wordlist'));
-            if ($full_path && -e $full_path) {
-                $file = $full_path;
-            }
-        }
-        if ( not defined $file ) {
-            require File::ShareDir;
-            $file = File::ShareDir::dist_file('Pod-Spell', 'wordlist');
-        }
-        $file
-    },
 };
 
 use Class::Tiny {
@@ -39,14 +21,31 @@ our %Wordlist; ## no critic ( Variables::ProhibitPackageVars )
 
 sub _copy_wordlist { return { %Wordlist } }
 
-open my $fh, '<:encoding(UTF-8)', _WORDLIST
-    or die 'Cannot read '._WORDLIST.": $!"; ## no critic (ErrorHandling::RequireCarping)
-while ( defined( my $line = readline $fh ) ) {
-    chomp $line;
-    $Wordlist{$line} = 1;
-    $Wordlist{PL($line)} = 1;
+BEGIN {
+    my $file;
+
+    # try to find wordlist in non-installed dist
+    my ($d, $p) = File::Spec->splitpath(__FILE__);
+    $p = File::Spec->catdir($p, (File::Spec->updir) x 2, 'share');
+    my $full_path = File::Spec->catpath($d, $p, 'wordlist');
+    if ($full_path && -e $full_path) {
+        $file = $full_path;
+    }
+
+    if ( not defined $file ) {
+        require File::ShareDir;
+        $file = File::ShareDir::dist_file('Pod-Spell', 'wordlist');
+    }
+
+    open my $fh, '<:encoding(UTF-8)', $file
+        or die "Cannot read $file: $!"; ## no critic (ErrorHandling::RequireCarping)
+    while ( defined( my $line = readline $fh ) ) {
+        chomp $line;
+        $Wordlist{$line} = 1;
+        $Wordlist{PL($line)} = 1;
+    }
+    close $fh;
 }
-close $fh;
 
 sub learn_stopwords {
     my ( $self, $text ) = @_;
