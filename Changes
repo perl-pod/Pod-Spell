@@ -1,5 +1,7 @@
 Revision history Pod-Spell
 
+{{$NEXT}}
+
 1.22      2022-08-29 (TRIAL RELEASE)
     - fix finding wordlist when not run against files directly in lib/
 
