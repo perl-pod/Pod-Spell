@@ -1,6 +1,7 @@
 Revision history Pod-Spell
 
 {{$NEXT}}
+    - account for stopwords added in UTF-8 encoded form
 
 1.23      2022-09-21
     - releasing as stable
