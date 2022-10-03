@@ -19,7 +19,20 @@ use Class::Tiny {
 
 our %Wordlist; ## no critic ( Variables::ProhibitPackageVars )
 
-sub _copy_wordlist { return { %Wordlist } }
+sub _copy_wordlist {
+    my %copy;
+
+    # %Wordlist can be accessed externally, and users will often add terms in
+    # encoded form
+    for my $word ( keys %Wordlist ) {
+        my $decoded_word = $word;
+        # if it was already decoded, this should do nothing
+        utf8::decode($decoded_word);
+        $copy{$decoded_word} = 1;
+    }
+
+    return \%copy;
+}
 
 BEGIN {
     my $file;
@@ -53,6 +66,7 @@ sub learn_stopwords {
 
     while ( $text =~ m<(\S+)>g ) {
         my $word = $1;
+        utf8::decode($word);
         if ( $word =~ m/^!(.+)/s ) {
             # "!word" deletes from the stopword list
             my $negation = $1;
