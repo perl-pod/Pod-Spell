@@ -3,7 +3,7 @@ use 5.008;
 use strict;
 use warnings;
 
-our $VERSION = '1.25';
+our $VERSION = '1.26';
 
 use Lingua::EN::Inflect 'PL';
 use File::Spec ();
