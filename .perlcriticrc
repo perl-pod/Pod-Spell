@@ -20,7 +20,6 @@ only = 1
 [ClassHierarchies::ProhibitOneArgBless]
 [CodeLayout::ProhibitHardTabs]
 [CodeLayout::RequireConsistentNewlines]
-[ControlStructures::ProhibitCascadingIfElse]
 [ControlStructures::ProhibitDeepNests]
 [ControlStructures::ProhibitLabelsWithSpecialBlockNames]
 [ControlStructures::ProhibitMutatingListFunctions]

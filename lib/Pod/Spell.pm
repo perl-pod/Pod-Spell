@@ -87,7 +87,6 @@ sub _handle_text { ## no critic (Subroutines::ProhibitUnusedPrivateSubroutines)
     my $in = $self->{in_element};
     if ($in && @$in) {
         my ($element_name, $attr) = @{$in->[-1]};
-        ## no critic (ControlStructures::ProhibitCascadingIfElse)
         if ($element_name eq 'for' && $attr->{target_matching} eq 'stopwords') {
             # this will match both for/begin and stopwords/:stopwords
 
