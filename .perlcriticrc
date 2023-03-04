@@ -26,7 +26,6 @@ only = 1
 [ControlStructures::ProhibitNegativeExpressionsInUnlessAndUntilConditions]
 [ControlStructures::ProhibitUnreachableCode]
 [ControlStructures::ProhibitYadaOperator]
-[ErrorHandling::RequireCarping]
 [ErrorHandling::RequireCheckingReturnValueOfEval]
 [InputOutput::ProhibitBacktickOperators]
 [InputOutput::ProhibitBarewordFileHandles]
