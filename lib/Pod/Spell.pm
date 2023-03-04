@@ -71,7 +71,7 @@ my %track_elements = (
     F         => 1,
 );
 
-sub _handle_element_start { ## no critic (Subroutines::ProhibitUnusedPrivateSubroutines)
+sub _handle_element_start {
     my ($self, $element_name, $attr) = @_;
     $self->{buffer} = ''
         if !defined $self->{buffer};
@@ -81,7 +81,7 @@ sub _handle_element_start { ## no critic (Subroutines::ProhibitUnusedPrivateSubr
     }
 }
 
-sub _handle_text { ## no critic (Subroutines::ProhibitUnusedPrivateSubroutines)
+sub _handle_text {
     my ($self, $text) = @_;
 
     my $in = $self->{in_element};
@@ -116,7 +116,7 @@ sub _handle_text { ## no critic (Subroutines::ProhibitUnusedPrivateSubroutines)
     $self->{buffer} .= $text;
 }
 
-sub _handle_element_end { ## no critic (Subroutines::ProhibitUnusedPrivateSubroutines)
+sub _handle_element_end {
     my ($self, $element_name) = @_;
 
     my $in = $self->{in_element};

@@ -61,6 +61,7 @@ max_mccabe = 30
 [Subroutines::ProhibitReturnSort]
 [Subroutines::ProhibitSubroutinePrototypes]
 [Subroutines::ProhibitUnusedPrivateSubroutines]
+allow_name_regex = _handle_\w+
 [Subroutines::ProtectPrivateSubs]
 [TestingAndDebugging::ProhibitNoStrict]
 [TestingAndDebugging::ProhibitNoWarnings]
