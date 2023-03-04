@@ -35,7 +35,6 @@ only = 1
 [InputOutput::ProhibitOneArgSelect]
 [InputOutput::ProhibitReadlineInForLoop]
 [InputOutput::ProhibitTwoArgOpen]
-[InputOutput::RequireBriefOpen]
 [InputOutput::RequireCheckedOpen]
 [InputOutput::RequireEncodingWithUTF8Layer]
 [Miscellanea::ProhibitFormats]
