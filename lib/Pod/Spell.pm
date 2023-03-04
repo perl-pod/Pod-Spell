@@ -143,7 +143,7 @@ sub _handle_element_end {
     return
         if !length $out;
 
-    local $Text::Wrap::huge = 'overflow'; ## no critic ( Variables::ProhibitPackageVars )
+    local $Text::Wrap::huge = 'overflow';
     print { $fh } Text::Wrap::wrap( '', '', $out ) . "\n\n";
 }
 
