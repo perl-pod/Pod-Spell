@@ -22,7 +22,9 @@ sub new {
     my $parser = Pod::Spell::_Processor->new;
     $parser->stopwords($stopwords);
     $parser->_is_debug($debug);
-    $parser->output_fh(\*STDOUT);
+    open my $output_fh, '>&:encoding(UTF-8)', \*STDOUT
+      or die "can't dup STDOUT: $!";
+    $parser->output_fh($output_fh);
 
     my %self = (
         processor => $parser,
