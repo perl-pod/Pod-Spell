@@ -1,6 +1,6 @@
 Revision history Pod-Spell
 
-{{$NEXT}}
+1.26      2023-03-13
 
     - encode output as UTF-8
 
