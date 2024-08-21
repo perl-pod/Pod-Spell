@@ -212,7 +212,7 @@ private lexicon.
     $wordlist->learn_stopwords( $text );
 
 Modifies the stopword list based on a text block. See the rules
-for <adding stopwords|Pod::Spell/ADDING STOPWORDS> for details.
+for L<adding stopwords|Pod::Spell/ADDING STOPWORDS> for details.
 
 =head2 is_stopword
 
