@@ -181,7 +181,7 @@ Pod::Spell - a formatter for spellchecking Pod
 
 =head1 VERSION
 
-This is the development version of Pod::Spell.
+This is a development version of Pod::Spell.
 
 =head1 SYNOPSIS
 
