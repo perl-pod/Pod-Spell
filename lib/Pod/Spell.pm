@@ -38,12 +38,12 @@ sub stopwords { (shift)->{stopwords} }
 
 sub parse_from_file {
     my $self = shift;
-    $self->parse_from_filehandle(@_);
+    $self->{processor}->parse_from_file(@_);
 }
 
 sub parse_from_filehandle {
     my $self = shift;
-    $self->{processor}->parse_from_file(@_);
+    $self->parse_from_file(@_);
 }
 
 package # Hide from indexing
