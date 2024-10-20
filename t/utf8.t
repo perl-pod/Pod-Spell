@@ -133,13 +133,15 @@ for my $c ( @cases ) {
 
         $parse->();
 
+        close STDOUT;
+
         open(STDOUT, '>&', $oldout)
             or die "Can't dup \$oldout: $!";
 
         seek $fh, 0, 0;
         my $content = do { local $/; <$fh> };
 
-        $check->('STDOUT', Encode::decode_utf8($content));
+        $check->('STDOUT (utf8)', Encode::decode_utf8($content));
     }
 }
 
