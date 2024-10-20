@@ -1,5 +1,7 @@
 Revision history Pod-Spell
 
+{{$NEXT}}
+
 1.27    2024-10-20
     - fix encoding of output as UTF-8
     - fix link in Pod
