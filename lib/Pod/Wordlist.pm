@@ -8,7 +8,7 @@ our $VERSION = '1.27';
 use Lingua::EN::Inflect 'PL';
 use File::Spec ();
 use constant {
-    MAXWORDLENGTH => 50,
+    _MAXWORDLENGTH => 50,
 };
 
 use Class::Tiny {
@@ -101,7 +101,7 @@ sub strip_stopwords {
     # Count the things in $text
     print "Content: <", $text, ">\n" if $self->_is_debug;
 
-    my @words = grep { length($_) < MAXWORDLENGTH } split " ", $text;
+    my @words = grep { length($_) < _MAXWORDLENGTH } split " ", $text;
 
     for ( @words ) {
         print "Parsing word: <$_>\n" if $self->_is_debug;
