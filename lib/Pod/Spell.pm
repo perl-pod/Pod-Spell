@@ -73,13 +73,13 @@ my %track_elements = (
 );
 
 sub output_fh {
-  my $self = shift;
-  if (@_) {
-    my ($fh) = @_;
-    my $encoded_fh = grep $_ eq 'utf8', PerlIO::get_layers($fh);
-    $self->{_encoded_fh} = $encoded_fh;
-  }
-  return $self->SUPER::output_fh(@_);
+    my $self = shift;
+    if (@_) {
+        my ($fh) = @_;
+        my $encoded_fh = grep $_ eq 'utf8', PerlIO::get_layers($fh);
+        $self->{_encoded_fh} = $encoded_fh;
+    }
+    return $self->SUPER::output_fh(@_);
 }
 
 sub _handle_element_start {
