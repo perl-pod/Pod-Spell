@@ -11,7 +11,7 @@ runtime:
     constant: 0
     locale: 0
     parent: 0
-    perl: 5.008
+    perl: 5.008001
 test:
   requires:
     File::Temp: 0
